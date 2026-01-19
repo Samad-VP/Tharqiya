@@ -1,0 +1,17 @@
+vite v7.3.1 building client environment for production...
+transforming...
+✓ 4 modules transformed.
+✗ Build failed in 84ms
+error during build:
+[@tailwindcss/vite:generate:build] Cannot apply unknown utility class `bg-tharqiya-green`
+file: /home/abdulsamad/Desktop/projects/Tharqiya/frontend/src/index.css
+    at onInvalidCandidate (file:///home/abdulsamad/Desktop/projects/Tharqiya/frontend/node_modules/tailwindcss/dist/chunk-CT46QCH7.mjs:21:1511)
+    at Ce (file:///home/abdulsamad/Desktop/projects/Tharqiya/frontend/node_modules/tailwindcss/dist/chunk-CT46QCH7.mjs:16:36652)
+    at file:///home/abdulsamad/Desktop/projects/Tharqiya/frontend/node_modules/tailwindcss/dist/chunk-CT46QCH7.mjs:21:355
+    at br (file:///home/abdulsamad/Desktop/projects/Tharqiya/frontend/node_modules/tailwindcss/dist/chunk-CT46QCH7.mjs:3:1718)
+    at I (file:///home/abdulsamad/Desktop/projects/Tharqiya/frontend/node_modules/tailwindcss/dist/chunk-CT46QCH7.mjs:3:1377)
+    at Ae (file:///home/abdulsamad/Desktop/projects/Tharqiya/frontend/node_modules/tailwindcss/dist/chunk-CT46QCH7.mjs:21:172)
+    at Wi (file:///home/abdulsamad/Desktop/projects/Tharqiya/frontend/node_modules/tailwindcss/dist/chunk-CT46QCH7.mjs:38:294)
+    at async Za (file:///home/abdulsamad/Desktop/projects/Tharqiya/frontend/node_modules/tailwindcss/dist/chunk-CT46QCH7.mjs:38:631)
+    at async rf (file:///home/abdulsamad/Desktop/projects/Tharqiya/frontend/node_modules/tailwindcss/dist/chunk-CT46QCH7.mjs:38:1406)
+    at async lu (file:///home/abdulsamad/Desktop/projects/Tharqiya/frontend/node_modules/@tailwindcss/node/dist/index.mjs:10:3458)

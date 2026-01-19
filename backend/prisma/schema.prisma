@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  INTERVIEWER
+  STUDENT
+}
+
+enum ApplicationStatus {
+  PENDING
+  REVIEWED
+  INTERVIEW_SCHEDULED
+  EVALUATED
+  ACCEPTED
+  REJECTED
+}
+
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  password      String
+  role          Role     @default(STUDENT)
+  name          String
+  phone         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  student       Student?
+  interviewer   Interviewer?
+  notifications Notification[]
+}
+
+model Student {
+  id              String        @id @default(uuid())
+  userId          String        @unique
+  user            User          @relation(fields: [userId], references: [id])
+  applicationNo   String        @unique
+  dob             DateTime
+  address         String
+  hifzCenter      String
+  fatherName      String
+  motherName      String
+  status          ApplicationStatus @default(PENDING)
+  documents       Json?         // To store URLs of uploaded docs
+  application     Application?
+}
+
+model Application {
+  id            String            @id @default(uuid())
+  studentId     String            @unique
+  student       Student           @relation(fields: [studentId], references: [id])
+  appliedAt     DateTime          @default(now())
+  status        ApplicationStatus @default(PENDING)
+  interview     Interview?
+}
+
+model Interviewer {
+  id         String      @id @default(uuid())
+  userId     String      @unique
+  user       User        @relation(fields: [userId], references: [id])
+  speciality String?
+  interviews Interview[]
+}
+
+model Interview {
+  id            String       @id @default(uuid())
+  applicationId String       @unique
+  application   Application  @relation(fields: [applicationId], references: [id])
+  interviewerId String
+  interviewer   Interviewer  @relation(fields: [interviewerId], references: [id])
+  scheduledAt   DateTime
+  location      String?      @default("Darussalam Tharqiya College")
+  evaluations   Evaluation[]
+}
+
+model Evaluation {
+  id          String   @id @default(uuid())
+  interviewId String
+  interview   Interview @relation(fields: [interviewId], references: [id])
+  subject     String   // Hifz, English, General
+  marks       Int
+  remarks     String?
+  createdAt   DateTime @default(now())
+}
+
+model Result {
+  id            String   @id @default(uuid())
+  studentId     String   @unique
+  totalMarks    Int
+  averageMarks  Float
+  decision      String   @default("PENDING") // ACCEPTED, REJECTED, WAITING
+  generatedAt   DateTime @default(now())
+  pdfUrl        String?
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  type      String   // WHATSAPP, EMAIL
+  event     String   // REGISTRATION, INTERVIEW_SCHEDULED, etc.
+  message   String
+  sentAt    DateTime @default(now())
+  status    String   @default("SENT")
+}
