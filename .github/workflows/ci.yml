@@ -2,44 +2,49 @@ name: CI - Tharqiya
 
 on:
   push:
-    branches: [ main ]
+    branches: [main, dev]
   pull_request:
-    branches: [ main ]
+    branches: [main, dev]
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    container: fedora:latest
 
     steps:
-    - uses: actions/checkout@v4
+      - name: Install System Prerequisites
+        run: |
+          dnf -y update
+          dnf -y install git tar gzip which openssl-devel
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
+      - uses: actions/checkout@v4
 
-    - name: Install Backend Dependencies
-      run: |
-        cd backend
-        npm install
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
 
-    - name: Prisma Client Generation
-      run: |
-        cd backend
-        npx prisma generate
+      - name: Install Backend Dependencies
+        run: |
+          cd backend
+          npm install
 
-    - name: Build Backend (Check TypeScript)
-      run: |
-        cd backend
-        npx tsc
+      - name: Prisma Client Generation
+        run: |
+          cd backend
+          npx prisma generate
 
-    - name: Install Frontend Dependencies
-      run: |
-        cd frontend
-        npm install
+      - name: Build Backend (Check TypeScript)
+        run: |
+          cd backend
+          npx tsc
 
-    - name: Build Frontend
-      run: |
-        cd frontend
-        npm run build
+      - name: Install Frontend Dependencies
+        run: |
+          cd frontend
+          npm install
+
+      - name: Build Frontend
+        run: |
+          cd frontend
+          npm run build
