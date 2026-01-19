@@ -1,0 +1,45 @@
+name: CI - Tharqiya
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install Backend Dependencies
+      run: |
+        cd backend
+        npm install
+
+    - name: Prisma Client Generation
+      run: |
+        cd backend
+        npx prisma generate
+
+    - name: Build Backend (Check TypeScript)
+      run: |
+        cd backend
+        npx tsc
+
+    - name: Install Frontend Dependencies
+      run: |
+        cd frontend
+        npm install
+
+    - name: Build Frontend
+      run: |
+        cd frontend
+        npm run build
