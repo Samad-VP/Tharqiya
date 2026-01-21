@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const storedUser = localStorage.getItem('tharqiya_user');
+        const storedUser = localStorage.getItem('edu_village_user');
         if (storedUser) {
             setUser(JSON.parse(storedUser));
         }
@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         try {
             const response = await axios.post('/api/auth/login', { email, password });
             setUser(response.data);
-            localStorage.setItem('tharqiya_user', JSON.stringify(response.data));
+            localStorage.setItem('edu_village_user', JSON.stringify(response.data));
             return response.data;
         } catch (error: any) {
             throw error.response?.data || { message: 'Login failed' };
@@ -50,14 +50,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const logout = () => {
         setUser(null);
-        localStorage.removeItem('tharqiya_user');
+        localStorage.removeItem('edu_village_user');
     };
 
     const register = async (userData: any): Promise<User> => {
         try {
             const response = await axios.post('/api/auth/register', userData);
             setUser(response.data);
-            localStorage.setItem('tharqiya_user', JSON.stringify(response.data));
+            localStorage.setItem('edu_village_user', JSON.stringify(response.data));
             return response.data;
         } catch (error: any) {
             throw error.response?.data || { message: 'Registration failed' };

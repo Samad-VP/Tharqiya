@@ -7,14 +7,16 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                tharqiya: {
-                    gold: '#C5A059',
-                    green: '#1A4D2E',
-                    'light-green': '#4F6F52',
-                    cream: '#F5F5DC',
+                edu: {
+                    teal: '#5FB2C0',
+                    coral: '#EE6D52',
+                    yellow: '#F9C067',
+                    deep: '#4A4A4A',
+                    cream: '#FDF5E6',
                 }
             },
             fontFamily: {
+                sans: ['Outfit', 'sans-serif'],
                 outfit: ['Outfit', 'sans-serif'],
                 inter: ['Inter', 'sans-serif'],
             }

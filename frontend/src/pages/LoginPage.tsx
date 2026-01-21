@@ -35,11 +35,7 @@ const LoginPage: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-white dark:bg-slate-950 px-4 relative overflow-hidden transition-colors duration-500">
-            {/* Background elements */}
-            <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] islamic-pattern pointer-events-none" />
-            <div className="absolute top-0 right-0 w-96 h-96 bg-tharqiya-green/10 dark:bg-tharqiya-gold/5 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2" />
-            <div className="absolute bottom-0 left-0 w-96 h-96 bg-tharqiya-gold/10 dark:bg-tharqiya-green/5 blur-3xl rounded-full -translate-x-1/2 translate-y-1/2" />
+        <div className="min-h-screen flex items-center justify-center bg-brand-cream dark:bg-slate-950 px-4 relative overflow-hidden transition-colors duration-500">
 
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -47,19 +43,15 @@ const LoginPage: React.FC = () => {
                 className="max-w-md w-full glass-card p-10 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-2xl relative z-10"
             >
                 <div className="flex flex-col items-center mb-10 text-center">
-                    <div className="w-24 h-24 bg-white rounded-[2rem] flex items-center justify-center mb-6 shadow-2xl rotate-3 overflow-hidden p-2 border border-slate-100">
-                        <img src={logo} alt="Logo" className="w-full h-full object-contain" />
+                    <div className="h-20 w-auto flex items-center justify-center mb-6 p-2">
+                        <img src={logo} alt="Logo" className="h-full w-auto object-contain" />
                     </div>
                     <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
                     >
-                        <h2 className="text-4xl font-black text-slate-900 dark:text-white font-outfit tracking-tighter">Welcome Back</h2>
-                        <div className="flex items-center justify-center gap-2 mt-2">
-                            <Sparkles className="w-4 h-4 text-tharqiya-gold animate-pulse" />
-                            <p className="text-slate-500 dark:text-slate-400 font-medium tracking-wide">Admission Management System</p>
-                        </div>
+                        <h2 className="text-4xl font-black text-brand-deep dark:text-white font-outfit tracking-tighter">Welcome Back</h2>
                     </motion.div>
                 </div>
 
@@ -78,11 +70,11 @@ const LoginPage: React.FC = () => {
                     <div className="space-y-2">
                         <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Email Connection</label>
                         <div className="relative group">
-                            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-tharqiya-green dark:group-focus-within:text-tharqiya-gold transition-colors" />
+                             <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-edu-coral dark:group-focus-within:text-edu-teal transition-colors" />
                             <input
                                 type="email"
                                 required
-                                className="w-full pl-12 pr-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-green/10 dark:focus:ring-tharqiya-gold/10 focus:border-tharqiya-green dark:focus:border-tharqiya-gold transition-all outline-none font-medium dark:text-white"
+                                className="w-full pl-12 pr-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 dark:focus:ring-tharqiya-gold/10 focus:border-tharqiya-orange dark:focus:border-tharqiya-gold transition-all outline-none font-medium dark:text-white"
                                 placeholder="name@scholar.com"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
@@ -93,11 +85,11 @@ const LoginPage: React.FC = () => {
                     <div className="space-y-2">
                         <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Secured Code</label>
                         <div className="relative group">
-                            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-tharqiya-green dark:group-focus-within:text-tharqiya-gold transition-colors" />
+                             <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-edu-coral dark:group-focus-within:text-edu-teal transition-colors" />
                             <input
                                 type="password"
                                 required
-                                className="w-full pl-12 pr-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-green/10 dark:focus:ring-tharqiya-gold/10 focus:border-tharqiya-green dark:focus:border-tharqiya-gold transition-all outline-none font-medium dark:text-white"
+                                className="w-full pl-12 pr-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 dark:focus:ring-tharqiya-gold/10 focus:border-tharqiya-orange dark:focus:border-tharqiya-gold transition-all outline-none font-medium dark:text-white"
                                 placeholder="••••••••"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
@@ -106,7 +98,7 @@ const LoginPage: React.FC = () => {
                     </div>
 
                     <div className="flex justify-end pt-2">
-                        <span className="text-xs font-bold text-tharqiya-green dark:text-tharqiya-gold hover:underline cursor-pointer tracking-wider">Forgot Password?</span>
+                         <span className="text-xs font-bold text-edu-coral dark:text-edu-teal hover:underline cursor-pointer tracking-wider">Forgot Password?</span>
                     </div>
 
                     <motion.button
@@ -128,7 +120,7 @@ const LoginPage: React.FC = () => {
 
                 <div className="mt-12 text-center">
                     <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">
-                        New candidate? <span className="text-tharqiya-green dark:text-tharqiya-gold font-black cursor-pointer hover:underline uppercase tracking-tighter">Initiate Application</span>
+                         New candidate? <span className="text-edu-coral dark:text-edu-teal font-black cursor-pointer hover:underline uppercase tracking-tighter">Initiate Application</span>
                     </p>
                 </div>
             </motion.div>
