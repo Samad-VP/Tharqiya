@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, Download } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import campusBg from '../assets/campus-view.jpg';
 
 const Hero: React.FC = () => {
@@ -46,7 +46,7 @@ const Hero: React.FC = () => {
                             <span className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-black text-edu-coral tracking-tighter leading-none">
                                 Darussalam
                             </span>
-                            <span className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black text-edu-teal tracking-tighter leading-[0.8]">
+                            <span className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black text-white tracking-tighter leading-[0.8]">
                                 Edu Village
                             </span>
                         </h1>
@@ -54,10 +54,10 @@ const Hero: React.FC = () => {
                         <div className="space-y-6 mb-16 border-l-4 border-edu-teal/30 pl-8">
                             <div className="space-y-1">
                                 <h2 className="text-lg sm:text-xl font-black text-white uppercase tracking-tight">
-                                    The Central Campus Of Tharqiya Course
+                                    Darussalam Edu Village
                                 </h2>
                                 <p className="text-xs sm:text-sm font-black text-edu-teal uppercase tracking-widest">
-                                    Under : Darussalam Islamic University (DIU)
+                                    Under : Darussalam Islamic University
                                 </p>
                             </div>
                         </div>
@@ -73,13 +73,15 @@ const Hero: React.FC = () => {
                                     Apply Now <ArrowRight size={20} />
                                 </motion.button>
                             </Link>
-                            <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="btn-glass flex items-center gap-3"
-                            >
-                                <Download size={18} /> Download Brochure
-                            </motion.button>
+                            <Link to="/programme">
+                                <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    className="btn-glass"
+                                >
+                                    Explore Course
+                                </motion.button>
+                            </Link>
                         </div>
 
                         {/* Domain Link */}

@@ -83,7 +83,7 @@ const Footer: React.FC = () => {
                                 </div>
                                 <span className="text-slate-400 font-bold text-sm leading-snug">
                                     Darussalam Tharqiyathul Huffaz, <br />
-                                    Edu Village, Darussalam, <br />
+                                    Edu Village, Muchukunnu, <br />
                                     Kozhikode, Kerala 673322
                                 </span>
                             </li>
@@ -105,7 +105,7 @@ const Footer: React.FC = () => {
 
                 {/* Bottom Bar */}
                 <div className="border-t border-slate-800 pt-10 flex flex-col md:flex-row justify-between items-center gap-8">
-                    <p className="text-slate-500 text-[10px] sm:text-xs font-black font-outfit uppercase tracking-[0.2em] leading-loose text-center md:text-left">
+                    <p className="text-slate-500 text-xs font-bold uppercase tracking-widest leading-loose text-center md:text-left">
                         &copy; {new Date().getFullYear()} Darussalam Edu Village. All rights reserved.
                     </p>
 

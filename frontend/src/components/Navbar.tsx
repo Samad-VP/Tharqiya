@@ -80,10 +80,8 @@ const Navbar: React.FC = () => {
                         {/* Theme Toggle */}
                         <button
                             onClick={toggleTheme}
-                             className={`p-2.5 rounded-full transition-all duration-500 mr-4 shadow-inner ${!scrolled
-                                ? (theme === 'light' 
-                                    ? 'bg-slate-100 text-brand-deep hover:bg-edu-teal hover:text-slate-950 border border-slate-200' 
-                                    : 'bg-white/10 text-white hover:bg-edu-teal hover:text-slate-950 border border-white/20')
+                            className={`p-2.5 rounded-full transition-all duration-500 mr-4 shadow-inner ${!scrolled
+                                ? 'bg-white/10 text-white hover:bg-edu-teal hover:text-slate-950 border border-white/20'
                                 : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-edu-coral hover:text-white dark:hover:bg-edu-teal dark:hover:text-slate-900'
                                 }`}
                             aria-label="Toggle Theme"

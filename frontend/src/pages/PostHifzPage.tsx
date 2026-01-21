@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
 import {
     Hourglass,
     BookOpenCheck,
@@ -13,10 +12,8 @@ import {
     CheckCircle2,
     Sparkles,
     Trophy,
-    GraduationCap,
-    Globe
+    GraduationCap
 } from 'lucide-react';
-import ahsasLogo from '../assets/ahsas-logo.png';
 
 const PostHifzPage: React.FC = () => {
     const syllabusData = [
@@ -60,7 +57,7 @@ const PostHifzPage: React.FC = () => {
             title: "Islamic Astronomy",
             subtitle: "Celestial Exploration",
             desc: "A specialized class led by Prof. Shuaibul Haithami, a distinguished researcher in Islamic astronomy. Students explore celestial wonders, star movements, and decorative lunar calendar deciphering, blending Islamic tradition with scientific exploration.",
-            icon: Globe,
+            icon: Sparkles,
             accent: "from-blue-500 to-indigo-600"
         },
         {
@@ -81,7 +78,7 @@ const PostHifzPage: React.FC = () => {
             title: "AHSAS Union",
             subtitle: "Student Leadership",
             desc: "The Anwarul Huda Students' Association cultivates political awareness through a parliamentary system. It features various ministries including Quranic Studies, Public Relations, and Multilingual Affairs.",
-            logo: ahsasLogo,
+            icon: GraduationCap,
             accent: "from-emerald-500 to-teal-600"
         }
     ];
@@ -96,20 +93,20 @@ const PostHifzPage: React.FC = () => {
     return (
         <div className="bg-brand-cream dark:bg-slate-950 transition-colors duration-500">
             {/* Hero Section */}
-            <section className="relative pt-32 pb-16 md:pt-48 md:pb-40 bg-brand-cream dark:bg-slate-950 transition-colors duration-500 overflow-hidden">
+            <section className="relative pt-32 pb-16 md:pt-48 md:pb-40 bg-slate-950 dark:bg-slate-900 overflow-hidden">
                 <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8 }}
                     >
-                        <span className="inline-block py-1.5 px-4 rounded-full bg-edu-teal/10 dark:bg-edu-teal/20 text-edu-teal text-[10px] sm:text-xs font-black tracking-widest uppercase mb-6 border border-edu-teal/20">
+                        <span className="inline-block py-1 px-3 rounded-full bg-white/10 text-edu-teal text-[10px] sm:text-xs font-black tracking-widest uppercase mb-6 border border-white/20">
                             Integrated Residency
                         </span>
-                        <h1 className="text-4xl sm:text-5xl md:text-7xl font-black text-brand-deep dark:text-white font-outfit mb-6 tracking-tighter uppercase">
+                        <h1 className="text-4xl sm:text-5xl md:text-7xl font-black text-white font-outfit mb-6 tracking-tighter">
                             <span className="text-edu-teal">Tharqiya</span> Course
                         </h1>
-                        <p className="text-base sm:text-xl md:text-2xl text-slate-600 dark:text-white/80 max-w-3xl mx-auto leading-relaxed font-black tracking-tight">
+                        <p className="text-base sm:text-xl md:text-2xl text-white/80 max-w-3xl mx-auto leading-relaxed font-medium">
                             A revolutionary 10-year integrated journey transforming memorizers of the Quran into multifaceted global leaders.
                         </p>
                     </motion.div>
@@ -118,7 +115,7 @@ const PostHifzPage: React.FC = () => {
 
 
             {/* Course Structure - Stunning Redesign */}
-            <section className="py-16 md:py-32 bg-brand-cream dark:bg-slate-950/50">
+            <section className="py-16 md:py-32 bg-slate-50 dark:bg-slate-950/50">
                 <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
                     <div className="text-center mb-16 md:mb-20">
                         <motion.div
@@ -131,7 +128,7 @@ const PostHifzPage: React.FC = () => {
                                 The Roadmap
                             </span>
                         </motion.div>
-                        <h2 className="text-4xl md:text-6xl font-black text-brand-deep dark:text-white font-outfit tracking-tighter uppercase mb-6">
+                        <h2 className="text-3xl md:text-7xl font-black text-brand-deep dark:text-white font-outfit tracking-tighter uppercase mb-6">
                             Course <span className="text-edu-coral">Structure</span>
                         </h2>
                         <p className="text-slate-500 dark:text-slate-400 text-sm sm:text-lg max-w-2xl mx-auto font-medium leading-relaxed">
@@ -214,11 +211,11 @@ const PostHifzPage: React.FC = () => {
 
 
             {/* Syllabus Matrix */}
-            <section className="py-16 md:py-32 bg-brand-cream dark:bg-slate-950">
+            <section className="py-16 md:py-32 bg-slate-950">
                 <div className="max-w-7xl mx-auto px-6 lg:px-8">
                     <div className="mb-12 md:mb-20 text-center lg:text-left">
-                        <h2 className="text-2xl sm:text-5xl font-black text-brand-deep dark:text-white font-outfit tracking-tighter">The Tharqiya Curriculum Matrix</h2>
-                        <p className="text-slate-500 dark:text-slate-400 mt-4 text-xs sm:text-lg max-w-2xl font-medium">A meticulously balanced academic and spiritual journey divided into four transformative phases.</p>
+                        <h2 className="text-2xl sm:text-5xl font-black text-white font-outfit tracking-tighter">The Tharqiya Curriculum Matrix</h2>
+                        <p className="text-slate-400 mt-4 text-xs sm:text-lg max-w-2xl font-medium">A meticulously balanced academic and spiritual journey divided into four transformative phases.</p>
                     </div>
 
                     <div className="space-y-6 sm:space-y-8">
@@ -229,7 +226,7 @@ const PostHifzPage: React.FC = () => {
                                 whileInView={{ opacity: 1, x: 0 }}
                                 viewport={{ once: true }}
                                 whileHover={{ scale: 1.01, x: 10 }}
-                                className="group bg-white/50 dark:bg-white/5 border border-slate-100 dark:border-white/10 p-6 sm:p-10 rounded-2xl sm:rounded-[3rem] hover:bg-white/80 dark:hover:bg-white/10 transition-all duration-500 flex flex-col lg:flex-row gap-6 sm:gap-12 items-start lg:items-center"
+                                className="group bg-white/5 border border-white/10 p-6 sm:p-10 rounded-2xl sm:rounded-[3rem] hover:bg-white/10 transition-all duration-500 flex flex-col lg:flex-row gap-6 sm:gap-12 items-start lg:items-center"
                             >
                                 <div className="w-16 h-16 sm:w-24 sm:h-24 bg-edu-teal text-white rounded-2xl sm:rounded-[2rem] flex items-center justify-center shrink-0 shadow-2xl shadow-edu-teal/20">
                                     <item.icon className="w-8 h-8 sm:w-10 sm:h-10" />
@@ -237,12 +234,12 @@ const PostHifzPage: React.FC = () => {
                                 <div className="flex-grow grid md:grid-cols-2 gap-12">
                                     <div className="relative">
                                         <span className="text-edu-teal font-black uppercase text-[10px] tracking-widest block mb-1">{item.level}</span>
-                                        <h3 className="text-xl sm:text-2xl font-black text-brand-deep dark:text-white mb-3 font-outfit tracking-tight">Islamic Mastery</h3>
-                                        <p className="text-slate-500 dark:text-slate-400 text-base sm:text-lg leading-relaxed font-medium">{item.islamic}</p>
+                                        <h3 className="text-xl sm:text-2xl font-black text-white mb-3 font-outfit tracking-tight">Islamic Mastery</h3>
+                                        <p className="text-slate-400 text-base sm:text-lg leading-relaxed font-medium">{item.islamic}</p>
                                     </div>
-                                    <div className="lg:border-l lg:border-slate-100 dark:lg:border-white/10 lg:pl-12">
-                                        <h3 className="text-xl sm:text-2xl font-black text-brand-deep dark:text-white mb-3 font-outfit tracking-tight">Academic Pursuit</h3>
-                                        <p className="text-slate-500 dark:text-slate-400 text-base sm:text-lg leading-relaxed font-medium">{item.academic}</p>
+                                    <div className="lg:border-l lg:border-white/10 lg:pl-12">
+                                        <h3 className="text-xl sm:text-2xl font-black text-white mb-3 font-outfit tracking-tight">Academic Pursuit</h3>
+                                        <p className="text-slate-400 text-base sm:text-lg leading-relaxed font-medium">{item.academic}</p>
                                     </div>
                                 </div>
                             </motion.div>
@@ -267,7 +264,7 @@ const PostHifzPage: React.FC = () => {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 whileHover={{ y: -10 }}
-                                className="p-6 sm:p-10 bg-white/80 dark:bg-slate-900/40 rounded-2xl sm:rounded-[2.5rem] border border-slate-100 dark:border-slate-800 hover:shadow-2xl transition-all group"
+                                className="p-6 sm:p-10 bg-slate-50 dark:bg-slate-900/40 rounded-2xl sm:rounded-[2.5rem] border border-slate-100 dark:border-slate-800 hover:shadow-2xl transition-all group"
                             >
                                 <div className="w-16 h-16 bg-edu-coral dark:bg-edu-teal text-white dark:text-slate-950 rounded-2xl flex items-center justify-center mb-8 group-hover:rotate-12 transition-transform duration-500">
                                     <session.icon className="w-8 h-8" />
@@ -281,7 +278,7 @@ const PostHifzPage: React.FC = () => {
             </section>
 
             {/* Extra Curricular Section */}
-            <section className="py-24 md:py-32 bg-brand-cream dark:bg-slate-950/50">
+            <section className="py-24 md:py-32 bg-slate-50 dark:bg-slate-900/50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-20">
                         <motion.div
@@ -306,15 +303,11 @@ const PostHifzPage: React.FC = () => {
                                 initial={{ opacity: 0, y: 30 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 transition={{ delay: idx * 0.1 }}
-                                className="group relative bg-white/80 dark:bg-slate-900/40 p-8 rounded-[2rem] border border-slate-100 dark:border-white/5 hover:border-edu-teal/30 transition-all duration-500 overflow-hidden"
+                                className="group relative bg-tharqiya-cream dark:bg-slate-900/40 p-8 rounded-[2rem] border border-slate-100 dark:border-white/5 hover:border-tharqiya-gold/30 transition-all duration-500 overflow-hidden"
                             >
                                 
-                                <div className={`w-14 h-14 rounded-full bg-gradient-to-br ${act.accent} flex items-center justify-center text-white mb-8 group-hover:scale-110 transition-transform overflow-hidden ${act.logo ? 'p-1 bg-white shadow-lg' : ''}`}>
-                                    {act.logo ? (
-                                        <img src={act.logo} alt={act.title} className="w-full h-full object-contain rounded-full" />
-                                    ) : (
-                                        act.icon && <act.icon size={28} />
-                                    )}
+                                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${act.accent} flex items-center justify-center text-white mb-8 group-hover:scale-110 transition-transform`}>
+                                    <act.icon size={28} />
                                 </div>
 
                                 <h3 className="text-xl font-black text-brand-deep dark:text-white mb-2 font-outfit uppercase tracking-tight">
@@ -333,29 +326,19 @@ const PostHifzPage: React.FC = () => {
             </section>
 
             {/* Premium CTA */}
-            <section className="py-24 bg-brand-cream dark:bg-slate-950 relative overflow-hidden transition-colors duration-500 border-t border-slate-100 dark:border-white/5">
+            <section className="py-24 bg-edu-teal dark:bg-edu-teal relative overflow-hidden">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
+                    <h2 className="text-4xl md:text-6xl font-black text-white dark:text-slate-950 mb-8 font-outfit tracking-tighter">Begin Your Transformation</h2>
+                    <p className="text-xl text-white/90 dark:text-slate-900/80 mb-12 max-w-2xl mx-auto font-medium leading-relaxed">
+                        Join the elite ranks of the Tharqiyathul Huffaz and shape the future of spiritual and global leadership.
+                    </p>
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="px-16 py-5 bg-brand-cream dark:bg-slate-950 text-edu-coral dark:text-edu-teal rounded-full font-black text-xl shadow-2xl hover:shadow-white/20 transition-all tracking-widest uppercase"
                     >
-                        <h2 className="text-4xl md:text-6xl font-black text-brand-deep dark:text-white mb-8 font-outfit tracking-tighter uppercase leading-tight">
-                            Begin Your <span className="text-edu-teal">Transformation</span>
-                        </h2>
-                        <p className="text-lg md:text-xl text-slate-600 dark:text-white/80 mb-12 max-w-2xl mx-auto font-medium leading-relaxed">
-                            Join the elite ranks of the Tharqiyathul Huffaz and shape the future of spiritual and global leadership.
-                        </p>
-                        <Link to="/admission">
-                            <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="px-16 py-5 bg-edu-teal text-slate-950 dark:text-slate-950 rounded-full font-black text-xl shadow-2xl shadow-edu-teal/20 transition-all tracking-widest uppercase"
-                            >
-                                Apply for Admission
-                            </motion.button>
-                        </Link>
-                    </motion.div>
+                        Apply for Admission
+                    </motion.button>
                 </div>
             </section>
         </div>

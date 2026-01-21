@@ -18,14 +18,14 @@ const WelcomeSection: React.FC = () => {
                     >
                         <div className="flex items-start gap-4 mb-6 md:mb-8">
                             <div className="w-3 md:w-4 h-10 md:h-20 bg-edu-coral dark:bg-edu-teal rounded-sm shrink-0 mt-1 md:mt-2" />
-                            <h2 className="text-3xl md:text-6xl font-black text-edu-coral font-outfit tracking-tighter uppercase leading-[0.95]">
-                                Welcome to <br /> Darussalam <span className="text-edu-teal">Edu Village</span>
+                            <h2 className="text-3xl md:text-6xl font-black text-edu-teal font-outfit tracking-tighter uppercase leading-[0.95]">
+                                Welcome to <br /> Darussalam <span className="text-edu-coral">Edu Village</span>
                             </h2>
                         </div>
 
                         <div className="space-y-6 text-edu-coral/80 dark:text-edu-teal/80 font-medium leading-relaxed text-base md:text-lg">
                             <p>
-                                Darussalam Edu Village stands as the central campus for the esteemed Tharqiya course offered by Darussalam Islamic University (DIU), catering to individuals who have committed the entire Quran to memory. This comprehensive program provides students with a unique opportunity to pursue secondary to postgraduate education in both Islamic and academic disciplines. Upon successful completion, graduates are bestowed with the prestigious title of 'Tharqawee', symbolizing their dedication to Quranic scholarship and academic excellence.
+                                Darussalam Edu Village stands as the central campus for the esteemed Tharqiya course offered by Darussalam Islamic University, catering to individuals who have committed the entire Quran to memory. This comprehensive program provides students with a unique opportunity to pursue secondary to postgraduate education in both Islamic and academic disciplines. Upon successful completion, graduates are bestowed with the prestigious title of 'Tharqawee', symbolizing their dedication to Quranic scholarship and academic excellence.
                             </p>
                             
                             <p>

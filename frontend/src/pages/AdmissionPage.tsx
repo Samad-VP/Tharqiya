@@ -39,7 +39,7 @@ const AdmissionPage: React.FC = () => {
     });
 
     const campuses = [
-        "Darussalam College of Tharqiyathul Huffaz, Edu Village, Darussalam, Koyilandi",
+        "Darussalam College of Tharqiyathul Huffaz, Edu Village, Muchukunnu, Koyilandi",
         "Shamsul Ulama College of Tharqiyathul Huffaz, Mannarkkad, Palakkad",
         "Umariyya College of Tharqiyathul Huffaz, Athinjal, Kanjangad"
     ];
@@ -59,16 +59,16 @@ const AdmissionPage: React.FC = () => {
     };
 
     return (
-        <div className="bg-brand-cream dark:bg-slate-950 transition-colors duration-500 min-h-screen pb-20">
+        <div className="bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500 min-h-screen pb-20">
             {/* Hero Section */}
-            <section className="relative h-[40vh] md:h-[50vh] flex items-center justify-center overflow-hidden bg-brand-cream dark:bg-slate-950 transition-colors duration-500">
+            <section className="relative h-[40vh] md:h-[50vh] flex items-center justify-center overflow-hidden bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500">
                 <div className="relative z-10 text-center px-6">
                     <motion.h1
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="text-4xl sm:text-5xl md:text-7xl font-black text-brand-deep dark:text-white font-outfit tracking-tighter uppercase"
+                        className="text-4xl sm:text-5xl md:text-7xl font-black text-tharqiya-deep dark:text-white font-outfit tracking-tighter uppercase"
                     >
-                        Admission <span className="text-edu-teal">2026-27</span>
+                        Admission <span className="text-tharqiya-gold">2026-27</span>
                     </motion.h1>
                     <p className="text-base sm:text-xl text-tharqiya-deep/80 dark:text-white/80 mt-4 font-medium max-w-2xl mx-auto">
                         Join the elite circle of Tharqawi scholars. Applications are now open for the upcoming academic cycle.
@@ -84,8 +84,8 @@ const AdmissionPage: React.FC = () => {
                         whileInView={{ opacity: 1, x: 0 }}
                         className="glass-card p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-800"
                     >
-                        <h3 className="text-2xl font-black text-brand-deep dark:text-white mb-6 font-outfit tracking-tight flex items-center gap-3">
-                            <ShieldCheck className="text-edu-coral dark:text-edu-teal" />
+                        <h3 className="text-2xl font-black text-tharqiya-deep dark:text-white mb-6 font-outfit tracking-tight flex items-center gap-3">
+                            <ShieldCheck className="text-tharqiya-orange dark:text-tharqiya-gold" />
                             Eligibility
                         </h3>
                         <ul className="space-y-4">
@@ -95,8 +95,8 @@ const AdmissionPage: React.FC = () => {
                                 "Age between 13 and 15 years",
                                 "Commitment to 10-year integrated study"
                             ].map((item, i) => (
-                             <li key={i} className="flex gap-3 text-slate-600 dark:text-slate-400 font-medium text-sm">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-edu-teal mt-1.5 shrink-0" />
+                                <li key={i} className="flex gap-3 text-slate-600 dark:text-slate-400 font-medium text-sm">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-tharqiya-gold mt-1.5 shrink-0" />
                                     {item}
                                 </li>
                             ))}
@@ -104,23 +104,23 @@ const AdmissionPage: React.FC = () => {
                     </motion.div>
 
                     <div className="glass-card p-6 sm:p-10 rounded-[2rem] sm:rounded-[3rem] relative overflow-hidden">
-                        <h3 className="text-xl sm:text-2xl font-black text-brand-deep dark:text-white mb-4 sm:mb-6 font-outfit tracking-tight relative z-10">Application Guide</h3>
+                        <h3 className="text-xl sm:text-2xl font-black text-tharqiya-deep dark:text-white mb-4 sm:mb-6 font-outfit tracking-tight relative z-10">Application Guide</h3>
                         <ul className="space-y-3 sm:space-y-4 text-slate-600 dark:text-white/80 text-xs sm:text-sm relative z-10 mb-6 sm:mb-8 font-medium">
                             <li className="flex gap-3">
-                                <div className="w-5 h-5 bg-edu-teal rounded-full flex items-center justify-center shrink-0 mt-0.5">
-                                    <span className="text-slate-950 font-black text-[10px]">1</span>
+                                <div className="w-5 h-5 bg-tharqiya-gold rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                                    <span className="text-tharqiya-deep font-black text-[10px]">1</span>
                                 </div>
                                 Fill in candidate and guardian details.
                             </li>
                             <li className="flex gap-3">
-                                <div className="w-5 h-5 bg-edu-teal rounded-full flex items-center justify-center shrink-0 mt-0.5">
-                                    <span className="text-slate-950 font-black text-[10px]">2</span>
+                                <div className="w-5 h-5 bg-tharqiya-gold rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                                    <span className="text-tharqiya-deep font-black text-[10px]">2</span>
                                 </div>
                                 Select your preferred institutions.
                             </li>
                             <li className="flex gap-3">
-                                <div className="w-5 h-5 bg-edu-teal rounded-full flex items-center justify-center shrink-0 mt-0.5">
-                                    <span className="text-slate-950 font-black text-[10px]">3</span>
+                                <div className="w-5 h-5 bg-tharqiya-gold rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                                    <span className="text-tharqiya-deep font-black text-[10px]">3</span>
                                 </div>
                                 Upload required documents.
                             </li>
@@ -145,13 +145,13 @@ const AdmissionPage: React.FC = () => {
                         <div className="mb-10">
                             <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
                                 <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-outfit tracking-tighter">Registration Form</h2>
-                                <span className="px-4 py-1.5 bg-edu-teal/10 text-edu-teal rounded-full text-[10px] font-black uppercase">Step {step} of 3</span>
+                                <span className="px-4 py-1.5 bg-tharqiya-gold/10 text-tharqiya-gold rounded-full text-[10px] font-black uppercase">Step {step} of 3</span>
                             </div>
                             <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                                 <motion.div
                                     initial={{ width: "33%" }}
                                     animate={{ width: step === 1 ? "33%" : step === 2 ? "66%" : "100%" }}
-                                    className="h-full bg-edu-coral dark:bg-edu-teal transition-all duration-500"
+                                    className="h-full bg-tharqiya-orange dark:bg-tharqiya-gold transition-all duration-500"
                                 />
                             </div>
                         </div>
@@ -266,14 +266,14 @@ const AdmissionPage: React.FC = () => {
                                         className="space-y-8"
                                     >
                                         <div className="p-6 bg-slate-50 dark:bg-slate-900/50 rounded-3xl border border-slate-100 dark:border-slate-800">
-                                            <h4 className="text-sm font-black text-edu-coral dark:text-edu-teal uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
+                                            <h4 className="text-sm font-black text-tharqiya-orange dark:text-tharqiya-gold uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
                                                 <Flag size={18} /> Choice of Institutions
                                             </h4>
 
                                             <div className="space-y-6">
                                                 <div className="space-y-2">
                                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">First Option</label>
-                                                    <select name="firstOption" required value={formData.firstOption} onChange={handleInputChange} className="w-full px-6 py-4 bg-brand-cream dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-edu-coral/10 outline-none font-bold text-sm dark:text-white">
+                                                    <select name="firstOption" required value={formData.firstOption} onChange={handleInputChange} className="w-full px-6 py-4 bg-tharqiya-cream dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-bold text-sm dark:text-white">
                                                         <option value="">Select Campus</option>
                                                         {campuses.map(c => <option key={c} value={c}>{c}</option>)}
                                                     </select>
@@ -281,7 +281,7 @@ const AdmissionPage: React.FC = () => {
 
                                                 <div className="space-y-2">
                                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Second Option</label>
-                                                    <select name="secondOption" required value={formData.secondOption} onChange={handleInputChange} className="w-full px-6 py-4 bg-brand-cream dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-edu-coral/10 outline-none font-bold text-sm dark:text-white">
+                                                    <select name="secondOption" required value={formData.secondOption} onChange={handleInputChange} className="w-full px-6 py-4 bg-tharqiya-cream dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-bold text-sm dark:text-white">
                                                         <option value="">Select Campus</option>
                                                         {campuses.map(c => <option key={c} value={c}>{c}</option>)}
                                                     </select>
@@ -289,7 +289,7 @@ const AdmissionPage: React.FC = () => {
 
                                                 <div className="space-y-2">
                                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Third Option</label>
-                                                    <select name="thirdOption" required value={formData.thirdOption} onChange={handleInputChange} className="w-full px-6 py-4 bg-brand-cream dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-edu-coral/10 outline-none font-bold text-sm dark:text-white">
+                                                    <select name="thirdOption" required value={formData.thirdOption} onChange={handleInputChange} className="w-full px-6 py-4 bg-tharqiya-cream dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-bold text-sm dark:text-white">
                                                         <option value="">Select Campus</option>
                                                         {campuses.map(c => <option key={c} value={c}>{c}</option>)}
                                                     </select>
