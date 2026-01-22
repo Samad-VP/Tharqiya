@@ -39,7 +39,7 @@ const AdmissionPage: React.FC = () => {
     });
 
     const campuses = [
-        "Darussalam College of Tharqiyathul Huffaz, Edu Village, Muchukunnu, Koyilandi",
+        "Darussalam College of Tharqiyathul Huffaz, Darussalam Edu Village, Koyilandi",
         "Shamsul Ulama College of Tharqiyathul Huffaz, Mannarkkad, Palakkad",
         "Umariyya College of Tharqiyathul Huffaz, Athinjal, Kanjangad"
     ];
@@ -61,16 +61,16 @@ const AdmissionPage: React.FC = () => {
     return (
         <div className="bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500 min-h-screen pb-20">
             {/* Hero Section */}
-            <section className="relative h-[40vh] md:h-[50vh] flex items-center justify-center overflow-hidden bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500">
+            <section className="relative h-[30vh] md:h-[50vh] flex items-center justify-center overflow-hidden bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500 pt-20 sm:pt-0">
                 <div className="relative z-10 text-center px-6">
                     <motion.h1
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="text-4xl sm:text-5xl md:text-7xl font-black text-tharqiya-deep dark:text-white font-outfit tracking-tighter uppercase"
+                        className="text-3xl sm:text-5xl md:text-7xl font-black text-tharqiya-deep dark:text-white font-outfit tracking-tighter uppercase"
                     >
                         Admission <span className="text-tharqiya-gold">2026-27</span>
                     </motion.h1>
-                    <p className="text-base sm:text-xl text-tharqiya-deep/80 dark:text-white/80 mt-4 font-medium max-w-2xl mx-auto">
+                    <p className="text-sm sm:text-xl text-tharqiya-deep/80 dark:text-white/80 mt-2 sm:mt-4 font-medium max-w-2xl mx-auto">
                         Join the elite circle of Tharqawi scholars. Applications are now open for the upcoming academic cycle.
                     </p>
                 </div>
@@ -78,11 +78,11 @@ const AdmissionPage: React.FC = () => {
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 grid lg:grid-cols-3 gap-12">
                 {/* Info Sidebar */}
-                <div className="lg:col-span-1 space-y-8">
+                <div className="lg:col-span-1 space-y-8 order-2 lg:order-1">
                     <motion.div
                         initial={{ opacity: 0, x: -30 }}
                         whileInView={{ opacity: 1, x: 0 }}
-                        className="glass-card p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-800"
+                        className="glass-card p-6 sm:p-8 rounded-[1.5rem] sm:rounded-[2.5rem] border border-slate-100 dark:border-slate-800"
                     >
                         <h3 className="text-2xl font-black text-tharqiya-deep dark:text-white mb-6 font-outfit tracking-tight flex items-center gap-3">
                             <ShieldCheck className="text-tharqiya-orange dark:text-tharqiya-gold" />
@@ -135,11 +135,11 @@ const AdmissionPage: React.FC = () => {
                 </div>
 
                 {/* Admission Form */}
-                <div className="lg:col-span-2">
+                <div className="lg:col-span-2 order-1 lg:order-2">
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="glass-card p-6 sm:p-12 rounded-[2rem] sm:rounded-[3rem] border border-slate-100 dark:border-slate-800 shadow-2xl relative overflow-hidden"
+                        className="glass-card p-6 sm:p-12 rounded-[1.5rem] sm:rounded-[3rem] border border-slate-100 dark:border-slate-800 shadow-xl sm:shadow-2xl relative overflow-hidden"
                     >
 
                         <div className="mb-10">
@@ -209,8 +209,8 @@ const AdmissionPage: React.FC = () => {
                                             </div>
                                         </div>
 
-                                        <div className="flex justify-end pt-6">
-                                            <button type="button" onClick={nextStep} className="btn-primary flex items-center gap-2">
+                                        <div className="flex flex-col sm:flex-row justify-end gap-4 pt-6">
+                                            <button type="button" onClick={nextStep} className="btn-primary flex items-center justify-center gap-2 w-full sm:w-auto">
                                                 Academic Details <ArrowRight size={18} />
                                             </button>
                                         </div>
@@ -246,11 +246,11 @@ const AdmissionPage: React.FC = () => {
                                             <textarea name="kitabsStudied" value={formData.kitabsStudied} onChange={handleInputChange} rows={3} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="Optional" />
                                         </div>
 
-                                        <div className="flex justify-between pt-6">
-                                            <button type="button" onClick={prevStep} className="px-8 py-3 rounded-full text-slate-600 dark:text-slate-400 font-bold flex items-center gap-2">
+                                        <div className="flex flex-col sm:flex-row justify-between gap-4 pt-6">
+                                            <button type="button" onClick={prevStep} className="px-8 py-3 rounded-full text-slate-600 dark:text-slate-400 font-bold flex items-center justify-center gap-2 order-2 sm:order-1">
                                                 <ArrowLeft size={18} /> Back
                                             </button>
-                                            <button type="button" onClick={nextStep} className="btn-primary flex items-center gap-2">
+                                            <button type="button" onClick={nextStep} className="btn-primary flex items-center justify-center gap-2 order-1 sm:order-2">
                                                 Campus Selection <ArrowRight size={18} />
                                             </button>
                                         </div>

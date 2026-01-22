@@ -6,7 +6,7 @@ const AboutPage: React.FC = () => {
     return (
         <div className="bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500">
             {/* Hero Section */}
-            <section className="relative h-[60vh] md:h-[70vh] flex items-center justify-center overflow-hidden bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500">
+            <section className="relative h-[40vh] md:h-[70vh] flex items-center justify-center overflow-hidden bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500 pt-16 md:pt-0">
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-tharqiya-cream dark:to-slate-950"></div>
 
                 <div className="relative z-10 text-center px-4 max-w-4xl">
@@ -15,11 +15,11 @@ const AboutPage: React.FC = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8 }}
                     >
-                        <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-7xl font-black text-tharqiya-deep dark:text-white mb-6 font-outfit tracking-tighter">
+                        <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-7xl font-black text-tharqiya-deep dark:text-white mb-4 sm:mb-6 font-outfit tracking-tighter">
                             About <span className="text-tharqiya-gold">Tharqiya</span>
                         </h1>
-                        <p className="text-lg sm:text-xl md:text-2xl text-tharqiya-deep/80 dark:text-white/90 max-w-2xl mx-auto font-medium leading-relaxed">
-                            Nurturing excellence in Quranic memory and modern academic scholarship at Muchukunnu Edu Village.
+                        <p className="text-sm sm:text-lg md:text-2xl text-tharqiya-deep/80 dark:text-white/90 max-w-2xl mx-auto font-medium leading-relaxed">
+                            Nurturing excellence in Quranic memory and modern academic scholarship at Darussalam Edu Village.
                         </p>
                     </motion.div>
                 </div>
@@ -44,7 +44,7 @@ const AboutPage: React.FC = () => {
                             </h2>
                             <div className="space-y-6 text-lg text-tharqiya-deep/80 dark:text-slate-400 leading-relaxed font-medium">
                                 <p>
-                                    Darussalam Tharqiyathul Huffaz is a flagship institution under the prestigious **Jamia Darussalam Al-Islamiyya (Nandi)**. Nestled in the serene **Muchukunnu Edu Village**, our campus provides a unique sanctuary where spiritual depth meets intellectual vigor.
+                                    Darussalam Tharqiyathul Huffaz is a flagship institution under the prestigious Darussalam Islamic University. Nestled in the serene Darussalam Edu Village, our campus provides a unique sanctuary where spiritual depth meets intellectual vigor.
                                 </p>
                                 <p>
                                     As Kerala's premier Post-Hifz destination, Tharqiya empowers Huffaz to pursue world-class education without compromising their sacred identity.
@@ -101,13 +101,13 @@ const AboutPage: React.FC = () => {
                             <motion.div
                                 key={idx}
                                 whileHover={{ y: -15 }}
-                                className="bg-tharqiya-cream dark:bg-slate-900 p-8 sm:p-12 rounded-[2rem] sm:rounded-[2.5rem] shadow-xl dark:shadow-2xl border border-slate-100 dark:border-slate-800 transition-all duration-500"
+                                className="bg-tharqiya-cream dark:bg-slate-900 p-6 sm:p-12 rounded-[1.5rem] sm:rounded-[2.5rem] shadow-xl dark:shadow-2xl border border-slate-100 dark:border-slate-800 transition-all duration-500"
                             >
-                                <div className={`w-16 h-16 sm:w-20 sm:h-20 ${item.color}/10 rounded-2xl sm:rounded-3xl flex items-center justify-center mb-6 sm:mb-8 ${item.tone}`}>
-                                    <item.icon className="w-8 h-8 sm:w-10 sm:h-10" />
+                                <div className={`w-14 h-14 sm:w-20 sm:h-20 ${item.color}/10 rounded-2xl sm:rounded-3xl flex items-center justify-center mb-6 sm:mb-8 ${item.tone}`}>
+                                    <item.icon className="w-6 h-6 sm:w-10 sm:h-10" />
                                 </div>
-                                <h3 className="text-2xl sm:text-3xl font-black text-tharqiya-deep dark:text-white mb-4 sm:mb-6 font-outfit tracking-tight">{item.title}</h3>
-                                <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
+                                <h3 className="text-xl sm:text-3xl font-black text-tharqiya-deep dark:text-white mb-3 sm:mb-6 font-outfit tracking-tight">{item.title}</h3>
+                                <p className="text-sm sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
                                     {item.desc}
                                 </p>
                             </motion.div>
@@ -132,37 +132,36 @@ const AboutPage: React.FC = () => {
                             { icon: Building2, title: "Residential Excellence", desc: "Fully residential programme with state-of-the-art boarding and discipline-focused life." },
                             { icon: Languages, title: "Language Proficiency", desc: "Intensive training in Arabic, English, and Malayalam to master communication." },
                             { icon: Trophy, title: "Prestigious Title", desc: "Graduation with the title 'Tharqawi Darimi', a mark of distinction in the scholarly world." },
-                            { icon: Heart, title: "Spiritual Environment", desc: "Located in the serene Muchukunnu village, ideal for focused Quranic revision and study." }
+                            { icon: Heart, title: "Spiritual Environment", desc: "Located in the serene Darussalam Edu Village, ideal for focused Quranic revision and study." }
                         ].map((feature, idx) => (
-                            <motion.div
+                             <motion.div
                                 key={idx}
                                 whileHover={{ scale: 1.02 }}
-                                className="p-8 sm:p-10 rounded-2xl sm:rounded-3xl bg-slate-50 dark:bg-slate-900/50 border border-transparent hover:border-tharqiya-orange/20 dark:hover:border-tharqiya-gold/20 transition-all group"
+                                className="p-6 sm:p-10 rounded-[1.5rem] sm:rounded-3xl bg-slate-50 dark:bg-slate-900/50 border border-transparent hover:border-tharqiya-orange/20 dark:hover:border-tharqiya-gold/20 transition-all group"
                             >
-                                <div className="text-tharqiya-orange dark:text-tharqiya-gold mb-6 sm:mb-8 group-hover:scale-110 transition-transform duration-500">
-                                    <feature.icon className="w-8 h-8 sm:w-10 sm:h-10" strokeWidth={1.5} />
+                                <div className="text-tharqiya-orange dark:text-tharqiya-gold mb-4 sm:mb-8 group-hover:scale-110 transition-transform duration-500">
+                                    <feature.icon className="w-7 h-7 sm:w-10 sm:h-10" strokeWidth={1.5} />
                                 </div>
-                                <h4 className="text-xl sm:text-2xl font-bold text-tharqiya-deep dark:text-white mb-3 sm:mb-4 font-outfit tracking-tight">{feature.title}</h4>
-                                <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed font-medium">{feature.desc}</p>
+                                <h4 className="text-lg sm:text-2xl font-bold text-tharqiya-deep dark:text-white mb-2 sm:mb-4 font-outfit tracking-tight">{feature.title}</h4>
+                                <p className="text-xs sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed font-medium">{feature.desc}</p>
                             </motion.div>
                         ))}
                     </div>
                 </div>
             </section>
 
-            {/* CTA / Village Section */}
-            <section className="py-24 md:py-32 bg-tharqiya-orange dark:bg-tharqiya-deep relative overflow-hidden">
+             {/* CTA / Village Section */}
+            <section className="py-16 sm:py-24 md:py-32 bg-tharqiya-orange dark:bg-tharqiya-deep relative overflow-hidden">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div className="max-w-4xl mx-auto text-center">
-                        <Sparkles className="w-12 h-12 text-tharqiya-gold mx-auto mb-8 animate-pulse" />
-                        <h2 className="text-4xl md:text-6xl font-black text-white mb-8 font-outfit tracking-tighter">Muchukunnu Edu Village</h2>
-                        <p className="text-xl md:text-2xl text-white/80 leading-relaxed mb-12 font-medium">
-                            Located in a tranquil sanctuary, Muchukunnu allows students to escape urban static and focus entirely on their spiritual and academic evolution.
+                        <h2 className="text-3xl md:text-6xl font-black text-slate-950 dark:text-white mb-6 sm:mb-8 font-outfit tracking-tighter">Darussalam Edu Village</h2>
+                        <p className="text-lg md:text-2xl text-slate-900 dark:text-white/80 leading-relaxed mb-8 sm:mb-12 font-medium">
+                            Located in a tranquil sanctuary, Darussalam Edu Village allows students to escape urban static and focus entirely on their spiritual and academic evolution.
                         </p>
                         <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            className="btn-secondary px-12 py-5 text-xl font-black tracking-widest"
+                            className="btn-secondary px-8 sm:px-12 py-4 sm:py-5 text-base sm:text-xl font-black tracking-widest"
                         >
                             Plan a Visit
                         </motion.button>

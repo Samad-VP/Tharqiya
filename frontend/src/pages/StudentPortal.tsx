@@ -157,7 +157,7 @@ const StudentPortal: React.FC = () => {
                                 <h3 className={`text-3xl font-black font-outfit tracking-tighter ${statusStyle?.color}`}>{appData.status}</h3>
                                 <div className="mt-6 p-6 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-100 dark:border-slate-800">
                                     <p className="text-sm font-medium text-slate-600 dark:text-slate-300 leading-relaxed">
-                                        {appData.status === 'PENDING' ? 'Your sacred application is currently undergoing scholarly review at Muchukunnu Village.' :
+                                        {appData.status === 'PENDING' ? 'Your sacred application is currently undergoing scholarly review at Darussalam Edu Village.' :
                                             appData.status === 'INTERVIEW_SCHEDULED' ? 'You have been selected for the evaluation round. Please monitor your digital channels.' :
                                                 'Final evolutionary phase completed. Welcome to Tharqiya.'}
                                     </p>
