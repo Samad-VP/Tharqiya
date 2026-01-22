@@ -30,19 +30,22 @@ const Navbar: React.FC = () => {
         { name: 'Home', path: '/' },
         { name: 'About', path: '/about' },
         { name: 'Tharqiya Course', path: '/programme' },
+        { name: 'Faculty', path: '/faculty' },
+        { name: 'Alumni', path: '/alumni' },
         { name: 'Campus Facilities', path: '/facilities' },
         { name: 'Admission', path: '/admission' },
     ];
 
     return (
-        <nav className={`fixed w-full z-50 transition-all duration-500 ${scrolled
+        <>
+            <nav className={`fixed w-full transition-all duration-500 ${isOpen ? 'z-[9999]' : 'z-50'} ${scrolled
             ? 'bg-brand-cream/80 dark:bg-slate-950/80 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 py-3 shadow-lg'
             : 'bg-transparent py-5'
             }`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center">
                     {/* Logo */}
-                    <Link to="/" className="flex items-center gap-3 group">
+                    <Link to="/" className={`flex items-center gap-3 group transition-opacity duration-300 ${isOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
                         <div className="relative">
                             <div className="h-10 w-auto flex items-center justify-center transition-transform group-hover:scale-110 duration-500">
                                 <img src={logo} alt="Darussalam Logo Icon" className="h-full w-auto object-contain" />
@@ -96,7 +99,7 @@ const Navbar: React.FC = () => {
                     <div className="md:hidden flex items-center gap-4">
                         <button
                             onClick={toggleTheme}
-                            className={`p-2 rounded-full transition-all ${!scrolled
+                            className={`p-2 rounded-full transition-all ${isOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'} ${!scrolled
                                 ? (theme === 'light' ? 'bg-slate-100 text-slate-600 border border-slate-200' : 'bg-white/10 text-white border border-white/10')
                                 : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400'
                                 }`}
@@ -105,7 +108,7 @@ const Navbar: React.FC = () => {
                         </button>
                         <button
                             onClick={() => setIsOpen(!isOpen)}
-                            className={`p-2.5 rounded-xl transition-all duration-300 active:scale-90 ${!scrolled
+                            className={`p-2.5 rounded-xl transition-all duration-300 active:scale-90 ${isOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'} ${!scrolled
                                 ? (theme === 'light' ? 'bg-edu-coral/10 text-edu-coral border border-edu-coral/20' : 'bg-white/10 text-white border border-white/20')
                                 : 'bg-slate-100 dark:bg-slate-900 text-slate-900 dark:text-white'
                                 }`}
@@ -137,19 +140,21 @@ const Navbar: React.FC = () => {
                 </div>
             </div>
 
-            {/* Mobile Menu Overlay */}
+            </nav>
+
+            {/* Mobile Menu Overlay moved outside nav to prevent containing block clipping */}
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        className="fixed inset-0 z-[100] md:hidden bg-brand-cream dark:bg-slate-950 backdrop-blur-3xl flex flex-col pt-32 px-10 pb-20 shadow-2xl"
+                        className="fixed inset-0 z-[100] md:hidden bg-brand-cream/100 dark:bg-slate-950/100 backdrop-blur-3xl flex flex-col pt-24 sm:pt-32 px-6 sm:px-10 pb-10 sm:pb-20 shadow-2xl overflow-y-auto"
                     >
-                        <div className="absolute top-1/4 -right-1/4 w-80 h-80 bg-edu-teal/20 blur-[120px] rounded-full" />
+                        <div className="absolute top-1/4 -right-1/4 w-80 h-80 bg-edu-teal/20 blur-[120px] rounded-full pointer-events-none" />
 
-                        <div className="relative z-10 flex flex-col h-full">
-                            <div className="space-y-8">
+                        <div className="relative z-10 flex flex-col min-h-full">
+                            <div className="space-y-4 sm:space-y-8">
                                 {navLinks.map((link, i) => (
                                     <motion.div
                                         key={link.path}
@@ -160,10 +165,10 @@ const Navbar: React.FC = () => {
                                         <Link
                                             to={link.path}
                                             onClick={() => setIsOpen(false)}
-                                            className="group flex items-center justify-between"
+                                            className="group flex items-center justify-between py-2"
                                         >
-                                            <span className={`text-2xl sm:text-3xl font-black font-outfit tracking-tighter transition-colors ${location.pathname === link.path 
-                                                ? 'text-edu-coral dark:text-edu-teal' 
+                                            <span className={`text-xl sm:text-3xl font-black font-outfit tracking-tighter transition-colors ${location.pathname === link.path 
+                                                ? 'text-edu-teal dark:text-edu-teal' 
                                                 : 'text-brand-deep dark:text-white'
                                                 }`}>
                                                 {link.name}
@@ -171,7 +176,7 @@ const Navbar: React.FC = () => {
                                             <motion.div
                                                 animate={{ x: location.pathname === link.path ? 0 : -20, opacity: location.pathname === link.path ? 1 : 0 }}
                                             >
-                                                <ArrowRight className="w-6 h-6 sm:w-8 sm:h-8 text-edu-teal" />
+                                                <ArrowRight className="w-5 h-5 sm:w-8 sm:h-8 text-edu-teal" />
                                             </motion.div>
                                         </Link>
                                     </motion.div>
@@ -182,18 +187,18 @@ const Navbar: React.FC = () => {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.5 }}
-                                className="mt-auto"
+                                className="mt-8 sm:mt-auto"
                             >
                                 <Link to="/admission" onClick={() => setIsOpen(false)}>
-                                    <button className="w-full py-4 sm:py-6 bg-edu-teal text-slate-950 rounded-2xl sm:rounded-3xl font-black text-lg sm:text-xl shadow-2xl shadow-edu-teal/20 active:scale-95 transition-transform flex items-center justify-center gap-3">
+                                    <button className="w-full py-4 sm:py-6 bg-edu-teal text-slate-950 rounded-2xl sm:rounded-3xl font-black text-base sm:text-xl shadow-2xl shadow-edu-teal/20 active:scale-95 transition-transform flex items-center justify-center gap-3">
                                         Apply for Admission <ArrowRight size={18} />
                                     </button>
                                 </Link>
 
-                                <div className="mt-8 pt-8 border-t border-slate-100 dark:border-white/10 flex justify-center gap-8">
-                                    <button onClick={toggleTheme} className="text-slate-500 dark:text-white/60 hover:text-edu-coral dark:hover:text-edu-teal font-black uppercase tracking-widest text-[10px] sm:text-xs flex items-center gap-2">
+                                <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-slate-100 dark:border-white/10 flex justify-center gap-6 sm:gap-8">
+                                    <button onClick={toggleTheme} className="text-slate-500 dark:text-white/60 hover:text-edu-coral dark:hover:text-edu-teal font-black uppercase tracking-widest text-[8px] sm:text-xs flex items-center gap-2">
                                         {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
-                                        Switch Appearance
+                                        Appearance
                                     </button>
                                 </div>
                             </motion.div>
@@ -202,14 +207,14 @@ const Navbar: React.FC = () => {
                         {/* Close button inside overlay */}
                         <button
                             onClick={() => setIsOpen(false)}
-                            className="absolute top-6 right-6 w-12 h-12 sm:w-14 sm:h-14 bg-slate-100 dark:bg-white/10 rounded-full flex items-center justify-center text-slate-900 dark:text-white border border-slate-200 dark:border-white/20 active:scale-90 transition-transform"
+                            className="absolute top-4 right-4 sm:top-6 sm:right-6 w-10 h-10 sm:w-14 sm:h-14 bg-slate-100 dark:bg-white/10 rounded-full flex items-center justify-center text-slate-900 dark:text-white border border-slate-200 dark:border-white/20 active:scale-90 transition-transform"
                         >
                             <X size={24} />
                         </button>
                     </motion.div>
                 )}
             </AnimatePresence>
-        </nav>
+        </>
     );
 };
 

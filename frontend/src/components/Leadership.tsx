@@ -38,22 +38,22 @@ const leaders: Leader[] = [
 
 const Leadership: React.FC = () => {
     return (
-        <section className="py-24 bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500 overflow-hidden">
+        <section className="py-12 sm:py-24 bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500 overflow-hidden">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="text-center mb-20 relative">
+                <div className="text-center mb-12 sm:mb-20 relative">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                     >
-                        <h2 className="text-4xl md:text-5xl font-black text-gold-orange font-outfit tracking-tighter mb-4">
+                        <h2 className="text-3xl sm:text-5xl font-black text-gold-orange font-outfit tracking-tighter mb-4">
                             Our Leadership
                         </h2>
-                        <div className="w-24 h-1.5 bg-tharqiya-orange dark:bg-tharqiya-gold mx-auto rounded-full" />
+                        <div className="w-16 sm:w-24 h-1.5 bg-tharqiya-orange dark:bg-tharqiya-gold mx-auto rounded-full" />
                     </motion.div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-8 md:gap-12">
                     {leaders.map((leader, idx) => (
                         <motion.div
                             key={idx}
@@ -69,20 +69,20 @@ const Leadership: React.FC = () => {
                             </span>
 
                             {/* Portrait Container */}
-                            <div className="relative group mb-6 md:mb-8 w-full max-w-[200px] sm:max-w-[240px] aspect-[4/5]">
+                            <div className="relative group mb-4 sm:mb-8 w-full max-w-[160px] sm:max-w-[240px] aspect-[4/5]">
                                 
                                 {/* Main Placeholder Container */}
-                                <div className="absolute inset-0 bg-slate-100 dark:bg-slate-900/50 rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden shadow-2xl transition-transform group-hover:-translate-y-2 group-hover:-translate-x-1 duration-500 border-2 sm:border-4 border-white dark:border-slate-800 flex items-center justify-center">
-                                    <User className="w-16 h-16 sm:w-24 sm:h-24 text-slate-300 dark:text-slate-700" />
+                                <div className="absolute inset-0 bg-slate-100 dark:bg-slate-900/50 rounded-[1.5rem] sm:rounded-[2.5rem] overflow-hidden shadow-xl sm:shadow-2xl transition-transform group-hover:-translate-y-2 group-hover:-translate-x-1 duration-500 border-2 sm:border-4 border-white dark:border-slate-800 flex items-center justify-center">
+                                    <User className="w-12 h-12 sm:w-24 sm:h-24 text-slate-300 dark:text-slate-700" />
                                 </div>
                             </div>
 
                             {/* Names */}
                             <div className="text-center space-y-1">
-                                <p className="text-xl font-black text-tharqiya-gold font-outfit leading-none mb-1">
+                                <p className="text-lg sm:text-xl font-black text-tharqiya-gold font-outfit leading-none mb-1">
                                     {leader.nameAr}
                                 </p>
-                                <p className="text-xs md:text-sm font-black text-tharqiya-orange/70 dark:text-tharqiya-gold/70 tracking-wider uppercase">
+                                <p className="text-[10px] sm:text-sm font-black text-tharqiya-orange/70 dark:text-tharqiya-gold/70 tracking-wider uppercase">
                                     {leader.nameEn}
                                 </p>
                             </div>
