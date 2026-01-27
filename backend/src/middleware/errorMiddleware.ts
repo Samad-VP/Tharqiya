@@ -41,9 +41,12 @@ export const globalErrorHandler = (err: any, req: Request, res: Response, next: 
             });
         } else {
             console.error('ERROR 💥', err);
+            // DEBUG: Temporarily exposing error details in production to solve the 500 error
             res.status(500).json({
                 status: 'error',
-                message: 'Something went very wrong!'
+                message: err.message || 'Something went very wrong!',
+                error: err,
+                stack: err.stack
             });
         }
     }
