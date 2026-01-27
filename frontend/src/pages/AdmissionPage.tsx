@@ -15,9 +15,13 @@ import {
     Send,
     Building2,
     AlertCircle,
-    ShieldCheck
+    ShieldCheck,
+    Mail
 } from 'lucide-react';
-import campusImage from '../assets/campus-view.jpg';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+import logo from '../assets/logo.png';
+import FileUploader from '../components/common/FileUploader';
 
 const AdmissionPage: React.FC = () => {
     const [step, setStep] = useState(1);
@@ -25,17 +29,21 @@ const AdmissionPage: React.FC = () => {
         name: '',
         place: '',
         district: '',
+        address: '',
         parentName: '',
+        motherName: '',
         dob: '',
         phone: '',
         whatsapp: '',
-        hifzInstitution: '',
+        email: '',
+        hifzCenter: '',
         dawrasCount: '',
         schoolEducation: '',
         kitabsStudied: '',
         firstOption: '',
         secondOption: '',
-        thirdOption: ''
+        thirdOption: '',
+        documents: {} as Record<string, string>
     });
 
     const campuses = [
@@ -52,10 +60,23 @@ const AdmissionPage: React.FC = () => {
     const nextStep = () => setStep(prev => prev + 1);
     const prevStep = () => setStep(prev => prev - 1);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [successData, setSuccessData] = useState<{ applicationNo: string; username: string } | null>(null);
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("Form Submitted:", formData);
-        alert("Application submitted successfully! Our committee will contact you soon.");
+        setIsSubmitting(true);
+        try {
+            const response = await axios.post('/api/admissions/public/apply', formData);
+            setSuccessData(response.data);
+            toast.success("Application submitted successfully!");
+            setStep(4); // Move to a success step
+        } catch (err: any) {
+            console.error("Form Submission Error:", err);
+            toast.error(err.response?.data?.message || "Failed to submit application. Please try again.");
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -145,12 +166,12 @@ const AdmissionPage: React.FC = () => {
                         <div className="mb-10">
                             <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
                                 <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-outfit tracking-tighter">Registration Form</h2>
-                                <span className="px-4 py-1.5 bg-tharqiya-gold/10 text-tharqiya-gold rounded-full text-[10px] font-black uppercase">Step {step} of 3</span>
+                                <span className="px-4 py-1.5 bg-tharqiya-gold/10 text-tharqiya-gold rounded-full text-[10px] font-black uppercase">Step {step} of 4</span>
                             </div>
                             <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                                 <motion.div
-                                    initial={{ width: "33%" }}
-                                    animate={{ width: step === 1 ? "33%" : step === 2 ? "66%" : "100%" }}
+                                    initial={{ width: "25%" }}
+                                    animate={{ width: step === 1 ? "25%" : step === 2 ? "50%" : step === 3 ? "75%" : "100%" }}
                                     className="h-full bg-tharqiya-orange dark:bg-tharqiya-gold transition-all duration-500"
                                 />
                             </div>
@@ -175,9 +196,19 @@ const AdmissionPage: React.FC = () => {
                                                 </div>
                                             </div>
                                             <div className="space-y-2">
-                                                <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Parent's Name</label>
+                                                <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Father's Name</label>
                                                 <input name="parentName" required value={formData.parentName} onChange={handleInputChange} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="Guardian Name" />
                                             </div>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Mother's Name</label>
+                                            <input name="motherName" required value={formData.motherName} onChange={handleInputChange} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="Mother's name" />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Full Address</label>
+                                            <textarea name="address" required value={formData.address} onChange={handleInputChange} rows={3} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="Complete postal address" />
                                         </div>
 
                                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
@@ -200,13 +231,21 @@ const AdmissionPage: React.FC = () => {
                                                 <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Phone Number</label>
                                                 <div className="relative">
                                                     <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                                                    <input name="phone" required value={formData.phone} onChange={handleInputChange} className="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="Contact number" />
+                                                    <input name="phone" required value={formData.phone} onChange={handleInputChange} className="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="Mobile Number" />
                                                 </div>
                                             </div>
                                             <div className="space-y-2">
-                                                <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">WhatsApp Number</label>
-                                                <input name="whatsapp" required value={formData.whatsapp} onChange={handleInputChange} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="WhatsApp" />
+                                                <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Email Address</label>
+                                                <div className="relative">
+                                                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                                                    <input type="email" name="email" required value={formData.email} onChange={handleInputChange} className="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="yourname@gmail.com" />
+                                                </div>
                                             </div>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">WhatsApp Number</label>
+                                            <input name="whatsapp" required value={formData.whatsapp} onChange={handleInputChange} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="WhatsApp" />
                                         </div>
 
                                         <div className="flex flex-col sm:flex-row justify-end gap-4 pt-6">
@@ -227,7 +266,7 @@ const AdmissionPage: React.FC = () => {
                                     >
                                         <div className="space-y-2">
                                             <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Hifz Institution</label>
-                                            <textarea name="hifzInstitution" required value={formData.hifzInstitution} onChange={handleInputChange} rows={3} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="Name and address of Madrasa/Institution" />
+                                            <textarea name="hifzCenter" required value={formData.hifzCenter} onChange={handleInputChange} rows={3} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="Name and address of Madrasa/Institution" />
                                         </div>
 
                                         <div className="grid md:grid-cols-2 gap-6">
@@ -308,13 +347,110 @@ const AdmissionPage: React.FC = () => {
                                             <button type="button" onClick={prevStep} className="px-8 py-3 rounded-full text-slate-600 dark:text-slate-400 font-bold flex items-center gap-2">
                                                 <ArrowLeft size={18} /> Back
                                             </button>
+                                            <button type="button" onClick={nextStep} className="btn-primary flex items-center justify-center gap-2">
+                                                Next: Documents <ArrowRight size={18} />
+                                            </button>
+                                        </div>
+                                    </motion.div>
+                                )}
+
+                                {step === 4 && (
+                                    <motion.div
+                                        key="step4"
+                                        initial={{ opacity: 0, x: 20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: -20 }}
+                                        className="space-y-8"
+                                    >
+                                        <div className="p-6 bg-slate-50 dark:bg-slate-900/50 rounded-3xl border border-slate-100 dark:border-slate-800">
+                                            <h4 className="text-sm font-black text-tharqiya-orange dark:text-tharqiya-gold uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
+                                                <FolderOpen size={18} /> Required Documents
+                                            </h4>
+
+                                            <div className="grid sm:grid-cols-2 gap-6">
+                                                <div className="space-y-4">
+                                                    <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Photo (Max 2MB)</label>
+                                                    <FileUploader 
+                                                        label="Upload Photo"
+                                                        type="image"
+                                                        onUploadSuccess={(url) => setFormData(prev => ({ ...prev, documents: { ...prev.documents, photo: url } }))}
+                                                        onRemove={() => setFormData(prev => {
+                                                            const newDocs = { ...prev.documents };
+                                                            delete newDocs.photo;
+                                                            return { ...prev, documents: newDocs };
+                                                        })}
+                                                    />
+                                                </div>
+                                                <div className="space-y-4">
+                                                    <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">SSLC/Cert (PDF/Img)</label>
+                                                    <FileUploader 
+                                                        label="Upload Certificate"
+                                                        type="document"
+                                                        onUploadSuccess={(url) => setFormData(prev => ({ ...prev, documents: { ...prev.documents, certificate: url } }))}
+                                                        onRemove={() => setFormData(prev => {
+                                                            const newDocs = { ...prev.documents };
+                                                            delete newDocs.certificate;
+                                                            return { ...prev, documents: newDocs };
+                                                        })}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-start gap-3 p-4 bg-amber-50 dark:bg-amber-900/10 rounded-2xl border border-amber-100 dark:border-amber-800">
+                                            <AlertCircle className="text-amber-600 shrink-0" size={18} />
+                                            <p className="text-[10px] font-bold text-amber-800 dark:text-amber-400 uppercase tracking-wider leading-relaxed">
+                                                By submitting, you confirm that all provided data is true and that you are prepared for the mandatory entrance examination.
+                                            </p>
+                                        </div>
+
+                                        <div className="flex justify-between pt-6">
+                                            <button type="button" onClick={prevStep} className="px-8 py-3 rounded-full text-slate-600 dark:text-slate-400 font-bold flex items-center gap-2">
+                                                <ArrowLeft size={18} /> Back
+                                            </button>
                                             <motion.button
                                                 whileHover={{ scale: 1.05 }}
                                                 type="submit"
-                                                className="btn-primary px-12 flex items-center gap-3"
+                                                disabled={isSubmitting}
+                                                className="btn-primary px-12 flex items-center gap-3 disabled:opacity-50"
                                             >
-                                                Submit Application <Send size={18} />
+                                                {isSubmitting ? 'Submitting...' : 'Submit Application'} <Send size={18} />
                                             </motion.button>
+                                        </div>
+                                    </motion.div>
+                                )}
+
+                                {step === 5 && successData && (
+                                    <motion.div
+                                        key="step5"
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        className="text-center py-12"
+                                    >
+                                        <div className="w-24 h-24 bg-tharqiya-gold/10 text-tharqiya-gold rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-2xl">
+                                            <CheckCircle2 size={48} />
+                                        </div>
+                                        <h2 className="text-3xl font-black text-tharqiya-deep dark:text-white mb-4 font-outfit">Application Received!</h2>
+                                        <p className="text-slate-500 dark:text-slate-400 mb-8 font-medium">Your application has been successfully submitted to Darussalam Edu Village.</p>
+                                        
+                                        <div className="bg-slate-50 dark:bg-slate-900/50 p-8 rounded-3xl border border-slate-100 dark:border-slate-800 mb-10">
+                                            <div className="grid grid-cols-2 gap-8">
+                                                <div className="text-center">
+                                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Application No</p>
+                                                    <p className="text-xl font-black text-tharqiya-orange dark:text-tharqiya-gold">{successData.applicationNo}</p>
+                                                </div>
+                                                <div className="text-center">
+                                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Username</p>
+                                                    <p className="text-xl font-black text-tharqiya-deep dark:text-white">{successData.username}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex flex-col gap-4">
+                                            <p className="text-sm font-bold text-slate-600 dark:text-slate-300">
+                                                We have sent your login credentials to your WhatsApp and Email.
+                                            </p>
+                                            <a href="/login" className="btn-primary w-full py-5 text-xl mt-4">Login to Student Portal</a>
                                         </div>
                                     </motion.div>
                                 )}

@@ -3,15 +3,15 @@ import { motion } from 'framer-motion';
 import { BookOpen, Monitor, School, Building2, MapPin, CheckCircle2 } from 'lucide-react';
 
 // Import images
-import adminExt from '../assets/facilities/admin-block-ext.png';
-import adminInt from '../assets/facilities/admin-block-int.png';
-import academicExt from '../assets/facilities/academic-block-ext.jpg';
-import classroomInt from '../assets/facilities/classroom-int.png';
-import itLab from '../assets/facilities/it-lab.png';
-import avTheatre from '../assets/facilities/av-theatre.png';
+import adminExt from '../assets/facilities/admin-block-ext-highres.jpg';
+import adminInt from '../assets/facilities/admin-block-int-highres.jpg';
+import academicExt from '../assets/facilities/academic-block-ext-highres.jpg';
+import classroomInt from '../assets/facilities/classroom-int-highres.png';
+import itLab from '../assets/facilities/it-lab-highres.jpg';
+import avTheatre from '../assets/facilities/av-theatre-highres.png';
 import library from '../assets/facilities/library.png';
-import livingSpace from '../assets/facilities/living-space.png';
-import foodCourt from '../assets/facilities/food-court.png';
+import livingSpace from '../assets/facilities/living-space-highres.png';
+import foodCourt from '../assets/facilities/food-court-highres.jpg';
 
 const FacilityCard = ({ title, subtitle, description, features, image, reverse = false }: any) => (
     <div className={`flex flex-col ${reverse ? 'lg:flex-row-reverse' : 'lg:flex-row'} gap-8 lg:gap-12 items-center mb-20 lg:mb-32`}>
@@ -22,8 +22,12 @@ const FacilityCard = ({ title, subtitle, description, features, image, reverse =
             className="w-full lg:w-1/2"
         >
                 <div className="relative overflow-hidden rounded-[2.5rem] shadow-2xl border-4 border-brand-cream dark:border-slate-800">
-                    <img src={image} alt={title} className="w-full h-[400px] object-cover transition-transform duration-700 group-hover:scale-110" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-60" />
+                    <img 
+                        src={image} 
+                        alt={title} 
+                        className="w-full h-[500px] object-cover transition-transform duration-700 group-hover:scale-110 brightness-[1.02] contrast-[1.02]" 
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent opacity-40" />
                 </div>
         </motion.div>
 
@@ -243,20 +247,16 @@ const FacilitiesPage: React.FC = () => {
                         <div className="w-24 h-1.5 bg-edu-coral dark:bg-edu-teal mx-auto mt-4 rounded-full" />
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {[adminInt, classroomInt, itLab].map((img, i) => (
-                            <motion.div
-                                key={i}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: i * 0.2 }}
-                                className="group relative aspect-square rounded-[2rem] overflow-hidden shadow-xl"
-                            >
-                                <img src={img} alt="Interior View" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                <div className="absolute inset-0 bg-edu-coral/20 dark:bg-edu-teal/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                            </motion.div>
-                        ))}
+                    <div className="flex flex-col items-center justify-center py-20 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-[3rem] bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm">
+                        <div className="w-20 h-20 rounded-full bg-edu-coral/10 dark:bg-edu-teal/10 flex items-center justify-center mb-6">
+                            <Monitor className="w-10 h-10 text-edu-coral dark:text-edu-teal opacity-50" />
+                        </div>
+                        <p className="text-xl font-bold text-slate-400 dark:text-slate-600 uppercase tracking-widest">
+                            New Photos Coming Soon
+                        </p>
+                        <p className="text-sm text-slate-400 dark:text-slate-700 mt-2 font-medium">
+                            Capturing more moments of excellence
+                        </p>
                     </div>
                 </div>
             </section>

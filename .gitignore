@@ -28,3 +28,12 @@ dist/
 
 # Docker
 .docker/
+
+# Diagnostic and temp files
+*.txt
+*.tmp
+backend/fix-admin.ts
+backend/sync-admin.ts
+backend/test-apply.ts
+backend/test_db.js
+frontend/tsc_output*.txt

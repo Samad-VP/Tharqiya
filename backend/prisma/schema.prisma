@@ -8,107 +8,154 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+model User {
+  id            String         @id @default(uuid())
+  email         String         @unique
+  password      String
+  role          Role           @default(STUDENT)
+  name          String
+  phone         String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  isFirstLogin  Boolean        @default(true)
+  username      String?        @unique
+  interviewer   Interviewer?
+  notifications Notification[]
+  auditLogs     AuditLog[]
+  student       Student?
+  otp           String?
+  otpExpires    DateTime?
+}
+
+model Student {
+  id              String            @id @default(uuid())
+  userId          String            @unique
+  applicationNo   String            @unique
+  dob             DateTime
+  address         String?
+  hifzCenter      String
+  fatherName      String
+  motherName      String
+  status          ApplicationStatus @default(PENDING)
+  documents       Json?
+  dawrasCount     String?
+  district        String?
+  firstOption     String?
+  kitabsStudied   String?
+  place           String?
+  resources       Json?
+  schoolEducation String?
+  secondOption    String?
+  thirdOption     String?
+  whatsapp        String?
+  application     Application?
+  user            User              @relation(fields: [userId], references: [id])
+}
+
+model Application {
+  id        String            @id @default(uuid())
+  studentId String            @unique
+  appliedAt DateTime          @default(now())
+  status    ApplicationStatus @default(PENDING)
+  student   Student           @relation(fields: [studentId], references: [id])
+  interview Interview?
+  allotment Allotment?
+}
+
+model Allotment {
+  id            String      @id @default(uuid())
+  applicationId String      @unique
+  course        String
+  campus        String
+  allottedAt    DateTime    @default(now())
+  isFinalized   Boolean     @default(false)
+  application   Application @relation(fields: [applicationId], references: [id])
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  actorId   String
+  action    String
+  targetId  String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [actorId], references: [id])
+}
+
+model Interviewer {
+  id         String      @id @default(uuid())
+  userId     String      @unique
+  speciality String?
+  interviews Interview[]
+  user       User        @relation(fields: [userId], references: [id])
+}
+
+model Interview {
+  id            String       @id @default(uuid())
+  applicationId String       @unique
+  interviewerId String
+  scheduledAt   DateTime
+  location      String?      @default("Darussalam Tharqiya College")
+  evaluations   Evaluation[]
+  application   Application  @relation(fields: [applicationId], references: [id])
+  interviewer   Interviewer  @relation(fields: [interviewerId], references: [id])
+}
+
+model Evaluation {
+  id          String    @id @default(uuid())
+  interviewId String
+  subject     String
+  marks       Int
+  remarks     String?
+  createdAt   DateTime  @default(now())
+  interview   Interview @relation(fields: [interviewId], references: [id])
+}
+
+model Result {
+  id           String   @id @default(uuid())
+  studentId    String   @unique
+  totalMarks   Int
+  averageMarks Float
+  decision     String   @default("PENDING")
+  generatedAt  DateTime @default(now())
+  pdfUrl       String?
+}
+
+model Notification {
+  id      String   @id @default(uuid())
+  userId  String
+  type    String
+  event   String
+  message String
+  sentAt  DateTime @default(now())
+  status  String   @default("SENT")
+  user    User     @relation(fields: [userId], references: [id])
+}
+
+model Setting {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
 enum Role {
   SUPER_ADMIN
   ADMIN
+  PRINCIPAL
   INTERVIEWER
   STUDENT
 }
 
 enum ApplicationStatus {
   PENDING
+  DOCS_VERIFIED
   REVIEWED
   INTERVIEW_SCHEDULED
   EVALUATED
+  ALLOTMENT_READY
+  ALLOTTED
+  ADMISSION_AUTHORIZED
   ACCEPTED
   REJECTED
-}
-
-model User {
-  id            String   @id @default(uuid())
-  email         String   @unique
-  password      String
-  role          Role     @default(STUDENT)
-  name          String
-  phone         String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  student       Student?
-  interviewer   Interviewer?
-  notifications Notification[]
-}
-
-model Student {
-  id              String        @id @default(uuid())
-  userId          String        @unique
-  user            User          @relation(fields: [userId], references: [id])
-  applicationNo   String        @unique
-  dob             DateTime
-  address         String
-  hifzCenter      String
-  fatherName      String
-  motherName      String
-  status          ApplicationStatus @default(PENDING)
-  documents       Json?         // To store URLs of uploaded docs
-  application     Application?
-}
-
-model Application {
-  id            String            @id @default(uuid())
-  studentId     String            @unique
-  student       Student           @relation(fields: [studentId], references: [id])
-  appliedAt     DateTime          @default(now())
-  status        ApplicationStatus @default(PENDING)
-  interview     Interview?
-}
-
-model Interviewer {
-  id         String      @id @default(uuid())
-  userId     String      @unique
-  user       User        @relation(fields: [userId], references: [id])
-  speciality String?
-  interviews Interview[]
-}
-
-model Interview {
-  id            String       @id @default(uuid())
-  applicationId String       @unique
-  application   Application  @relation(fields: [applicationId], references: [id])
-  interviewerId String
-  interviewer   Interviewer  @relation(fields: [interviewerId], references: [id])
-  scheduledAt   DateTime
-  location      String?      @default("Darussalam Tharqiya College")
-  evaluations   Evaluation[]
-}
-
-model Evaluation {
-  id          String   @id @default(uuid())
-  interviewId String
-  interview   Interview @relation(fields: [interviewId], references: [id])
-  subject     String   // Hifz, English, General
-  marks       Int
-  remarks     String?
-  createdAt   DateTime @default(now())
-}
-
-model Result {
-  id            String   @id @default(uuid())
-  studentId     String   @unique
-  totalMarks    Int
-  averageMarks  Float
-  decision      String   @default("PENDING") // ACCEPTED, REJECTED, WAITING
-  generatedAt   DateTime @default(now())
-  pdfUrl        String?
-}
-
-model Notification {
-  id        String   @id @default(uuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  type      String   // WHATSAPP, EMAIL
-  event     String   // REGISTRATION, INTERVIEW_SCHEDULED, etc.
-  message   String
-  sentAt    DateTime @default(now())
-  status    String   @default("SENT")
 }

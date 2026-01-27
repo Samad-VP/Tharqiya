@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import prisma from '../config/db';
+import prisma from '../config/db.js';
 
 interface DecodedToken {
     id: string;
@@ -19,6 +19,12 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
     ) {
         try {
             token = req.headers.authorization.split(' ')[1];
+            
+            if (!token || token === 'undefined' || token === 'null') {
+                return res.status(401).json({ message: 'Not authorized, invalid token' });
+            }
+
+            console.log('Verifying token with secret length:', process.env.JWT_SECRET?.length);
             const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as DecodedToken;
 
             req.user = await prisma.user.findUnique({
@@ -26,15 +32,19 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
                 select: { id: true, name: true, email: true, role: true }
             });
 
-            next();
+            if (!req.user) {
+                return res.status(401).json({ message: 'Not authorized, user not found' });
+            }
+
+            return next();
         } catch (error) {
-            console.error(error);
-            res.status(401).json({ message: 'Not authorized, token failed' });
+            console.error('JWT Error:', error);
+            return res.status(401).json({ message: 'Not authorized, token failed' });
         }
     }
 
     if (!token) {
-        res.status(401).json({ message: 'Not authorized, no token' });
+        return res.status(401).json({ message: 'Not authorized, no token' });
     }
 };
 

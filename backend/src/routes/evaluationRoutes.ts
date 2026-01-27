@@ -1,6 +1,6 @@
 import express from 'express';
-import { submitEvaluation } from '../controllers/evaluationController';
-import { protect, authorize } from '../middleware/auth';
+import { submitEvaluation } from '../controllers/evaluationController.js';
+import { protect, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
 
