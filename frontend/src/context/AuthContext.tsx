@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import axios from 'axios';
+import api from '../api/axiosInstance';
 
 interface User {
     id: string;
@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const login = async (email: string, password: string): Promise<User> => {
         try {
-            const response = await axios.post('/api/auth/login', { email, password });
+            const response = await api.post('/auth/login', { email, password });
             const userData = response.data.data;
             setUser(userData);
             localStorage.setItem('edu_village_user', JSON.stringify(userData));
@@ -60,7 +60,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const register = async (userData: any): Promise<User> => {
         try {
-            const response = await axios.post('/api/auth/register', userData);
+            const response = await api.post('/auth/register', userData);
             const newUser = response.data.data;
             setUser(newUser);
             localStorage.setItem('edu_village_user', JSON.stringify(newUser));
