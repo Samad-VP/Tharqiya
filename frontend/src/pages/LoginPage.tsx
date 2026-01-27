@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { Lock, Mail, Loader2, Sparkles } from 'lucide-react';
 import logo from '../assets/logo.png';
 import { motion } from 'framer-motion';
+import toast from 'react-hot-toast';
+import campus from '../assets/campus.jpg';
 
 const LoginPage: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -20,6 +22,11 @@ const LoginPage: React.FC = () => {
         setIsSubmitting(true);
         try {
             const user = await login(email, password);
+            toast.success(`Welcome back, ${user.name.split(' ')[0]}!`);
+            if (user.isFirstLogin) {
+                navigate('/change-password');
+                return;
+            }
             if (user.role === 'ADMIN' || user.role === 'SUPER_ADMIN') {
                 navigate('/admin');
             } else if (user.role === 'INTERVIEWER') {
@@ -28,14 +35,18 @@ const LoginPage: React.FC = () => {
                 navigate('/portal');
             }
         } catch (err: any) {
-            setError(err.message || 'Something went wrong');
+            const msg = err.message || 'Invalid credentials. Please try again.';
+            setError(msg);
+            toast.error(msg);
         } finally {
             setIsSubmitting(false);
         }
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-brand-cream dark:bg-slate-950 px-4 relative overflow-hidden transition-colors duration-500">
+        <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden transition-colors duration-500 bg-cover bg-center" style={{ backgroundImage: `url(${campus})` }}>
+            {/* Theme-aware Overlay */}
+            <div className="absolute inset-0 bg-brand-cream/80 dark:bg-slate-950/80 backdrop-blur-sm transition-colors duration-500" />
 
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -68,14 +79,14 @@ const LoginPage: React.FC = () => {
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="space-y-2">
-                        <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Email Connection</label>
+                        <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Email or Username</label>
                         <div className="relative group">
                              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-edu-coral dark:group-focus-within:text-edu-teal transition-colors" />
                             <input
-                                type="email"
+                                type="text"
                                 required
                                 className="w-full pl-12 pr-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 dark:focus:ring-tharqiya-gold/10 focus:border-tharqiya-orange dark:focus:border-tharqiya-gold transition-all outline-none font-medium dark:text-white"
-                                placeholder="name@scholar.com"
+                                placeholder="Email or Username"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                             />
@@ -83,7 +94,7 @@ const LoginPage: React.FC = () => {
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Secured Code</label>
+                        <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Password</label>
                         <div className="relative group">
                              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-edu-coral dark:group-focus-within:text-edu-teal transition-colors" />
                             <input
@@ -98,7 +109,7 @@ const LoginPage: React.FC = () => {
                     </div>
 
                     <div className="flex justify-end pt-2">
-                         <span className="text-xs font-bold text-edu-coral dark:text-edu-teal hover:underline cursor-pointer tracking-wider">Forgot Password?</span>
+                         <span onClick={() => navigate('/forgot-password')} className="text-xs font-bold text-edu-coral dark:text-edu-teal hover:underline cursor-pointer tracking-wider">Forgot Password?</span>
                     </div>
 
                     <motion.button
@@ -112,7 +123,7 @@ const LoginPage: React.FC = () => {
                             <Loader2 className="w-6 h-6 animate-spin text-white" />
                         ) : (
                             <>
-                                <span>Access Portal</span>
+                                <span>Login</span>
                             </>
                         )}
                     </motion.button>
@@ -120,7 +131,7 @@ const LoginPage: React.FC = () => {
 
                 <div className="mt-12 text-center">
                     <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">
-                         New candidate? <span className="text-edu-coral dark:text-edu-teal font-black cursor-pointer hover:underline uppercase tracking-tighter">Initiate Application</span>
+                         New student? <span className="text-edu-coral dark:text-edu-teal font-black cursor-pointer hover:underline uppercase tracking-tighter" onClick={() => navigate('/admission')}>Start Application</span>
                     </p>
                 </div>
             </motion.div>

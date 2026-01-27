@@ -16,6 +16,22 @@ import WelcomeSection from './components/WelcomeSection';
 import FacilitiesPage from './pages/Facilities';
 import FacultyPage from './pages/FacultyPage';
 import AlumniPage from './pages/AlumniPage';
+import AdminDashboard from './pages/AdminDashboard';
+import AdminApplications from './pages/AdminApplications';
+import AdminInterviews from './pages/AdminInterviews';
+import AdminRoute from './components/AdminRoute';
+import InterviewerRoute from './components/InterviewerRoute';
+import InterviewerDashboard from './pages/InterviewerDashboard';
+import AdminUsers from './pages/AdminUsers';
+import SettingsPage from './pages/SettingsPage';
+import ChangePasswordPage from './pages/ChangePasswordPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import PrincipalRoute from './components/PrincipalRoute';
+import PrincipalDashboard from './pages/PrincipalDashboard';
+import AllotmentEngine from './pages/AllotmentEngine';
+import AdminNotificationLogs from './pages/AdminNotificationLogs';
+import StudentProfile from './pages/StudentProfile';
+import InterviewerProfile from './pages/InterviewerProfile';
 
 import { UserPlus, PhoneCall, GraduationCap, FileCheck, ArrowRight } from 'lucide-react';
 
@@ -113,14 +129,14 @@ const Home: React.FC = () => {
                         ))}
                     </div>
 
-                    <Link to="/admission">
+                    <Link to="/admission" className="inline-block">
                         <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            className="group relative px-8 sm:px-12 py-4 sm:py-5 bg-tharqiya-deep dark:bg-tharqiya-gold text-white dark:text-slate-950 rounded-full font-black text-base sm:text-lg shadow-2xl transition-all tracking-widest uppercase overflow-hidden"
+                            className="group relative px-8 sm:px-10 py-3.5 sm:py-4 bg-tharqiya-deep dark:bg-tharqiya-gold text-white dark:text-slate-950 rounded-full font-black text-sm sm:text-lg shadow-2xl transition-all tracking-widest uppercase overflow-hidden flex items-center justify-center"
                         >
-                            <span className="relative z-10 flex items-center gap-2">
-                                Start Application <ArrowRight className="group-hover:translate-x-2 transition-transform" size={18} />
+                            <span className="relative z-10 flex items-center gap-3">
+                                Start Application <ArrowRight className="group-hover:translate-x-2 transition-transform" size={20} />
                             </span>
                             <div className="absolute inset-0 bg-gradient-to-r from-tharqiya-orange to-tharqiya-gold opacity-0 group-hover:opacity-100 transition-opacity" />
                         </motion.button>
@@ -149,6 +165,35 @@ const App: React.FC = () => {
                             <Route path="/alumni" element={<><Navbar /><AlumniPage /><Footer /></>} />
                             <Route path="/login" element={<LoginPage />} />
                             <Route path="/portal" element={<><Navbar /><StudentPortal /><Footer /></>} />
+                            <Route path="/student/profile" element={<><Navbar /><StudentProfile /><Footer /></>} />
+                            <Route path="/change-password" element={<ChangePasswordPage />} />
+                            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+
+                            {/* Admin Protected Routes */}
+                            <Route element={<AdminRoute />}>
+                                <Route path="/admin" element={<AdminDashboard />} />
+                                <Route path="/admin/applications" element={<AdminApplications />} />
+                                <Route path="/admin/interviews" element={<AdminInterviews />} />
+                                <Route path="/admin/users" element={<AdminUsers />} />
+                                <Route path="/admin/notifications" element={<AdminNotificationLogs />} />
+                                <Route path="/admin/settings" element={<SettingsPage />} />
+                            </Route>
+
+                            {/* Interviewer Protected Routes */}
+                            <Route element={<InterviewerRoute />}>
+                                <Route path="/interviewer" element={<InterviewerDashboard />} />
+                                <Route path="/interviewer/profile" element={<InterviewerProfile />} />
+                                <Route path="/interviewer/settings" element={<SettingsPage />} />
+                            </Route>
+
+                            {/* Principal Protected Routes */}
+                            <Route element={<PrincipalRoute />}>
+                                <Route path="/principal" element={<PrincipalDashboard />} />
+                                <Route path="/principal/allotments" element={<AllotmentEngine />} />
+                                <Route path="/principal/applications" element={<AdminApplications />} />
+                                <Route path="/principal/users" element={<AdminUsers />} />
+                                <Route path="/principal/settings" element={<SettingsPage />} />
+                            </Route>
                         </Routes>
                     </div>
                 </Router>

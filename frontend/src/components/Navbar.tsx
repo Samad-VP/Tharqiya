@@ -3,12 +3,14 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Moon, Sun, ArrowRight } from 'lucide-react';
 import logo from '../assets/logo.png';
 import { useTheme } from '../context/ThemeContext';
+import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const { theme, toggleTheme } = useTheme();
+    const { user } = useAuth();
     const location = useLocation();
 
     useEffect(() => {
@@ -35,6 +37,22 @@ const Navbar: React.FC = () => {
         { name: 'Campus Facilities', path: '/facilities' },
         { name: 'Admission', path: '/admission' },
     ];
+    
+    const getDashboardLink = () => {
+        if (!user) return '/login';
+        if (user.role === 'ADMIN' || user.role === 'SUPER_ADMIN') return '/admin';
+        if (user.role === 'INTERVIEWER') return '/interviewer';
+        if (user.role === 'PRINCIPAL') return '/principal';
+        return '/portal';
+    };
+
+    const getDashboardLabel = () => {
+        if (!user) return 'Login';
+        if (user.role === 'ADMIN' || user.role === 'SUPER_ADMIN') return 'Admin Dashboard';
+        if (user.role === 'INTERVIEWER') return 'Interviewer Portal';
+        if (user.role === 'PRINCIPAL') return 'Principal Hub';
+        return 'Student Portal';
+    };
 
     return (
         <>
@@ -45,54 +63,69 @@ const Navbar: React.FC = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center">
                     {/* Logo */}
-                    <Link to="/" className={`flex items-center gap-3 group transition-opacity duration-300 ${isOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-                        <div className="relative">
-                            <div className="h-10 w-auto flex items-center justify-center transition-transform group-hover:scale-110 duration-500">
+                    <Link to="/" className="flex items-center gap-3 group transition-opacity duration-300 self-center shrink-0">
+                        <div className="relative flex items-center shrink-0">
+                            <div className="h-10 lg:h-12 w-auto flex items-center justify-center transition-transform group-hover:scale-110 duration-500">
                                 <img src={logo} alt="Darussalam Logo Icon" className="h-full w-auto object-contain" />
                             </div>
                         </div>
-                        <div className="leading-tight">
+                        <div className="leading-tight flex flex-col justify-center">
                             <span className="block text-xl font-black tracking-tighter font-outfit text-edu-coral">Darussalam</span>
                             <span className={`block text-[10px] font-bold tracking-[0.2em] transition-colors ${!scrolled ? (theme === 'light' ? 'text-brand-deep' : 'text-white/70') : 'text-brand-deep dark:text-white/70'}`}>Edu Village</span>
                         </div>
                     </Link>
 
                     {/* Desktop Menu */}
-                    <div className="hidden md:flex items-center gap-1">
-                        {navLinks.map((link) => (
-                            <Link
-                                key={link.path}
-                                to={link.path}
-                                className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 relative group ${location.pathname === link.path
-                                    ? (scrolled ? 'text-edu-coral dark:text-edu-teal' : 'text-edu-teal')
-                                    : (!scrolled ? (theme === 'light' ? 'text-brand-deep/70 hover:text-edu-coral' : 'text-white/80 hover:text-white') : 'text-brand-deep dark:text-slate-300 hover:text-edu-coral dark:hover:text-edu-teal')
+                    <div className="hidden md:flex items-center flex-1 ml-8 lg:ml-12">
+                        <div className="flex items-center gap-1 lg:gap-2 xl:gap-3">
+                            {navLinks.map((link) => (
+                                <Link
+                                    key={link.path}
+                                    to={link.path}
+                                    className={`px-3 lg:px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 relative group whitespace-nowrap flex items-center h-10 ${location.pathname === link.path
+                                        ? (scrolled ? 'text-edu-teal dark:text-edu-teal' : 'text-edu-teal')
+                                        : (!scrolled ? (theme === 'light' ? 'text-brand-deep/70 hover:text-edu-coral' : 'text-white/80 hover:text-white') : 'text-brand-deep dark:text-slate-300 hover:text-edu-coral dark:hover:text-edu-teal')
+                                        }`}
+                                >
+                                    {link.name}
+                                    {location.pathname === link.path && (
+                                        <motion.div
+                                            layoutId="nav-underline"
+                                            className="absolute bottom-0 left-4 right-4 h-0.5 bg-edu-coral dark:bg-edu-teal rounded-full"
+                                        />
+                                    )}
+                                </Link>
+                            ))}
+                        </div>
+
+                        {/* Actions Cluster - Pushed to right on LG+ */}
+                        <div className="flex items-center ml-auto gap-1 lg:gap-2">
+                            <div className="h-6 w-px bg-slate-200 dark:bg-slate-800 mx-2 lg:mx-3 xl:mx-4" />
+
+                            {/* Theme Toggle */}
+                            <button
+                                onClick={toggleTheme}
+                                className={`p-2.5 rounded-full transition-all duration-500 mr-2 lg:mr-3 xl:mr-4 shadow-inner flex items-center justify-center h-10 w-10 ${!scrolled
+                                    ? 'bg-white/10 text-white hover:bg-edu-teal hover:text-slate-950 border border-white/20'
+                                    : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-edu-coral hover:text-white dark:hover:bg-edu-teal dark:hover:text-slate-900'
                                     }`}
+                                aria-label="Toggle Theme"
                             >
-                                {link.name}
-                                {location.pathname === link.path && (
-                                    <motion.div
-                                        layoutId="nav-underline"
-                                        className="absolute bottom-0 left-4 right-4 h-0.5 bg-edu-coral dark:bg-edu-teal rounded-full"
-                                    />
-                                )}
-                            </Link>
-                        ))}
+                                {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+                            </button>
 
-                        <div className="h-6 w-px bg-slate-200 dark:bg-slate-800 mx-4" />
-
-                        {/* Theme Toggle */}
-                        <button
-                            onClick={toggleTheme}
-                            className={`p-2.5 rounded-full transition-all duration-500 mr-4 shadow-inner ${!scrolled
-                                ? 'bg-white/10 text-white hover:bg-edu-teal hover:text-slate-950 border border-white/20'
-                                : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-edu-coral hover:text-white dark:hover:bg-edu-teal dark:hover:text-slate-900'
+                            <Link 
+                                to={getDashboardLink()} 
+                                className={`btn-primary !py-0 !px-4 lg:!px-6 !text-sm flex items-center justify-center h-10 whitespace-nowrap mr-2 !shadow-sm ${user 
+                                    ? '!bg-edu-teal !text-slate-950 hover:!bg-edu-teal/90' 
+                                    : '!bg-edu-teal !text-slate-950 hover:!bg-edu-teal/90'
                                 }`}
-                            aria-label="Toggle Theme"
-                        >
-                            {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
-                        </button>
+                            >
+                                {getDashboardLabel()}
+                            </Link>
 
-                        <Link to="/admission" className="btn-primary scale-90">Apply Now</Link>
+                            <Link to="/admission" className="btn-primary py-2.5 px-5 !text-sm flex items-center justify-center h-10 whitespace-nowrap">Apply Now</Link>
+                        </div>
                     </div>
 
                     {/* Mobile Controls */}
@@ -189,11 +222,19 @@ const Navbar: React.FC = () => {
                                 transition={{ delay: 0.5 }}
                                 className="mt-8 sm:mt-auto"
                             >
-                                <Link to="/admission" onClick={() => setIsOpen(false)}>
-                                    <button className="w-full py-4 sm:py-6 bg-edu-teal text-slate-950 rounded-2xl sm:rounded-3xl font-black text-base sm:text-xl shadow-2xl shadow-edu-teal/20 active:scale-95 transition-transform flex items-center justify-center gap-3">
-                                        Apply for Admission <ArrowRight size={18} />
-                                    </button>
-                                </Link>
+                                <div className="flex flex-col gap-4">
+                                    <Link to="/admission" className="w-full" onClick={() => setIsOpen(false)}>
+                                        <button className="w-full py-4 sm:py-5 bg-brand-deep dark:bg-tharqiya-gold text-white dark:text-slate-950 rounded-2xl sm:rounded-3xl font-black text-base sm:text-xl shadow-2xl active:scale-95 transition-transform flex items-center justify-center gap-3">
+                                            Apply for Admission <ArrowRight size={18} />
+                                        </button>
+                                    </Link>
+                                    
+                                    <Link to={getDashboardLink()} className="w-full" onClick={() => setIsOpen(false)}>
+                                        <button className="w-full py-4 sm:py-5 bg-edu-teal text-slate-950 rounded-2xl sm:rounded-3xl font-black text-base sm:text-lg shadow-xl shadow-edu-teal/10 active:scale-95 transition-transform flex items-center justify-center gap-3">
+                                            {getDashboardLabel()} <ArrowRight size={18} />
+                                        </button>
+                                    </Link>
+                                </div>
 
                                 <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-slate-100 dark:border-white/10 flex justify-center gap-6 sm:gap-8">
                                     <button onClick={toggleTheme} className="text-slate-500 dark:text-white/60 hover:text-edu-coral dark:hover:text-edu-teal font-black uppercase tracking-widest text-[8px] sm:text-xs flex items-center gap-2">

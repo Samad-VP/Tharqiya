@@ -1,12 +1,16 @@
-import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import type { ReactNode } from 'react';
 import axios from 'axios';
 
 interface User {
     id: string;
     name: string;
     email: string;
+    username?: string;
     role: string;
+    isFirstLogin?: boolean;
     token: string;
+    phone?: string;
 }
 
 interface AuthContextType {
@@ -40,9 +44,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const login = async (email: string, password: string): Promise<User> => {
         try {
             const response = await axios.post('/api/auth/login', { email, password });
-            setUser(response.data);
-            localStorage.setItem('edu_village_user', JSON.stringify(response.data));
-            return response.data;
+            const userData = response.data.data;
+            setUser(userData);
+            localStorage.setItem('edu_village_user', JSON.stringify(userData));
+            return userData;
         } catch (error: any) {
             throw error.response?.data || { message: 'Login failed' };
         }
@@ -56,9 +61,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const register = async (userData: any): Promise<User> => {
         try {
             const response = await axios.post('/api/auth/register', userData);
-            setUser(response.data);
-            localStorage.setItem('edu_village_user', JSON.stringify(response.data));
-            return response.data;
+            const newUser = response.data.data;
+            setUser(newUser);
+            localStorage.setItem('edu_village_user', JSON.stringify(newUser));
+            return newUser;
         } catch (error: any) {
             throw error.response?.data || { message: 'Registration failed' };
         }
