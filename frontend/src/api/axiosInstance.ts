@@ -1,17 +1,22 @@
 import axios from 'axios';
 
 let baseURL = import.meta.env.VITE_API_URL || '';
+// Remove any leading/trailing quotes and whitespace
 baseURL = baseURL.replace(/^["']|["']$/g, '').trim();
 
-// Ensure it ends with /api if it's an absolute URL
-if (baseURL.startsWith('http')) {
+if (baseURL && baseURL.startsWith('http')) {
+    // Remove trailing slash if present
+    baseURL = baseURL.replace(/\/+$/, '');
+    // Ensure it ends with /api but don't double it
     if (!baseURL.endsWith('/api')) {
-        baseURL = baseURL.replace(/\/$/, '') + '/api';
+        baseURL += '/api';
     }
 } else {
-    // If not absolute and empty, fallback to '/api'
-    if (!baseURL) baseURL = '/api';
+    // Local fallback or relative path
+    baseURL = baseURL || '/api';
 }
+
+console.log('[API URL Debug]:', baseURL);
 
 const api = axios.create({
     baseURL,
