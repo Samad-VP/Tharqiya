@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, KeyRound, Loader2, ArrowRight, ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -18,7 +18,7 @@ const ForgotPasswordPage: React.FC = () => {
         e.preventDefault();
         setIsSubmitting(true);
         try {
-            await axios.post('/api/auth/forgot-password', { email });
+            await api.post('/auth/forgot-password', { email });
             toast.success('If an account exists, an OTP has been sent to your email.');
             setStep('RESET');
         } catch (error) {
@@ -32,7 +32,7 @@ const ForgotPasswordPage: React.FC = () => {
         e.preventDefault();
         setIsSubmitting(true);
         try {
-            await axios.post('/api/auth/reset-password', { email, otp, newPassword });
+            await api.post('/auth/reset-password', { email, otp, newPassword });
             toast.success('Password reset successfully! Please login.');
             navigate('/login');
         } catch (error: any) {
