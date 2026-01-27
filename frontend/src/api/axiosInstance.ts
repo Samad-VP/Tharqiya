@@ -1,10 +1,20 @@
 import axios from 'axios';
 
-const rawUrl = import.meta.env.VITE_API_URL || '/api';
-const cleanUrl = rawUrl.replace(/^["']|["']$/g, '');
+let baseURL = import.meta.env.VITE_API_URL || '';
+baseURL = baseURL.replace(/^["']|["']$/g, '').trim();
+
+// Ensure it ends with /api if it's an absolute URL
+if (baseURL.startsWith('http')) {
+    if (!baseURL.endsWith('/api')) {
+        baseURL = baseURL.replace(/\/$/, '') + '/api';
+    }
+} else {
+    // If not absolute and empty, fallback to '/api'
+    if (!baseURL) baseURL = '/api';
+}
 
 const api = axios.create({
-    baseURL: cleanUrl,
+    baseURL,
 });
 
 // Request interceptor for adding the auth token
