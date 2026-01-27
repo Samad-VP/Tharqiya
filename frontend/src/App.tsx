@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { Analytics } from '@vercel/analytics/react';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import Navbar from './components/Navbar';
@@ -196,6 +197,7 @@ const App: React.FC = () => {
                             </Route>
                         </Routes>
                     </div>
+                    <Analytics />
                 </Router>
             </AuthProvider>
         </ThemeProvider>
