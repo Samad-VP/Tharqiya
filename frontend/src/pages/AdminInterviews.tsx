@@ -214,10 +214,10 @@ const AdminInterviews: React.FC = () => {
                                     <div className="space-y-4">
                                         <div className="flex items-center gap-4">
                                             <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl transition-colors ${selectedApps.includes(app.id) ? 'bg-edu-teal text-white' : 'bg-edu-teal/10 text-edu-teal'}`}>
-                                                {app.student?.user?.name?.[0]}
+                                                {(app.student?.user?.name || app.student?.name)?.[0] || 'S'}
                                             </div>
                                             <div>
-                                                <h4 className="font-black text-brand-deep dark:text-white font-outfit text-base">{app.student?.user?.name}</h4>
+                                                <h4 className="font-black text-brand-deep dark:text-white font-outfit text-base">{app.student?.user?.name || app.student?.name}</h4>
                                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{app.student?.applicationNo}</p>
                                             </div>
                                         </div>
@@ -266,10 +266,10 @@ const AdminInterviews: React.FC = () => {
                                             <td className="px-8 py-6">
                                                 <div className="flex items-center gap-3">
                                                     <div className="w-10 h-10 rounded-xl bg-edu-teal/10 flex items-center justify-center font-black text-edu-teal text-xs">
-                                                        {item.application?.student?.user?.name?.[0]}
+                                                        {(item.application?.student?.user?.name || item.application?.student?.name)?.[0] || 'S'}
                                                     </div>
                                                     <div>
-                                                        <p className="font-black text-brand-deep dark:text-white font-outfit">{item.application?.student?.user?.name}</p>
+                                                        <p className="font-black text-brand-deep dark:text-white font-outfit">{item.application?.student?.user?.name || item.application?.student?.name}</p>
                                                         <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{item.application?.student?.applicationNo}</p>
                                                     </div>
                                                 </div>

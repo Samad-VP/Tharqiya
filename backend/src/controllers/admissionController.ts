@@ -213,22 +213,27 @@ export const updateApplicationStatus = asyncHandler(async (req: AuthRequest, res
     // Handle Status-based Notifications & Account Promotion
     if (status === 'DOCS_VERIFIED' || status === 'ACCEPTED') {
         // Promote to full account if not already promoted
-        if (!updatedApplication.student.userId) {
-            await promoteToStudentAccount(updatedApplication.studentId);
+        if (!(updatedApplication.student as any).userId) {
+            const promotionResult = await promoteToStudentAccount(updatedApplication.studentId);
+            // Use the newly created userId for subsequent notifications in this request
+            (updatedApplication.student as any).userId = promotionResult.user.id;
+            (updatedApplication.student as any).user = promotionResult.user; 
         }
         
         if (status === 'ACCEPTED') {
-            await triggerNotification(updatedApplication.student.userId!, 'ADMISSION_CONFIRMED', {
-                StudentName: updatedApplication.student.name,
-                CampusName: updatedApplication.student.firstOption || 'Main Campus',
-                Username: updatedApplication.student.user?.username || 'N/A',
+            const studentAny = updatedApplication.student as any;
+            await triggerNotification(studentAny.userId!, 'ADMISSION_CONFIRMED', {
+                StudentName: studentAny.name,
+                CampusName: studentAny.firstOption || 'Main Campus',
+                Username: studentAny.user?.username || 'N/A',
                 TempPassword: 'Check your confirmation email'
             });
         }
     } else if (status === 'REVIEWED') {
-        if (updatedApplication.student.userId) {
-            await triggerNotification(updatedApplication.student.userId, 'APPLICATION_UNDER_REVIEW', {
-                StudentName: updatedApplication.student.name
+        const studentAny = updatedApplication.student as any;
+        if (studentAny.userId) {
+            await triggerNotification(studentAny.userId, 'APPLICATION_UNDER_REVIEW', {
+                StudentName: studentAny.name
             });
         }
     }

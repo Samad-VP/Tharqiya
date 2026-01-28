@@ -96,9 +96,12 @@ export const triggerNotification = async (
         return;
     }
 
-    const user = await prisma.user.findUnique({ where: { id: userId } });
+    const user = (userId && typeof userId === 'string' && userId !== 'SYSTEM_ADMIN_PLACEHOLDER') 
+        ? await prisma.user.findUnique({ where: { id: userId } })
+        : null;
+
     if (!user) {
-        console.warn(`[TRIGGER] User ${userId} not found`);
+        console.warn(`[TRIGGER] Valid User ID not provided or user not found: ${userId}`);
         return;
     }
 

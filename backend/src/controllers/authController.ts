@@ -38,7 +38,7 @@ export const registerUser = asyncHandler(async (req: Request, res: Response, nex
 });
 
 export const createUser = asyncHandler(async (req: AuthRequest, res: Response, next: NextFunction) => {
-    const { name, email, password, role } = req.body;
+    const { name, email, password, role, whatsapp, phone } = req.body;
     const requesterRole = req.user?.role;
 
     // RBAC Hierarchy Check
@@ -68,6 +68,8 @@ export const createUser = asyncHandler(async (req: AuthRequest, res: Response, n
             email,
             password: hashedPassword,
             role: role,
+            whatsapp,
+            phone
         },
     });
 
@@ -102,6 +104,7 @@ export const getUsers = asyncHandler(async (req: AuthRequest, res: Response) => 
             email: true,
             role: true,
             phone: true,
+            whatsapp: true,
             createdAt: true,
             interviewer: {
                 select: { id: true }
@@ -139,6 +142,8 @@ export const loginUser = asyncHandler(async (req: Request, res: Response, next: 
                 username: user.username,
                 role: user.role,
                 isFirstLogin: user.isFirstLogin,
+                whatsapp: user.whatsapp,
+                phone: user.phone,
                 token: generateToken(user.id),
             }
         });
@@ -148,7 +153,7 @@ export const loginUser = asyncHandler(async (req: Request, res: Response, next: 
 });
 
 export const updateProfile = asyncHandler(async (req: AuthRequest, res: Response, next: NextFunction) => {
-    const { name, email } = req.body;
+    const { name, email, whatsapp, phone } = req.body;
     const userId = req.user?.id;
 
     const user = await prisma.user.findUnique({ where: { id: userId } });
@@ -170,6 +175,8 @@ export const updateProfile = asyncHandler(async (req: AuthRequest, res: Response
         data: {
             name: name || user.name,
             email: email || user.email,
+            whatsapp: whatsapp !== undefined ? whatsapp : user.whatsapp,
+            phone: phone !== undefined ? phone : user.phone
         },
         select: {
             id: true,

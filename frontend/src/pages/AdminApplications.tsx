@@ -13,7 +13,8 @@ import {
     X,
     UserCircle,
     Calendar,
-    Users
+    Users,
+    FolderOpen
 } from 'lucide-react';
 import AdminLayout from '../components/AdminLayout';
 import api from '../api/axiosInstance';
@@ -154,10 +155,10 @@ const AdminApplications: React.FC = () => {
                             <div className="flex justify-between items-start mb-4">
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 rounded-xl bg-edu-teal/10 flex items-center justify-center font-black text-edu-teal text-xs">
-                                        {app.student?.user?.name?.[0] || 'S'}
+                                        {(app.student?.user?.name || app.student?.name)?.[0] || 'S'}
                                     </div>
                                     <div>
-                                        <h4 className="font-black text-brand-deep dark:text-white font-outfit text-sm">{app.student?.user?.name}</h4>
+                                        <h4 className="font-black text-brand-deep dark:text-white font-outfit text-sm">{app.student?.user?.name || app.student?.name}</h4>
                                         <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">{app.student?.applicationNo}</p>
                                     </div>
                                 </div>
@@ -241,13 +242,13 @@ const AdminApplications: React.FC = () => {
                                                     onClick={() => { setSelectedApplication(app); setShowDetailsModal(true); }}
                                                     className="w-10 h-10 rounded-full bg-edu-teal/10 flex items-center justify-center font-black text-edu-teal text-xs cursor-pointer hover:scale-110 transition-transform"
                                                 >
-                                                    {app.student?.user?.name?.[0] || 'S'}
+                                                    {(app.student?.user?.name || app.student?.name)?.[0] || 'S'}
                                                 </div>
                                                 <button 
                                                     onClick={() => { setSelectedApplication(app); setShowDetailsModal(true); }}
                                                     className="font-black text-brand-deep dark:text-white font-outfit hover:text-edu-teal transition-colors"
                                                 >
-                                                    {app.student?.user?.name}
+                                                    {app.student?.user?.name || app.student?.name}
                                                 </button>
                                             </div>
                                         </td>
@@ -334,10 +335,10 @@ const AdminApplications: React.FC = () => {
                                 <div className="flex justify-between items-start mb-8">
                                     <div className="flex items-center gap-4">
                                         <div className="w-16 h-16 rounded-2xl bg-edu-teal/10 flex items-center justify-center font-black text-edu-teal text-2xl">
-                                            {selectedApplication.student?.user?.name?.[0]}
+                                            {(selectedApplication.student?.user?.name || selectedApplication.student?.name)?.[0] || 'S'}
                                         </div>
                                         <div>
-                                            <h3 className="text-2xl font-black font-outfit text-brand-deep dark:text-white">{selectedApplication.student?.user?.name}</h3>
+                                            <h3 className="text-2xl font-black font-outfit text-brand-deep dark:text-white">{selectedApplication.student?.user?.name || selectedApplication.student?.name}</h3>
                                             <p className="text-xs font-black text-slate-400 uppercase tracking-widest">{selectedApplication.student?.applicationNo}</p>
                                         </div>
                                     </div>
@@ -417,6 +418,47 @@ const AdminApplications: React.FC = () => {
                                                 </div>
                                             </div>
                                         </div>
+
+                                        {/* New Documents Section */}
+                                        <div>
+                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Documents & Identity</p>
+                                            <div className="grid grid-cols-2 gap-3">
+                                                {selectedApplication.student?.documents?.photo ? (
+                                                    <div className="relative group rounded-xl overflow-hidden bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-slate-800">
+                                                        <img 
+                                                            src={selectedApplication.student.documents.photo} 
+                                                            alt="Applicant" 
+                                                            className="w-full h-24 object-cover"
+                                                        />
+                                                        <div className="absolute inset-x-0 bottom-0 bg-brand-deep/80 backdrop-blur-sm p-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <a href={selectedApplication.student.documents.photo} target="_blank" rel="noreferrer" className="text-[8px] font-black text-white uppercase tracking-widest block text-center">View Photo</a>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex flex-col items-center justify-center h-24 rounded-xl bg-slate-50 dark:bg-white/5 border border-dashed border-slate-200 dark:border-slate-800">
+                                                        <UserCircle className="w-6 h-6 text-slate-300" />
+                                                        <span className="text-[8px] font-bold text-slate-400 uppercase mt-1">No Photo</span>
+                                                    </div>
+                                                )}
+
+                                                {selectedApplication.student?.documents?.certificate ? (
+                                                    <a 
+                                                        href={selectedApplication.student.documents.certificate} 
+                                                        target="_blank" 
+                                                        rel="noreferrer"
+                                                        className="flex flex-col items-center justify-center h-24 rounded-xl bg-edu-teal/5 border border-edu-teal/20 hover:bg-edu-teal/10 transition-colors"
+                                                    >
+                                                        <Download className="w-6 h-6 text-edu-teal" />
+                                                        <span className="text-[8px] font-black text-edu-teal uppercase tracking-widest mt-2">View Certificate</span>
+                                                    </a>
+                                                ) : (
+                                                    <div className="flex flex-col items-center justify-center h-24 rounded-xl bg-slate-50 dark:bg-white/5 border border-dashed border-slate-200 dark:border-slate-800">
+                                                        <FolderOpen className="w-6 h-6 text-slate-300" />
+                                                        <span className="text-[8px] font-bold text-slate-400 uppercase mt-1">No Documents</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -483,7 +525,7 @@ const AdminApplications: React.FC = () => {
                         >
                             <form onSubmit={handleScheduleInterview} className="p-8 sm:p-10">
                                 <h3 className="text-2xl font-black font-outfit text-brand-deep dark:text-white mb-2 uppercase tracking-tight">Schedule <span className="text-edu-teal">Interview</span></h3>
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-8">Scheduling interview for {selectedApplication.student?.user?.name}</p>
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-8">Scheduling interview for {selectedApplication.student?.user?.name || selectedApplication.student?.name}</p>
 
                                 <div className="space-y-6">
                                     <div>

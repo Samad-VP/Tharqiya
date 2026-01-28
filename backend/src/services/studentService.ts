@@ -106,6 +106,7 @@ export const promoteToStudentAccount = async (studentId: string) => {
                 role: 'STUDENT',
                 name: student.name,
                 phone: student.whatsapp,
+                whatsapp: student.whatsapp,
                 isFirstLogin: true,
             }
         });

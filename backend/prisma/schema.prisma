@@ -27,6 +27,7 @@ model User {
   student       Student?
   otp           String?
   otpExpires    DateTime?
+  whatsapp      String?
 }
 
 model Student {
