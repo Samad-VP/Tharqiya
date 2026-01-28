@@ -17,7 +17,7 @@ export const submitPublicApplication = asyncHandler(async (req: Request, res: Re
 
     res.status(201).json({
         status: 'success',
-        message: 'Application submitted successfully. Our team will review your application and send login details via WhatsApp/Email upon approval.',
+        message: 'Application submitted successfully. Your login credentials have been sent to your registered email.',
         applicationNo: student.applicationNo
     });
 });

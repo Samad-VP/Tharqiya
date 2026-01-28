@@ -24,9 +24,9 @@ const sendEmail = async (to: string, event: string, data: NotificationData) => {
 
     const roleKey: EmailRole = templateConfig.roleKey || 'ADMISSIONS';
     
-    // Zoho Requirement: "From" address MUST match the authenticated SMTP user
-    // Otherwise, it gets rejected as "Relay Access Denied" or "Unauthorized Sender"
-    const fromEmail = process.env.SMTP_USER; 
+    // Use departmental email as 'From' if available, fallback to SMTP_USER
+    // Note: Zoho requires the 'From' address to be the authenticated user or a verified alias.
+    const fromEmail = EMAIL_ROLES[roleKey] || process.env.SMTP_USER; 
     const fromName = templateConfig.fromName || 'Darussalam Edu Village';
 
     const html = templateConfig.template(data);

@@ -210,25 +210,15 @@ export const updateApplicationStatus = asyncHandler(async (req: AuthRequest, res
         }
     });
 
-    // Handle Status-based Notifications & Account Promotion
-    if (status === 'DOCS_VERIFIED' || status === 'ACCEPTED') {
-        // Promote to full account if not already promoted
-        if (!(updatedApplication.student as any).userId) {
-            const promotionResult = await promoteToStudentAccount(updatedApplication.studentId);
-            // Use the newly created userId for subsequent notifications in this request
-            (updatedApplication.student as any).userId = promotionResult.user.id;
-            (updatedApplication.student as any).user = promotionResult.user; 
-        }
-        
-        if (status === 'ACCEPTED') {
-            const studentAny = updatedApplication.student as any;
-            await triggerNotification(studentAny.userId!, 'ADMISSION_CONFIRMED', {
-                StudentName: studentAny.name,
-                CampusName: studentAny.firstOption || 'Main Campus',
-                Username: studentAny.user?.username || 'N/A',
-                TempPassword: 'Check your confirmation email'
-            });
-        }
+    // Handle Status-based Notifications
+    if (status === 'ACCEPTED') {
+        const studentAny = updatedApplication.student as any;
+        await triggerNotification(studentAny.userId!, 'ADMISSION_CONFIRMED', {
+            StudentName: studentAny.name,
+            CampusName: studentAny.firstOption || 'Main Campus',
+            Username: studentAny.user?.username || 'N/A',
+            TempPassword: 'Check your confirmation email'
+        });
     } else if (status === 'REVIEWED') {
         const studentAny = updatedApplication.student as any;
         if (studentAny.userId) {

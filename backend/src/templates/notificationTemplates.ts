@@ -18,11 +18,11 @@ export interface NotificationData {
 export type EmailRole = 'ADMISSIONS' | 'SUPPORT' | 'INFO' | 'PRINCIPAL' | 'ADMIN';
 
 export const EMAIL_ROLES: Record<EmailRole, string> = {
-  ADMISSIONS: 'admissions@darussalameduvillage.com',
-  SUPPORT: 'support@darussalameduvillage.com',
-  INFO: 'info@darussalameduvillage.com',
-  PRINCIPAL: 'principal@darussalameduvillage.com',
-  ADMIN: 'admin@darussalameduvillage.com',
+  ADMISSIONS: process.env.EMAIL_ADMISSIONS || 'admissions@darussalameduvillage.com',
+  SUPPORT: process.env.EMAIL_SUPPORT || 'support@darussalameduvillage.com',
+  INFO: process.env.EMAIL_INFO || 'info@darussalameduvillage.com',
+  PRINCIPAL: process.env.EMAIL_PRINCIPAL || 'principal@darussalameduvillage.com',
+  ADMIN: process.env.EMAIL_ADMIN || 'admin@darussalameduvillage.com',
 };
 
 const ISLAMIC_GREETING_AR = "السلام عليكم ورحمة الله وبركاته";
@@ -189,6 +189,41 @@ Kindly confirm via the portal: ${LOGIN_URL}
 ${ISLAMIC_CLOSING_AR}`.trim()
   },
 
+  APPLICATION_SUBMITTED_SUCCESSFULLY: {
+    email: {
+      roleKey: 'ADMISSIONS',
+      fromName: 'Darussalam Edu Village – Tharqiya Admissions',
+      subject: "Application Submitted Successfully – Tharqiya Course | Darussalam Edu Village",
+      template: (data: NotificationData) => `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+          <p>${ISLAMIC_GREETING_AR}</p>
+          <p>Dear ${data.StudentName},</p>
+          <p>We are pleased to inform you that your application for the Tharqiya Course at Darussalam Edu Village has been submitted successfully.</p>
+          <p>Your applicant profile has been created. You may use the credentials below to access your profile and track application progress.</p>
+          <div style="background-color: #f9fafb; padding: 20px; border-radius: 12px; border: 1px solid #e5e7eb; margin: 20px 0;">
+            <p style="margin-top: 0;"><strong>Applicant Portal Login:</strong><br>
+            <a href="${LOGIN_URL}">${LOGIN_URL}</a></p>
+            <p><strong>Username:</strong> ${data.Username}</p>
+            <p style="margin-bottom: 0;"><strong>Temporary Password:</strong> ${data.TempPassword}</p>
+          </div>
+          <p>For security, please do not share your login credentials with anyone.</p>
+          <p>All future updates regarding your application, interview schedule, and results will be available in your applicant profile and communicated via email.</p>
+          <p>${ISLAMIC_CLOSING_AR}</p>
+          <br>
+          <p><strong>Admissions Office</strong><br>Darussalam Edu Village</p>
+        </div>
+      `
+    },
+    whatsapp: (data: NotificationData) => `
+${ISLAMIC_GREETING_AR}
+
+Darussalam Edu Village: Your application for the Tharqiya Course is successfully received. 
+Your login credentials have been sent to your registered email for security. 
+Please check your Inbox (and Spam folder) immediately.
+
+${ISLAMIC_CLOSING_AR}`.trim(),
+  },
+
   ADMISSION_CONFIRMED: {
     email: {
       roleKey: 'ADMISSIONS',
@@ -203,7 +238,7 @@ ${ISLAMIC_CLOSING_AR}`.trim()
           <p><strong>Login URL:</strong> <a href="${LOGIN_URL}">${LOGIN_URL}</a><br>
           <strong>Username:</strong> ${data.Username}<br>
           <strong>Temporary Password:</strong> ${data.TempPassword}</p>
-          <p style="color: #b91c1c;">⚠️ Please log in immediately and change your password for security purposes. Do not share your credentials with anyone.</p>
+          <p>Please do not share your credentials with anyone for security purposes.</p>
           <p>Further instructions will be available in your portal.</p>
           <p>${ISLAMIC_CLOSING_AR}</p>
           <br>

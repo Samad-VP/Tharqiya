@@ -32,10 +32,30 @@ export const createPendingApplication = async (formData: any) => {
         const count = await prisma.student.count();
         const applicationNo = `TQ-2026-${(count + 1).toString().padStart(4, '0')}`;
 
-        // 2. Create Student and Application
-        return await prisma.$transaction(async (tx) => {
+        // 2. Generate Credentials
+        const username = generateUsername(name, applicationNo);
+        const tempPassword = generateTemporaryPassword(whatsapp || phone || '');
+        const hashedPassword = await bcrypt.hash(tempPassword, 10);
+        const loginUrl = `${process.env.FRONTEND_URL || 'https://darussalameduvillage.com'}/login`;
+
+        // 3. Create User, Student and Application (Transaction)
+        const result = await prisma.$transaction(async (tx) => {
+            const user = await tx.user.create({
+                data: {
+                    email: email || `${username}@tharqiya.edu`,
+                    username,
+                    password: hashedPassword,
+                    role: 'STUDENT',
+                    name,
+                    phone: whatsapp || phone,
+                    whatsapp: whatsapp || phone,
+                    isFirstLogin: false,
+                }
+            });
+
             const student = await tx.student.create({
                 data: {
+                    userId: user.id,
                     applicationNo,
                     name,
                     dob: dob ? new Date(dob) : new Date(),
@@ -65,8 +85,18 @@ export const createPendingApplication = async (formData: any) => {
                 }
             });
 
-            return { student, application };
+            return { user, student, application };
         });
+
+        // 4. Trigger Notification (Outside transaction for reliability)
+        await triggerNotification(result.user.id, 'APPLICATION_SUBMITTED_SUCCESSFULLY', {
+            StudentName: name,
+            Username: username,
+            TempPassword: tempPassword,
+            LoginUrl: loginUrl
+        });
+
+        return result;
     } catch (error: any) {
         console.error('[STUDENT_SERVICE] Error in createPendingApplication:', error);
         throw error;
@@ -107,7 +137,7 @@ export const promoteToStudentAccount = async (studentId: string) => {
                 name: student.name,
                 phone: student.whatsapp,
                 whatsapp: student.whatsapp,
-                isFirstLogin: true,
+                isFirstLogin: false,
             }
         });
 
