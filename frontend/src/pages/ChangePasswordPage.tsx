@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axiosInstance';
 import { Lock, Loader2, ShieldCheck, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
@@ -33,10 +33,7 @@ const ChangePasswordPage: React.FC = () => {
 
         setIsSubmitting(true);
         try {
-            await axios.put('/api/auth/password', 
-                { currentPassword, newPassword },
-                { headers: { Authorization: `Bearer ${user?.token}` } }
-            );
+            await api.put('/auth/password', { currentPassword, newPassword });
             
             toast.success('Password updated successfully! Please login again.');
             setTimeout(() => {

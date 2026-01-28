@@ -18,7 +18,7 @@ import {
     ShieldCheck,
     Mail
 } from 'lucide-react';
-import axios from 'axios';
+import api from '../api/axiosInstance';
 import toast from 'react-hot-toast';
 import logo from '../assets/logo.png';
 import FileUploader from '../components/common/FileUploader';
@@ -67,7 +67,7 @@ const AdmissionPage: React.FC = () => {
         e.preventDefault();
         setIsSubmitting(true);
         try {
-            const response = await axios.post('/api/admissions/public/apply', formData);
+            const response = await api.post('/admissions/public/apply', formData);
             setSuccessData(response.data);
             toast.success("Application submitted successfully!");
             setStep(5); // Move to a success step
