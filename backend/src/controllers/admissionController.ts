@@ -5,6 +5,7 @@ import { generateApplicationPDF, generateResultPDF } from '../services/pdfServic
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { AppError } from '../utils/AppError.js';
 import { triggerNotification } from '../services/notificationService.js';
+import { promoteToStudentAccount } from '../services/studentService.js';
 
 // @desc    Submit a new application
 // @route   POST /api/admissions/apply
@@ -24,6 +25,7 @@ export const applyForAdmission = asyncHandler(async (req: AuthRequest, res: Resp
         data: {
             userId: req.user.id,
             applicationNo,
+            name: req.user.name,
             dob: dob ? new Date(dob) : new Date(),
             address: address || 'N/A',
             hifzCenter: hifzCenter || 'N/A',
@@ -208,18 +210,27 @@ export const updateApplicationStatus = asyncHandler(async (req: AuthRequest, res
         }
     });
 
-    // Handle Status-based Notifications
-    if (status === 'REVIEWED') {
-        await triggerNotification(updatedApplication.student.userId, 'APPLICATION_UNDER_REVIEW', {
-            StudentName: updatedApplication.student.user.name
-        });
-    } else if (status === 'ACCEPTED') {
-        await triggerNotification(updatedApplication.student.userId, 'ADMISSION_CONFIRMED', {
-            StudentName: updatedApplication.student.user.name,
-            CampusName: updatedApplication.student.firstOption || 'Main Campus',
-            Username: updatedApplication.student.user.username || 'N/A',
-            TempPassword: 'Check your initial registration email' // or fetch if available
-        });
+    // Handle Status-based Notifications & Account Promotion
+    if (status === 'DOCS_VERIFIED' || status === 'ACCEPTED') {
+        // Promote to full account if not already promoted
+        if (!updatedApplication.student.userId) {
+            await promoteToStudentAccount(updatedApplication.studentId);
+        }
+        
+        if (status === 'ACCEPTED') {
+            await triggerNotification(updatedApplication.student.userId!, 'ADMISSION_CONFIRMED', {
+                StudentName: updatedApplication.student.name,
+                CampusName: updatedApplication.student.firstOption || 'Main Campus',
+                Username: updatedApplication.student.user?.username || 'N/A',
+                TempPassword: 'Check your confirmation email'
+            });
+        }
+    } else if (status === 'REVIEWED') {
+        if (updatedApplication.student.userId) {
+            await triggerNotification(updatedApplication.student.userId, 'APPLICATION_UNDER_REVIEW', {
+                StudentName: updatedApplication.student.name
+            });
+        }
     }
 
     res.json({

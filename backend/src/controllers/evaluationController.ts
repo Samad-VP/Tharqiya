@@ -51,7 +51,7 @@ export const submitEvaluation = asyncHandler(async (req: AuthRequest, res: Respo
             include: { user: true }
         });
         
-        if (student) {
+        if (student && student.userId && student.user) {
             await triggerNotification(student.userId, 'INTERVIEW_ATTENDED', {
                 StudentName: student.user.name
             });

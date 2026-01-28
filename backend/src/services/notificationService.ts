@@ -4,12 +4,11 @@ import prisma from '../config/db.js';
 import { NOTIFICATION_TEMPLATES, EMAIL_ROLES, NotificationData, EmailRole } from '../templates/notificationTemplates.js';
 
 const createTransporter = (roleKey: EmailRole) => {
-    // For now, all roles share the same SMTP server but different 'from' identities
-    // This allows centralized control with dynamic sender info
+    // Zoho Port 465 (SSL) is more reliable than 587 (TLS) for primary accounts
     return nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: parseInt(process.env.SMTP_PORT || '587'),
-        secure: false,
+        host: process.env.SMTP_HOST || 'smtp.zoho.com',
+        port: parseInt(process.env.SMTP_PORT || '465'),
+        secure: true, // Use SSL/TLS
         auth: {
             user: process.env.SMTP_USER,
             pass: process.env.SMTP_PASS,
@@ -24,22 +23,28 @@ const sendEmail = async (to: string, event: string, data: NotificationData) => {
     if (!templateConfig) throw new Error(`Email template for ${event} not found`);
 
     const roleKey: EmailRole = templateConfig.roleKey || 'ADMISSIONS';
-    const fromEmail = EMAIL_ROLES[roleKey];
+    
+    // Zoho Requirement: "From" address MUST match the authenticated SMTP user
+    // Otherwise, it gets rejected as "Relay Access Denied" or "Unauthorized Sender"
+    const fromEmail = process.env.SMTP_USER; 
     const fromName = templateConfig.fromName || 'Darussalam Edu Village';
 
     const html = templateConfig.template(data);
     const subject = templateConfig.subject;
 
     try {
-        await defaultTransporter.sendMail({
+        console.log(`[EMAIL] Sending to ${to} via ${fromEmail}...`);
+        const info = await defaultTransporter.sendMail({
             from: `"${fromName}" <${fromEmail}>`,
+            replyTo: EMAIL_ROLES[roleKey], // Allow replies to go to the specific department
             to,
             subject,
             html,
         });
+        console.log(`[EMAIL SUCCESS] Message ID: ${info.messageId}`);
         return { success: true };
     } catch (error: any) {
-        console.error(`[EMAIL ERROR] [Role: ${roleKey}] ${error.message}`);
+        console.error(`[EMAIL ERROR] [Event: ${event}] ${error.message}`);
         return { success: false, error: error.message };
     }
 };
@@ -51,14 +56,26 @@ const sendWhatsApp = async (phone: string, event: string, data: NotificationData
     const message = typeof template === 'function' ? template(data) : template;
     
     try {
-        const url = `${process.env.WHATSAPP_API_URL}/waInstance${process.env.WHATSAPP_ID_INSTANCE}/sendMessage/${process.env.WHATSAPP_API_TOKEN}`;
+        // Correct Green-API endpoint construction
+        // Standard: https://api.green-api.com/waInstance{{idInstance}}/sendMessage/{{apiTokenInstance}}
+        const baseUrl = process.env.WHATSAPP_API_URL?.replace(/\/$/, '') || 'https://api.green-api.com';
+        const idInstance = process.env.WHATSAPP_ID_INSTANCE;
+        const apiToken = process.env.WHATSAPP_API_TOKEN;
+
+        const url = `${baseUrl}/waInstance${idInstance}/sendMessage/${apiToken}`;
         const cleanPhone = phone.replace(/\D/g, '');
         const chatId = `${cleanPhone}@c.us`;
 
+        console.log(`[WHATSAPP] Sending to ${chatId}...`);
         const response = await axios.post(url, { chatId, message });
+        
+        console.log(`[WHATSAPP SUCCESS] Response:`, response.data);
         return { success: true, response: response.data };
     } catch (error: any) {
-        console.error(`[WHATSAPP ERROR] ${error.message}`);
+        console.error(`[WHATSAPP ERROR] [Event: ${event}] ${error.message}`);
+        if (error.response) {
+            console.error(`[WHATSAPP ERROR DATA]`, error.response.data);
+        }
         return { success: false, error: error.message };
     }
 };

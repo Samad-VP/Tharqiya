@@ -8,8 +8,10 @@ We use **GitHub Actions** for our automated workflows.
 
 ### Workflows
 
-- **CI (Continuous Integration)**: Triggered on every push to `main` and all Pull Requests. It ensures the code builds correctly and dependencies are valid across both `frontend` and `backend`.
-- **CD (Continuous Deployment)**: Once CI passes on the `main` branch, the application is automatically deployed.
+- **CI (Continuous Integration)**: Triggered on every push to `main` and all Pull Requests. It ensures the code builds correctly and dependencies are valid across both `frontend` and `backend` using `.github/workflows/ci.yml`.
+- **CD (Continuous Deployment)**: Once CI passes on the `main` branch, the application is automatically deployed via `.github/workflows/cd.yml`.
+  - **Frontend**: Deployed to Vercel.
+  - **Backend**: Deployed to Railway.
 
 ## 2. Deployment Strategy
 

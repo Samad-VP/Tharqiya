@@ -1,8 +1,9 @@
 import React, { useState, useRef } from 'react';
-import { Upload, X, FileText, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { Upload, X, FileText, CheckCircle, AlertCircle, Loader2, RefreshCcw } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../../api/axiosInstance';
 import { useAuth } from '../../context/AuthContext';
+import { validateFile } from '../../utils/fileValidation';
 
 interface FileUploaderProps {
   onUploadSuccess: (url: string, publicId: string) => void;
@@ -11,7 +12,7 @@ interface FileUploaderProps {
   label?: string;
   accept?: string;
   type?: 'image' | 'document';
-  maxSize?: number; // in MB
+  currentPublicId?: string; // For replacement
 }
 
 const FileUploader: React.FC<FileUploaderProps> = ({
@@ -21,22 +22,28 @@ const FileUploader: React.FC<FileUploaderProps> = ({
   label = 'Upload File',
   accept = 'image/*,application/pdf',
   type = 'image',
-  maxSize = 5
+  currentPublicId
 }) => {
   const { user: currentUser } = useAuth();
   const [isUploading, setIsUploading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
+  const [showReplace, setShowReplace] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Set limits based on category
+  const maxSizeKB = type === 'image' ? 300 : 2048;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (!selectedFile) return;
 
-    // Validate size
-    if (selectedFile.size > maxSize * 1024 * 1024) {
-      toast.error(`File size must be less than ${maxSize}MB`);
+    // Validate size and type
+    const validation = validateFile(selectedFile, type, maxSizeKB);
+    if (!validation.isValid) {
+      toast.error(validation.error || 'Invalid file');
+      if (fileInputRef.current) fileInputRef.current.value = '';
       return;
     }
 
@@ -56,12 +63,18 @@ const FileUploader: React.FC<FileUploaderProps> = ({
     uploadFile(selectedFile);
   };
 
-  const uploadFile = async (file: File) => {
+  const uploadFile = async (selectedFile: File) => {
     setIsUploading(true);
     setProgress(0);
 
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append('file', selectedFile);
+    
+    // Pass old public ID if replacing
+    if (currentPublicId) {
+      formData.append('oldPublicId', currentPublicId);
+      formData.append('resourceType', type === 'image' ? 'image' : 'raw');
+    }
 
     const endpoint = type === 'image' ? '/uploads/image' : '/uploads/document';
 
@@ -79,6 +92,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
       const { url, public_id } = response.data.data;
       onUploadSuccess(url, public_id);
       toast.success('Upload successful!');
+      setShowReplace(false);
     } catch (error: any) {
       console.error('Upload error:', error);
       const errorMsg = error.response?.data?.message || 'Failed to upload file';
@@ -95,8 +109,14 @@ const FileUploader: React.FC<FileUploaderProps> = ({
     setFile(null);
     setPreview(null);
     setProgress(0);
+    setShowReplace(false);
     if (onRemove) onRemove();
     if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const handleReplaceClick = () => {
+    setShowReplace(true);
+    fileInputRef.current?.click();
   };
 
   return (
@@ -125,7 +145,9 @@ const FileUploader: React.FC<FileUploaderProps> = ({
               <Upload className="w-6 h-6 text-primary" />
             </div>
             <p className="text-sm font-medium text-gray-700 dark:text-gray-200">{label}</p>
-            <p className="text-xs text-gray-500 mt-1">Max size: {maxSize}MB</p>
+            <p className="text-xs text-gray-500 mt-1">
+              Max size: {maxSizeKB > 1000 ? (maxSizeKB / 1024).toFixed(1) + 'MB' : maxSizeKB + 'KB'}
+            </p>
           </div>
         )}
 
@@ -156,15 +178,25 @@ const FileUploader: React.FC<FileUploaderProps> = ({
                 <p className="text-sm font-medium text-gray-700 dark:text-gray-200 truncate max-w-[150px]">
                   {file.name}
                 </p>
-                <p className="text-xs text-gray-500">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                <p className="text-xs text-gray-500">{(file.size / 1024).toFixed(1)} KB</p>
               </div>
             </div>
-            <button 
-              onClick={handleRemove}
-              className="p-1.5 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-full transition-colors text-gray-500 hover:text-red-500"
-            >
-              <X className="w-5 h-5" />
-            </button>
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={handleReplaceClick}
+                className="p-1.5 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-full transition-colors text-gray-500 hover:text-primary"
+                title="Replace file"
+              >
+                <RefreshCcw className="w-4 h-4" />
+              </button>
+              <button 
+                onClick={handleRemove}
+                className="p-1.5 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-full transition-colors text-gray-500 hover:text-red-500"
+                title="Remove file"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
           </div>
         )}
       </div>

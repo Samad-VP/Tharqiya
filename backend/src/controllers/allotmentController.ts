@@ -105,10 +105,12 @@ export const finalizeAllotments = asyncHandler(async (req: Request, res: Respons
             });
 
             // Trigger Notification
-            await triggerNotification(allotment.application.student.userId, 'ALLOTMENT_RESULT', {
-                StudentName: allotment.application.student.user.name,
-                CampusName: allotment.campus
-            });
+            if (allotment.application.student.userId && allotment.application.student.user) {
+                await triggerNotification(allotment.application.student.userId, 'ALLOTMENT_RESULT', {
+                    StudentName: allotment.application.student.user.name,
+                    CampusName: allotment.campus
+                });
+            }
 
             return { appId, status: 'success' };
         } catch (error: any) {

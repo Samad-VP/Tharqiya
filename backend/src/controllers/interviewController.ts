@@ -158,7 +158,7 @@ export const batchScheduleInterviews = asyncHandler(async (req: Request, res: Re
             });
 
             // Trigger Professional Notifications (Optional)
-            if (req.body.sendNotifications) {
+            if (req.body.sendNotifications && application.student.userId && application.student.user) {
                 await triggerNotification(application.student.userId, 'INTERVIEW_SCHEDULED', {
                     StudentName: application.student.user.name,
                     InterviewDate: scheduledDate.toLocaleDateString(),
@@ -209,7 +209,7 @@ export const updateInterview = asyncHandler(async (req: Request, res: Response) 
             }
         });
 
-        if (interviewWithDetails) {
+        if (interviewWithDetails && interviewWithDetails.application.student.userId && interviewWithDetails.application.student.user) {
             await triggerNotification(interviewWithDetails.application.student.userId, 'INTERVIEW_RESCHEDULED', {
                 StudentName: interviewWithDetails.application.student.user.name,
                 InterviewDate: scheduledDate.toLocaleDateString(),

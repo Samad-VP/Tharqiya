@@ -61,7 +61,7 @@ const AdmissionPage: React.FC = () => {
     const prevStep = () => setStep(prev => prev - 1);
 
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [successData, setSuccessData] = useState<{ applicationNo: string; username: string } | null>(null);
+    const [successData, setSuccessData] = useState<{ applicationNo: string } | null>(null);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -70,7 +70,7 @@ const AdmissionPage: React.FC = () => {
             const response = await axios.post('/api/admissions/public/apply', formData);
             setSuccessData(response.data);
             toast.success("Application submitted successfully!");
-            setStep(4); // Move to a success step
+            setStep(5); // Move to a success step
         } catch (err: any) {
             console.error("Form Submission Error:", err);
             toast.error(err.response?.data?.message || "Failed to submit application. Please try again.");
@@ -369,7 +369,7 @@ const AdmissionPage: React.FC = () => {
 
                                             <div className="grid sm:grid-cols-2 gap-6">
                                                 <div className="space-y-4">
-                                                    <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Photo (Max 2MB)</label>
+                                                    <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Photo (Max 300KB)</label>
                                                     <FileUploader 
                                                         label="Upload Photo"
                                                         type="image"
@@ -382,7 +382,7 @@ const AdmissionPage: React.FC = () => {
                                                     />
                                                 </div>
                                                 <div className="space-y-4">
-                                                    <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">SSLC/Cert (PDF/Img)</label>
+                                                    <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">SSLC/Cert (PDF Only) (Max 2MB)</label>
                                                     <FileUploader 
                                                         label="Upload Certificate"
                                                         type="document"
@@ -434,23 +434,17 @@ const AdmissionPage: React.FC = () => {
                                         <p className="text-slate-500 dark:text-slate-400 mb-8 font-medium">Your application has been successfully submitted to Darussalam Edu Village.</p>
                                         
                                         <div className="bg-slate-50 dark:bg-slate-900/50 p-8 rounded-3xl border border-slate-100 dark:border-slate-800 mb-10">
-                                            <div className="grid grid-cols-2 gap-8">
-                                                <div className="text-center">
-                                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Application No</p>
-                                                    <p className="text-xl font-black text-tharqiya-orange dark:text-tharqiya-gold">{successData.applicationNo}</p>
-                                                </div>
-                                                <div className="text-center">
-                                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Username</p>
-                                                    <p className="text-xl font-black text-tharqiya-deep dark:text-white">{successData.username}</p>
-                                                </div>
+                                            <div className="text-center">
+                                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Application Number</p>
+                                                <p className="text-4xl font-black text-tharqiya-orange dark:text-tharqiya-gold">{successData.applicationNo}</p>
                                             </div>
                                         </div>
 
                                         <div className="flex flex-col gap-4">
-                                            <p className="text-sm font-bold text-slate-600 dark:text-slate-300">
-                                                We have sent your login credentials to your WhatsApp and Email.
+                                            <p className="text-sm font-bold text-slate-600 dark:text-slate-300 leading-relaxed px-6">
+                                                Your application is now under review. Once an administrator approves your documents, your login credentials will be sent to your <span className="text-tharqiya-deep dark:text-white">WhatsApp</span> and <span className="text-tharqiya-deep dark:text-white">Email</span>.
                                             </p>
-                                            <a href="/login" className="btn-primary w-full py-5 text-xl mt-4">Login to Student Portal</a>
+                                            <a href="/" className="btn-primary w-full py-5 text-xl mt-4">Return to Home</a>
                                         </div>
                                     </motion.div>
                                 )}

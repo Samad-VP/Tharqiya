@@ -46,7 +46,7 @@ export const getDashboardStats = asyncHandler(async (req: AuthRequest, res: Resp
     const recentActivities = recentApplications.map(app => ({
         type: 'APPLICATION_RECEIVED',
         title: 'New application received',
-        subtitle: `Student: ${app.student.user.name} • ID: ${app.student.applicationNo}`,
+        subtitle: `Student: ${app.student.user?.name || app.student.name} • ID: ${app.student.applicationNo}`,
         timestamp: app.appliedAt
     }));
 

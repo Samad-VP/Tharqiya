@@ -1,5 +1,6 @@
 import prisma from '../config/db.js';
 import bcrypt from 'bcryptjs';
+import { triggerNotification } from './notificationService.js';
 
 export const generateUsername = (name: string, applicationNo: string): string => {
     const firstName = name.split(' ')[0].toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -12,72 +13,31 @@ export const generateTemporaryPassword = (phone: string): string => {
     return `DEV@${last4}`;
 };
 
-export const createStudentAccount = async (formData: any) => {
-    console.log('[STUDENT_SERVICE] Received Form Data:', formData);
+/**
+ * Creates a pending student application without a User account.
+ * Credentials will be generated only after admin approval.
+ */
+export const createPendingApplication = async (formData: any) => {
+    console.log('[STUDENT_SERVICE] Creating Pending Application:', formData);
     const { 
-        name, 
-        phone, 
-        dob, 
-        place, 
-        district, 
-        address, 
-        whatsapp, 
-        hifzCenter, 
-        hifzInstitution,
-        dawrasCount, 
-        schoolEducation, 
-        kitabsStudied, 
-        firstOption, 
-        secondOption, 
-        thirdOption, 
-        parentName,
-        motherName,
-        documents
+        name, phone, dob, place, district, address, 
+        whatsapp, hifzCenter, hifzInstitution,
+        dawrasCount, schoolEducation, kitabsStudied, 
+        firstOption, secondOption, thirdOption, 
+        parentName, motherName, documents, email
     } = formData;
 
     try {
-        // Check if user already exists
-        const email = formData.email || `${name.split(' ')[0].toLowerCase()}.${phone.slice(-4)}@tharqiya.edu`;
-        const existingUser = await prisma.user.findUnique({
-            where: { email }
-        });
-
-        if (existingUser) {
-            throw new Error('An account with this email/phone already exists. If you have already applied, please login to your portal.');
-        }
-
-        // 1. Generate Application Number: TQ-2026-XXXX
+        // 1. Generate Application Number
         const count = await prisma.student.count();
         const applicationNo = `TQ-2026-${(count + 1).toString().padStart(4, '0')}`;
-        console.log('[STUDENT_SERVICE] Generated Application No:', applicationNo);
 
-        // 2. Generate Credentials
-        const username = generateUsername(name, applicationNo);
-        const tempPassword = generateTemporaryPassword(phone);
-        const hashedPassword = await bcrypt.hash(tempPassword, 10);
-        console.log('[STUDENT_SERVICE] Generated Username:', username);
-
-        // 3. Create User and Student (Transaction)
+        // 2. Create Student and Application
         return await prisma.$transaction(async (tx) => {
-            console.log('[STUDENT_SERVICE] Starting Transaction...');
-            
-            const user = await tx.user.create({
-                data: {
-                    email, 
-                    username,
-                    password: hashedPassword,
-                    role: 'STUDENT',
-                    name,
-                    phone,
-                    isFirstLogin: true,
-                }
-            });
-            console.log('[STUDENT_SERVICE] User Created:', user.id);
-
             const student = await tx.student.create({
                 data: {
-                    userId: user.id,
                     applicationNo,
+                    name,
                     dob: dob ? new Date(dob) : new Date(),
                     place: place || 'N/A',
                     district: district || 'N/A',
@@ -94,22 +54,77 @@ export const createStudentAccount = async (formData: any) => {
                     motherName: motherName || 'N/A',
                     status: 'PENDING',
                     documents: documents || {},
+                    resources: { email: email || null } as any
                 }
             });
-            console.log('[STUDENT_SERVICE] Student Profile Created:', student.id);
 
-            await tx.application.create({
+            const application = await tx.application.create({
                 data: {
                     studentId: student.id,
                     status: 'PENDING',
                 }
             });
-            console.log('[STUDENT_SERVICE] Application Record Created');
 
-            return { user, student, tempPassword };
+            return { student, application };
         });
     } catch (error: any) {
-        console.error('[STUDENT_SERVICE] Error in createStudentAccount:', error);
+        console.error('[STUDENT_SERVICE] Error in createPendingApplication:', error);
         throw error;
     }
+};
+
+/**
+ * Promotes a pending application to a full Student account.
+ * Generates credentials and sends notifications.
+ */
+export const promoteToStudentAccount = async (studentId: string) => {
+    console.log('[STUDENT_SERVICE] Promoting Student to Account:', studentId);
+
+    const student = await prisma.student.findUnique({
+        where: { id: studentId },
+    });
+
+    if (!student) throw new Error('Student application not found');
+    if (student.userId) return student; // Already promoted
+
+    // Extract email from resources or generate one
+    const resources = student.resources as any;
+    const email = resources?.email || `${student.name.split(' ')[0].toLowerCase()}.${student.applicationNo.slice(-4)}@tharqiya.edu`;
+
+    // 1. Generate Credentials
+    const username = generateUsername(student.name, student.applicationNo);
+    const tempPassword = generateTemporaryPassword(student.whatsapp || '');
+    const hashedPassword = await bcrypt.hash(tempPassword, 10);
+
+    // 2. Create User and Link to Student (Transaction)
+    return await prisma.$transaction(async (tx) => {
+        const user = await tx.user.create({
+            data: {
+                email,
+                username,
+                password: hashedPassword,
+                role: 'STUDENT',
+                name: student.name,
+                phone: student.whatsapp,
+                isFirstLogin: true,
+            }
+        });
+
+        const updatedStudent = await tx.student.update({
+            where: { id: student.id },
+            data: { userId: user.id }
+        });
+
+        // 3. Send Credentials Notification
+        const loginUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/login`;
+        
+        await triggerNotification(user.id, 'ADMISSION_CONFIRMED', {
+            StudentName: student.name,
+            Username: username,
+            TempPassword: tempPassword,
+            LoginUrl: loginUrl
+        });
+
+        return { user, student: updatedStudent, tempPassword };
+    });
 };

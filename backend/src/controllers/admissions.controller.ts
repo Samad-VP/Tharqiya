@@ -95,15 +95,17 @@ export const processAdmission = async (req: Request, res: Response) => {
         const tempPassword = Math.random().toString(36).slice(-8);
         
         // Update User
-        await prisma.user.update({
-            where: { id: application.student.userId },
-            data: { 
-                username: username,
-                // In real app, hash this password!
-                password: tempPassword, // MOCK: Should be bcrypt.hash(tempPassword)
-                role: 'STUDENT'
-            }
-        });
+        if (application.student.userId) {
+            await prisma.user.update({
+                where: { id: application.student.userId },
+                data: { 
+                    username: username,
+                    // In real app, hash this password!
+                    password: tempPassword, // MOCK: Should be bcrypt.hash(tempPassword)
+                    role: 'STUDENT'
+                }
+            });
+        }
         
         // Update Application Status
         await prisma.application.update({

@@ -67,7 +67,7 @@ export const publishResult = asyncHandler(async (req: AuthRequest, res: Response
         include: { user: true }
     });
 
-    if (student) {
+    if (student && student.userId && student.user) {
         // 1. Trigger Marks Published notification
         await triggerNotification(student.userId, 'INTERVIEW_MARKS_PUBLISHED', {
             StudentName: student.user.name,

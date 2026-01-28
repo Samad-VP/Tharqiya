@@ -9,42 +9,32 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    container: fedora:latest
 
     steps:
-      - name: Install System Prerequisites
-        run: |
-          dnf -y update
-          dnf -y install git tar gzip which openssl-devel
-
       - uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: "npm"
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
 
-      - name: Install Backend Dependencies
+      - name: Backend - Install & Generate
         run: |
           cd backend
           npm install
-
-      - name: Prisma Client Generation
-        run: |
-          cd backend
           npx prisma generate
 
-      - name: Build Backend (Check TypeScript)
+      - name: Backend - Type Check
         run: |
           cd backend
-          npx tsc
+          npx tsc --noEmit
 
-      - name: Install Frontend Dependencies
+      - name: Frontend - Install & Build
         run: |
           cd frontend
           npm install
-
-      - name: Build Frontend
-        run: |
-          cd frontend
           npm run build

@@ -18,8 +18,10 @@ model User {
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   isFirstLogin  Boolean        @default(true)
-  username      String?        @unique
-  interviewer   Interviewer?
+  username               String?        @unique
+  profileImageUrl        String?
+  profileImagePublicId   String?
+  interviewer            Interviewer?
   notifications Notification[]
   auditLogs     AuditLog[]
   student       Student?
@@ -29,16 +31,19 @@ model User {
 
 model Student {
   id              String            @id @default(uuid())
-  userId          String            @unique
+  userId          String?           @unique
   applicationNo   String            @unique
+  name            String
   dob             DateTime
   address         String?
   hifzCenter      String
   fatherName      String
   motherName      String
-  status          ApplicationStatus @default(PENDING)
-  documents       Json?
-  dawrasCount     String?
+  status           ApplicationStatus @default(PENDING)
+  documents        Json?
+  documentUrl      String?
+  documentPublicId String?
+  dawrasCount      String?
   district        String?
   firstOption     String?
   kitabsStudied   String?
@@ -49,7 +54,7 @@ model Student {
   thirdOption     String?
   whatsapp        String?
   application     Application?
-  user            User              @relation(fields: [userId], references: [id])
+  user            User?             @relation(fields: [userId], references: [id])
 }
 
 model Application {
