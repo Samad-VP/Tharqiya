@@ -14,7 +14,10 @@ import {
     UserCircle,
     Calendar,
     Users,
-    FolderOpen
+    FolderOpen,
+    Mail,
+    MessageSquare,
+    Bell
 } from 'lucide-react';
 import AdminLayout from '../components/AdminLayout';
 import api from '../api/axiosInstance';
@@ -34,6 +37,8 @@ const AdminApplications: React.FC = () => {
         scheduledAt: '',
         location: 'Darussalam Edu Village'
     });
+    const [selectedStudentNotifications, setSelectedStudentNotifications] = React.useState<any[]>([]);
+    const [loadingNotifications, setLoadingNotifications] = React.useState(false);
 
     const fetchApplications = async () => {
         try {
@@ -88,6 +93,33 @@ const AdminApplications: React.FC = () => {
         } catch (error: any) {
             toast.error(error.response?.data?.message || 'Failed to schedule interview');
         }
+    };
+
+    const fetchStudentNotifications = async (userId: string) => {
+        try {
+            setLoadingNotifications(true);
+            const response = await api.get(`/admin/notifications?userId=${userId}`);
+            setSelectedStudentNotifications(response.data.data);
+        } catch (error) {
+            console.error('Error fetching notifications:', error);
+        } finally {
+            setLoadingNotifications(false);
+        }
+    };
+
+    const formatLogMessage = (message: string) => {
+        try {
+            const parsed = JSON.parse(message);
+            if (typeof parsed === 'object') {
+                return Object.entries(parsed)
+                    .slice(0, 3)
+                    .map(([k, v]) => `${k}: ${v}`)
+                    .join(' | ');
+            }
+        } catch (e) {
+            return message.replace(/<[^>]*>/g, ' ').substring(0, 100);
+        }
+        return message;
     };
 
     const getStatusColor = (status: string) => {
@@ -269,11 +301,15 @@ const AdminApplications: React.FC = () => {
                                         <td className="px-8 py-6 text-right">
                                             <div className="flex items-center justify-end gap-2">
                                                 <button 
-                                                    onClick={() => { setSelectedApplication(app); setShowDetailsModal(true); }}
-                                                    className="p-2 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-400 hover:text-edu-teal transition-all"
-                                                >
-                                                    <Eye size={18} />
-                                                </button>
+                                    onClick={() => { 
+                                        setSelectedApplication(app); 
+                                        setShowDetailsModal(true); 
+                                        if (app.student?.userId) fetchStudentNotifications(app.student.userId);
+                                    }}
+                                    className="p-1 px-2 hover:bg-edu-teal/10 rounded-lg text-edu-teal transition-all group-hover:scale-110"
+                                >
+                                    <Eye size={16} />
+                                </button>
                                                 <button 
                                                     disabled={!!app.interview}
                                                     onClick={() => { setSelectedApplication(app); setShowScheduleModal(true); }}
@@ -324,7 +360,7 @@ const AdminApplications: React.FC = () => {
                     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                         <motion.div 
                             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                            onClick={() => setShowDetailsModal(false)}
+                            onClick={() => { setShowDetailsModal(false); setSelectedStudentNotifications([]); }}
                             className="absolute inset-0 bg-brand-deep/60 backdrop-blur-sm"
                         />
                         <motion.div 
@@ -459,6 +495,84 @@ const AdminApplications: React.FC = () => {
                                                 )}
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+
+                                {/* Communication History Section */}
+                                <div className="mt-8 pt-8 border-t border-slate-100 dark:border-slate-800">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Communication History</p>
+                                        <button 
+                                            onClick={() => selectedApplication.student?.userId && fetchStudentNotifications(selectedApplication.student.userId)}
+                                            className="p-1.5 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg text-slate-400 hover:text-edu-teal transition-all"
+                                            title="Refresh Communications"
+                                        >
+                                            <Loader2 size={12} className={loadingNotifications ? 'animate-spin' : ''} />
+                                        </button>
+                                    </div>
+                                    
+                                    <div className="space-y-3">
+                                        {loadingNotifications ? (
+                                            <div className="flex justify-center p-6 bg-slate-50 dark:bg-white/5 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800">
+                                                <Loader2 className="w-6 h-6 text-edu-teal animate-spin" />
+                                            </div>
+                                        ) : selectedStudentNotifications.length > 0 ? (
+                                            <div className="grid gap-3">
+                                                {selectedStudentNotifications.map((notif, i) => (
+                                                    <div key={notif.id || i} className="p-4 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-slate-800 flex items-center justify-between group">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className={`p-2 rounded-xl ${notif.type === 'EMAIL' ? 'bg-blue-500/10 text-blue-500' : 'bg-emerald-500/10 text-emerald-500'}`}>
+                                                                {notif.type === 'EMAIL' ? <Mail size={14} /> : <MessageSquare size={14} />}
+                                                            </div>
+                                                            <div className="flex-grow min-w-0">
+                                                                <div className="flex items-center gap-2 mb-1">
+                                                                    <p className="text-[10px] font-black text-brand-deep dark:text-white uppercase tracking-tight leading-none">{notif.event.replace(/_/g, ' ')}</p>
+                                                                    <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest px-1.5 py-0.5 bg-slate-100 dark:bg-white/10 rounded">{notif.type}</span>
+                                                                </div>
+                                                                <p className="text-[9px] font-bold text-slate-400 truncate max-w-[200px]" title={notif.message.replace(/<[^>]*>/g, '')}>{formatLogMessage(notif.message)}</p>
+                                                                <div className="flex items-center gap-2 mt-1">
+                                                                    <p className="text-[8px] font-bold text-slate-400">{new Date(notif.sentAt).toLocaleString()}</p>
+                                                                    {notif.senderEmail && (
+                                                                        <span className="text-[8px] text-edu-teal font-bold truncate max-w-[120px]" title={notif.senderEmail}>• {notif.senderEmail}</span>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="text-right flex flex-col items-end">
+                                                                <span className={`px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-widest ${notif.status === 'SENT' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-red-500/10 text-red-500'}`}>
+                                                                    {notif.status}
+                                                                </span>
+                                                                <span className="text-[7px] font-black text-slate-400 uppercase mt-0.5">Source: {notif.triggeredBy}</span>
+                                                            </div>
+                                                            
+                                                            {/* Only Admins can retry */}
+                                                            {selectedApplication.student?.user?.role !== 'PRINCIPAL' && (
+                                                                <button 
+                                                                    onClick={async (e) => {
+                                                                        e.stopPropagation();
+                                                                        const loadToast = toast.loading("Resending...");
+                                                                        try {
+                                                                            await api.post(`/admin/notifications/${notif.id}/retry`);
+                                                                            toast.success("Sent!", { id: loadToast });
+                                                                            if (selectedApplication.student?.userId) fetchStudentNotifications(selectedApplication.student.userId);
+                                                                        } catch (err: any) {
+                                                                            toast.error(err.response?.data?.message || "Failed", { id: loadToast });
+                                                                        }
+                                                                    }}
+                                                                    className="p-1.5 hover:bg-edu-teal text-edu-teal hover:text-white rounded-lg transition-all"
+                                                                    title="Manual Resend"
+                                                                >
+                                                                    <Bell size={12} />
+                                                                </button>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase text-center py-6 bg-slate-50 dark:bg-white/5 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800">No communication recorded yet</p>
+                                        )}
                                     </div>
                                 </div>
 

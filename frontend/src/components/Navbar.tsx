@@ -28,6 +28,20 @@ const Navbar: React.FC = () => {
         }
     }, [isOpen]);
 
+    // Close menu on navigation or back button
+    useEffect(() => {
+        const handlePopState = () => {
+            if (isOpen) {
+                setIsOpen(false);
+            }
+        };
+
+        window.addEventListener('popstate', handlePopState);
+        setIsOpen(false); // Close menu when route changes
+
+        return () => window.removeEventListener('popstate', handlePopState);
+    }, [location.pathname]);
+
     const navLinks = [
         { name: 'Home', path: '/' },
         { name: 'About', path: '/about' },

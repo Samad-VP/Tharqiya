@@ -5,10 +5,11 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "tsx src/server.ts",
+    "start": "node dist/server.js",
     "dev": "tsx watch src/server.ts",
     "build": "tsc --outDir dist",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "tsc --noEmit",
+    "test:ci": "node dist/tests/health.test.js"
   },
   "keywords": [],
   "author": "",

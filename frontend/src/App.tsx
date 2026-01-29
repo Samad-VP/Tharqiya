@@ -32,8 +32,20 @@ import AllotmentEngine from './pages/AllotmentEngine';
 import AdminNotificationLogs from './pages/AdminNotificationLogs';
 import StudentProfile from './pages/StudentProfile';
 import InterviewerProfile from './pages/InterviewerProfile';
+import StudentNotifications from './pages/StudentNotifications';
 
 import { UserPlus, PhoneCall, GraduationCap, FileCheck, ArrowRight } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
+
+const ScrollToTop: React.FC = () => {
+    const { pathname } = useLocation();
+    
+    React.useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [pathname]);
+    
+    return null;
+};
 
 const Home: React.FC = () => {
     const steps = [
@@ -154,6 +166,7 @@ const App: React.FC = () => {
         <ThemeProvider>
             <AuthProvider>
                 <Router>
+                    <ScrollToTop />
                     <div className="min-h-screen bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-300">
                         <Routes>
                             <Route path="/" element={<><Navbar /><Home /><Footer /></>} />
@@ -166,6 +179,7 @@ const App: React.FC = () => {
                             <Route path="/login" element={<LoginPage />} />
                             <Route path="/portal" element={<><Navbar /><StudentPortal /><Footer /></>} />
                             <Route path="/student/profile" element={<><Navbar /><StudentProfile /><Footer /></>} />
+                            <Route path="/student/notifications" element={<><Navbar /><StudentNotifications /><Footer /></>} />
                             <Route path="/change-password" element={<ChangePasswordPage />} />
                             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
@@ -191,6 +205,7 @@ const App: React.FC = () => {
                                 <Route path="/principal" element={<PrincipalDashboard />} />
                                 <Route path="/principal/allotments" element={<AllotmentEngine />} />
                                 <Route path="/principal/applications" element={<AdminApplications />} />
+                                <Route path="/principal/notifications" element={<AdminNotificationLogs />} />
                                 <Route path="/principal/users" element={<AdminUsers />} />
                                 <Route path="/principal/settings" element={<SettingsPage />} />
                             </Route>

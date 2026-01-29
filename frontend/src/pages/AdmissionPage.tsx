@@ -43,6 +43,7 @@ const AdmissionPage: React.FC = () => {
         firstOption: '',
         secondOption: '',
         thirdOption: '',
+        primeHifzMentor: '',
         documents: {} as Record<string, string>
     });
 
@@ -57,7 +58,29 @@ const AdmissionPage: React.FC = () => {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const nextStep = () => setStep(prev => prev + 1);
+    const validateStep = (currentStep: number) => {
+        let requiredFields: string[] = [];
+        if (currentStep === 1) {
+            requiredFields = ['name', 'parentName', 'motherName', 'address', 'dob', 'place', 'district', 'phone', 'email', 'whatsapp'];
+        } else if (currentStep === 2) {
+            requiredFields = ['hifzCenter', 'dawrasCount', 'schoolEducation', 'primeHifzMentor'];
+        } else if (currentStep === 3) {
+            requiredFields = ['firstOption', 'secondOption', 'thirdOption'];
+        }
+
+        const missingFields = requiredFields.filter(f => !formData[f as keyof typeof formData]);
+        if (missingFields.length > 0) {
+            toast.error("Please fill in all required fields to proceed.");
+            return false;
+        }
+        return true;
+    };
+
+    const nextStep = () => {
+        if (validateStep(step)) {
+            setStep(prev => prev + 1);
+        }
+    };
     const prevStep = () => setStep(prev => prev - 1);
 
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -65,6 +88,12 @@ const AdmissionPage: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        
+        if (!formData.documents.photo || !formData.documents.certificate) {
+            toast.error("Please upload both your Photo and Certificate to submit.");
+            return;
+        }
+
         setIsSubmitting(true);
         try {
             const response = await api.post('/admissions/public/apply', formData);
@@ -189,53 +218,53 @@ const AdmissionPage: React.FC = () => {
                                     >
                                         <div className="grid md:grid-cols-2 gap-6">
                                             <div className="space-y-2">
-                                                <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Candidate Name</label>
+                                                <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Candidate Name <span className="text-red-500">*</span></label>
                                                 <div className="relative">
                                                     <UserRound className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                                                     <input name="name" required value={formData.name} onChange={handleInputChange} className="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="Full Name" />
                                                 </div>
                                             </div>
                                             <div className="space-y-2">
-                                                <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Father's Name</label>
+                                                <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Father's Name <span className="text-red-500">*</span></label>
                                                 <input name="parentName" required value={formData.parentName} onChange={handleInputChange} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="Guardian Name" />
                                             </div>
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Mother's Name</label>
+                                            <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Mother's Name <span className="text-red-500">*</span></label>
                                             <input name="motherName" required value={formData.motherName} onChange={handleInputChange} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="Mother's name" />
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Full Address</label>
+                                            <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Full Address <span className="text-red-500">*</span></label>
                                             <textarea name="address" required value={formData.address} onChange={handleInputChange} rows={3} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="Complete postal address" />
                                         </div>
 
                                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                                             <div className="sm:col-span-1 space-y-2">
-                                                <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Date of Birth</label>
+                                                <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Date of Birth <span className="text-red-500">*</span></label>
                                                 <input type="date" name="dob" required value={formData.dob} onChange={handleInputChange} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" />
                                             </div>
                                             <div className="sm:col-span-1 space-y-2">
-                                                <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Place</label>
+                                                <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Place <span className="text-red-500">*</span></label>
                                                 <input name="place" required value={formData.place} onChange={handleInputChange} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="Gramam/City" />
                                             </div>
                                             <div className="sm:col-span-1 space-y-2">
-                                                <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">District</label>
+                                                <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">District <span className="text-red-500">*</span></label>
                                                 <input name="district" required value={formData.district} onChange={handleInputChange} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="District" />
                                             </div>
                                         </div>
 
                                         <div className="grid md:grid-cols-2 gap-6">
                                             <div className="space-y-2">
-                                                <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Phone Number</label>
+                                                <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Phone Number <span className="text-red-500">*</span></label>
                                                 <div className="relative">
                                                     <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                                                     <input name="phone" required value={formData.phone} onChange={handleInputChange} className="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="Mobile Number" />
                                                 </div>
                                             </div>
                                             <div className="space-y-2">
-                                                <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Email Address</label>
+                                                <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Email Address <span className="text-red-500">*</span></label>
                                                 <div className="relative">
                                                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                                                     <input type="email" name="email" required value={formData.email} onChange={handleInputChange} className="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="yourname@gmail.com" />
@@ -244,7 +273,7 @@ const AdmissionPage: React.FC = () => {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">WhatsApp Number</label>
+                                            <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">WhatsApp Number <span className="text-red-500">*</span></label>
                                             <input name="whatsapp" required value={formData.whatsapp} onChange={handleInputChange} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="WhatsApp" />
                                         </div>
 
@@ -265,18 +294,22 @@ const AdmissionPage: React.FC = () => {
                                         className="space-y-6"
                                     >
                                         <div className="space-y-2">
-                                            <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Hifz Institution</label>
+                                            <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Hifz Institution <span className="text-red-500">*</span></label>
                                             <textarea name="hifzCenter" required value={formData.hifzCenter} onChange={handleInputChange} rows={3} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="Name and address of Madrasa/Institution" />
                                         </div>
 
                                         <div className="grid md:grid-cols-2 gap-6">
                                             <div className="space-y-2">
-                                                <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Number of Dawras Completed</label>
+                                                <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Number of Dawras Completed <span className="text-red-500">*</span></label>
                                                 <input name="dawrasCount" required value={formData.dawrasCount} onChange={handleInputChange} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="Count" />
                                             </div>
                                             <div className="space-y-2">
-                                                <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">School Education</label>
+                                                <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">School Education <span className="text-red-500">*</span></label>
                                                 <input name="schoolEducation" required value={formData.schoolEducation} onChange={handleInputChange} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="Class/Qualification" />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Prime Hifz Mentor <span className="text-red-500">*</span></label>
+                                                <input name="primeHifzMentor" required value={formData.primeHifzMentor} onChange={handleInputChange} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="Teacher Name" />
                                             </div>
                                         </div>
 
@@ -311,7 +344,7 @@ const AdmissionPage: React.FC = () => {
 
                                             <div className="space-y-6">
                                                 <div className="space-y-2">
-                                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">First Option</label>
+                                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">First Option <span className="text-red-500">*</span></label>
                                                     <select name="firstOption" required value={formData.firstOption} onChange={handleInputChange} className="w-full px-6 py-4 bg-tharqiya-cream dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-bold text-sm dark:text-white">
                                                         <option value="">Select Campus</option>
                                                         {campuses.map(c => <option key={c} value={c}>{c}</option>)}
@@ -319,7 +352,7 @@ const AdmissionPage: React.FC = () => {
                                                 </div>
 
                                                 <div className="space-y-2">
-                                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Second Option</label>
+                                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Second Option <span className="text-red-500">*</span></label>
                                                     <select name="secondOption" required value={formData.secondOption} onChange={handleInputChange} className="w-full px-6 py-4 bg-tharqiya-cream dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-bold text-sm dark:text-white">
                                                         <option value="">Select Campus</option>
                                                         {campuses.map(c => <option key={c} value={c}>{c}</option>)}
@@ -327,7 +360,7 @@ const AdmissionPage: React.FC = () => {
                                                 </div>
 
                                                 <div className="space-y-2">
-                                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Third Option</label>
+                                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Third Option <span className="text-red-500">*</span></label>
                                                     <select name="thirdOption" required value={formData.thirdOption} onChange={handleInputChange} className="w-full px-6 py-4 bg-tharqiya-cream dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-bold text-sm dark:text-white">
                                                         <option value="">Select Campus</option>
                                                         {campuses.map(c => <option key={c} value={c}>{c}</option>)}
@@ -369,7 +402,7 @@ const AdmissionPage: React.FC = () => {
 
                                             <div className="grid sm:grid-cols-2 gap-6">
                                                 <div className="space-y-4">
-                                                    <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Photo (Max 300KB)</label>
+                                                    <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Photo (Max 300KB) <span className="text-red-500">*</span></label>
                                                     <FileUploader 
                                                         label="Upload Photo"
                                                         type="image"
@@ -382,7 +415,7 @@ const AdmissionPage: React.FC = () => {
                                                     />
                                                 </div>
                                                 <div className="space-y-4">
-                                                    <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">SSLC/Cert (PDF Only) (Max 2MB)</label>
+                                                    <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">SSLC/Cert (PDF Only) (Max 2MB) <span className="text-red-500">*</span></label>
                                                     <FileUploader 
                                                         label="Upload Certificate"
                                                         type="document"

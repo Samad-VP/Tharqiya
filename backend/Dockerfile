@@ -13,23 +13,29 @@ RUN npm install
 
 COPY . .
 
-# Generate Prisma client
+# Generate Prisma client and compile TypeScript
 RUN npx prisma generate
+RUN npm run build
 
 # Final stage
 FROM node:20-slim
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y openssl
+# Ensure openssl is available for Prisma
+RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package*.json ./
+# Copy only production dependencies and built assets
+COPY package*.json ./
+RUN npm install --omit=dev
+
+COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/src ./src
-COPY --from=builder /app/tsconfig.json ./
 
 EXPOSE 5000
 
-# We use tsx for execution in this specific project setup
+# Set environment to production
+ENV NODE_ENV=production
+
+# Execute using standard node from the compiled dist
 CMD ["npm", "start"]

@@ -11,7 +11,7 @@ import { promoteToStudentAccount } from '../services/studentService.js';
 // @route   POST /api/admissions/apply
 // @access  Private (Student only)
 export const applyForAdmission = asyncHandler(async (req: AuthRequest, res: Response, next: NextFunction) => {
-    const { dob, address, hifzCenter, fatherName, motherName, documents } = req.body;
+    const { dob, address, hifzCenter, fatherName, motherName, documents, primeHifzMentor } = req.body;
 
     if (!req.user) {
         return next(new AppError('User not found in request', 401));
@@ -31,6 +31,7 @@ export const applyForAdmission = asyncHandler(async (req: AuthRequest, res: Resp
             hifzCenter: hifzCenter || 'N/A',
             fatherName: fatherName || 'N/A',
             motherName: motherName || 'N/A',
+            primeHifzMentor: primeHifzMentor || 'N/A',
             documents: documents || {},
         },
     });
@@ -211,18 +212,23 @@ export const updateApplicationStatus = asyncHandler(async (req: AuthRequest, res
     });
 
     // Handle Status-based Notifications
-    if (status === 'ACCEPTED') {
-        const studentAny = updatedApplication.student as any;
-        await triggerNotification(studentAny.userId!, 'ADMISSION_CONFIRMED', {
-            StudentName: studentAny.name,
-            CampusName: studentAny.firstOption || 'Main Campus',
-            Username: studentAny.user?.username || 'N/A',
-            TempPassword: 'Check your confirmation email'
-        });
-    } else if (status === 'REVIEWED') {
-        const studentAny = updatedApplication.student as any;
-        if (studentAny.userId) {
+    const studentAny = updatedApplication.student as any;
+    if (studentAny.userId) {
+        if (status === 'ACCEPTED') {
+            await triggerNotification(studentAny.userId, 'ADMISSION_CONFIRMED', {
+                StudentName: studentAny.name,
+                CampusName: studentAny.firstOption || 'Main Campus'
+            });
+        } else if (status === 'REVIEWED') {
             await triggerNotification(studentAny.userId, 'APPLICATION_UNDER_REVIEW', {
+                StudentName: studentAny.name
+            });
+        } else if (status === 'REJECTED') {
+            await triggerNotification(studentAny.userId, 'APPLICATION_REJECTED', {
+                StudentName: studentAny.name
+            });
+        } else if (status === 'DOCS_VERIFIED') { // Or whichever status means "Approved for Interview" in this flow
+             await triggerNotification(studentAny.userId, 'APPLICATION_APPROVED_FOR_INTERVIEW', {
                 StudentName: studentAny.name
             });
         }
@@ -241,7 +247,7 @@ export const updateMyProfile = asyncHandler(async (req: AuthRequest, res: Respon
 
     const { 
         dob, address, hifzCenter, fatherName, motherName, 
-        phone, documents, place, district, whatsapp 
+        phone, documents, place, district, whatsapp, primeHifzMentor 
     } = req.body;
 
     const student = await prisma.student.findUnique({
@@ -262,7 +268,8 @@ export const updateMyProfile = asyncHandler(async (req: AuthRequest, res: Respon
             documents: documents || undefined,
             place,
             district,
-            whatsapp
+            whatsapp,
+            primeHifzMentor
         }
     });
 
@@ -278,5 +285,27 @@ export const updateMyProfile = asyncHandler(async (req: AuthRequest, res: Respon
         status: 'success',
         message: 'Profile updated successfully',
         data: updatedStudent
+    });
+});
+
+// @desc    Get student's own notification history
+// @route   GET /api/admissions/my-notifications
+// @access  Private (Student only)
+export const getMyNotifications = asyncHandler(async (req: AuthRequest, res: Response, next: NextFunction) => {
+    if (!req.user) return next(new AppError('Unauthorized', 401));
+
+    const notifications = await prisma.notification.findMany({
+        where: { userId: req.user.id },
+        orderBy: { sentAt: 'desc' },
+        include: {
+           admin: {
+               select: { name: true }
+           }
+        }
+    });
+
+    res.json({
+        status: 'success',
+        data: notifications
     });
 });

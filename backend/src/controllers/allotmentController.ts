@@ -106,7 +106,7 @@ export const finalizeAllotments = asyncHandler(async (req: Request, res: Respons
 
             // Trigger Notification
             if (allotment.application.student.userId && allotment.application.student.user) {
-                await triggerNotification(allotment.application.student.userId, 'ALLOTMENT_RESULT', {
+                await triggerNotification(allotment.application.student.userId, 'ALLOTMENT_PUBLISHED', {
                     StudentName: allotment.application.student.user.name,
                     CampusName: allotment.campus
                 });

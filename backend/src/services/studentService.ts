@@ -24,7 +24,7 @@ export const createPendingApplication = async (formData: any) => {
         whatsapp, hifzCenter, hifzInstitution,
         dawrasCount, schoolEducation, kitabsStudied, 
         firstOption, secondOption, thirdOption, 
-        parentName, motherName, documents, email
+        parentName, motherName, documents, email, primeHifzMentor
     } = formData;
 
     try {
@@ -72,6 +72,7 @@ export const createPendingApplication = async (formData: any) => {
                     thirdOption: thirdOption || 'N/A',
                     fatherName: parentName || 'N/A',
                     motherName: motherName || 'N/A',
+                    primeHifzMentor: primeHifzMentor || 'N/A',
                     status: 'PENDING',
                     documents: documents || {},
                     resources: { email: email || null } as any
@@ -88,9 +89,11 @@ export const createPendingApplication = async (formData: any) => {
             return { user, student, application };
         });
 
-        // 4. Trigger Notification (Outside transaction for reliability)
-        await triggerNotification(result.user.id, 'APPLICATION_SUBMITTED_SUCCESSFULLY', {
+        // 4. Trigger Unified Welcome Notification
+        // This template now includes both confirmation and credentials
+        await triggerNotification(result.user.id, 'APPLICATION_RECEIVED', {
             StudentName: name,
+            ApplicationID: applicationNo,
             Username: username,
             TempPassword: tempPassword,
             LoginUrl: loginUrl
@@ -149,7 +152,7 @@ export const promoteToStudentAccount = async (studentId: string) => {
         // 3. Send Credentials Notification
         const loginUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/login`;
         
-        await triggerNotification(user.id, 'ADMISSION_CONFIRMED', {
+        await triggerNotification(user.id, 'APPLICATION_CREDENTIALS_CREATED', {
             StudentName: student.name,
             Username: username,
             TempPassword: tempPassword,

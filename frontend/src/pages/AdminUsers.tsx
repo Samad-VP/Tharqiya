@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { UserPlus, Search, Filter, MoreVertical, Shield, Mail, Phone, Calendar } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { UserPlus, Search, Shield, Mail, Phone, Edit, Trash2, X, Loader2, AlertTriangle } from 'lucide-react';
 import AdminLayout from '../components/AdminLayout';
 import api from '../api/axiosInstance';
 import { useAuth } from '../context/AuthContext';
+import toast from 'react-hot-toast';
 
 const AdminUsers: React.FC = () => {
     const [searchParams] = useSearchParams();
@@ -13,7 +14,11 @@ const AdminUsers: React.FC = () => {
     
     const [users, setUsers] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-    const [showAddModal, setShowAddModal] = useState(false);
+    const [modalMode, setModalMode] = useState<'create' | 'edit'>('create');
+    const [showModal, setShowModal] = useState(false);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
+    const [selectedUser, setSelectedUser] = useState<any>(null);
+    
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -37,20 +42,57 @@ const AdminUsers: React.FC = () => {
             setUsers(response.data.data || []);
         } catch (error) {
             console.error('Error fetching users:', error);
+            toast.error('Failed to fetch users');
         } finally {
             setLoading(false);
         }
     };
 
-    const handleCreateUser = async (e: React.FormEvent) => {
+    const handleOpenCreate = () => {
+        setModalMode('create');
+        setFormData({ name: '', email: '', password: '', role: roleFilter, phone: '', whatsapp: '' });
+        setShowModal(true);
+    };
+
+    const handleOpenEdit = (user: any) => {
+        setModalMode('edit');
+        setSelectedUser(user);
+        setFormData({
+            name: user.name,
+            email: user.email,
+            password: '', // Keep empty unless changing
+            role: user.role,
+            phone: user.phone || '',
+            whatsapp: user.whatsapp || ''
+        });
+        setShowModal(true);
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await api.post('/auth/users', formData);
-            setShowAddModal(false);
+            if (modalMode === 'create') {
+                await api.post('/auth/users', formData);
+                toast.success('User created successfully');
+            } else {
+                await api.put(`/auth/users/${selectedUser.id}`, formData);
+                toast.success('User updated successfully');
+            }
+            setShowModal(false);
             fetchUsers();
-            setFormData({ name: '', email: '', password: '', role: roleFilter, phone: '', whatsapp: '' });
         } catch (error: any) {
-            alert(error.response?.data?.message || 'Failed to create user');
+            toast.error(error.response?.data?.message || 'Action failed');
+        }
+    };
+
+    const handleDelete = async (id: string) => {
+        try {
+            await api.delete(`/auth/users/${id}`);
+            toast.success('User deleted successfully');
+            setShowDeleteConfirm(null);
+            fetchUsers();
+        } catch (error: any) {
+            toast.error(error.response?.data?.message || 'Delete failed');
         }
     };
 
@@ -66,14 +108,14 @@ const AdminUsers: React.FC = () => {
                     </div>
 
                     <button 
-                        onClick={() => setShowAddModal(true)}
+                        onClick={handleOpenCreate}
                         className="w-full lg:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-brand-deep dark:bg-edu-coral text-white rounded-xl sm:rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-brand-deep/20 hover:scale-[1.02] transition-all"
                     >
                         <UserPlus size={18} /> Add {roleFilter}
                     </button>
                 </div>
 
-                {/* Filters & Search */}
+                {/* Search */}
                 <div className="flex flex-col md:flex-row gap-4">
                     <div className="flex-grow relative">
                         <Search className="absolute left-5 sm:left-6 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
@@ -98,15 +140,26 @@ const AdminUsers: React.FC = () => {
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ delay: idx * 0.05 }}
-                                className="p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xl hover:shadow-2xl transition-all relative group overflow-hidden"
+                                className="p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xl hover:shadow-2xl transition-all relative group overflow-hidden flex flex-col"
                             >
-                                <div className="absolute top-0 right-0 p-4 sm:p-6">
-                                    <button className="p-2 rounded-xl bg-slate-50 dark:bg-white/5 text-slate-400 hover:text-edu-coral transition-colors">
-                                        <MoreVertical size={18} />
+                                <div className="absolute top-0 right-0 p-4 sm:p-6 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                                    <button 
+                                        onClick={() => handleOpenEdit(user)}
+                                        className="p-2 rounded-xl bg-slate-100 dark:bg-white/10 text-brand-deep dark:text-edu-teal hover:bg-edu-teal hover:text-white transition-all shadow-sm"
+                                        title="Edit User"
+                                    >
+                                        <Edit size={16} />
+                                    </button>
+                                    <button 
+                                        onClick={() => setShowDeleteConfirm(user.id)}
+                                        className="p-2 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-600 hover:bg-red-600 hover:text-white transition-all shadow-sm"
+                                        title="Delete User"
+                                    >
+                                        <Trash2 size={16} />
                                     </button>
                                 </div>
 
-                                <div className="flex flex-col items-center text-center">
+                                <div className="flex flex-col items-center text-center flex-grow">
                                     <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl sm:rounded-[2rem] bg-gradient-to-br from-edu-teal/20 to-blue-500/20 flex items-center justify-center mb-4 sm:mb-6 ring-4 ring-slate-50 dark:ring-slate-800/50">
                                         <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-white dark:bg-slate-800 flex items-center justify-center font-black text-edu-teal text-lg sm:text-xl">
                                             {user.name?.[0]?.toUpperCase() || 'U'}
@@ -118,23 +171,15 @@ const AdminUsers: React.FC = () => {
                                         <Shield size={12} className="text-edu-teal" /> {user.role}
                                     </div>
 
-                                    <div className="w-full space-y-3 sm:space-y-4 pt-4 sm:pt-6 border-t border-slate-50 dark:border-slate-800">
-                                        <div className="flex items-center gap-3 text-slate-500 hover:text-brand-deep dark:hover:text-white transition-colors">
-                                            <Mail size={16} className="shrink-0" />
+                                    <div className="w-full space-y-3 sm:space-y-4 pt-4 sm:pt-6 border-t border-slate-50 dark:border-slate-800 text-left">
+                                        <div className="flex items-center gap-3 text-slate-500 group-hover/card:text-brand-deep dark:group-hover/card:text-white transition-colors">
+                                            <Mail size={16} className="shrink-0 text-edu-teal" />
                                             <span className="text-[10px] sm:text-xs font-bold truncate">{user.email}</span>
                                         </div>
                                         {user.phone && (
-                                            <div className="flex items-center gap-3 text-slate-500 hover:text-brand-deep dark:hover:text-white transition-colors">
-                                                <Phone size={16} className="shrink-0" />
+                                            <div className="flex items-center gap-3 text-slate-500 transition-colors">
+                                                <Phone size={16} className="shrink-0 text-edu-teal" />
                                                 <span className="text-[10px] sm:text-xs font-bold">{user.phone}</span>
-                                            </div>
-                                        )}
-                                        {user.whatsapp && (
-                                            <div className="flex items-center gap-3 text-edu-teal transition-colors">
-                                                <span className="w-4 h-4 rounded-full bg-edu-teal/20 flex items-center justify-center">
-                                                    <svg viewBox="0 0 24 24" className="w-2.5 h-2.5 fill-current" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .018 5.396.015 12.03c0 2.12.553 4.189 1.602 6.04L0 24l6.105-1.602a11.832 11.832 0 005.94 1.586h.005c6.632 0 12.028-5.396 12.031-12.03a11.8 11.8 0 00-3.417-8.467z"/></svg>
-                                                </span>
-                                                <span className="text-[10px] sm:text-xs font-black tracking-tight">{user.whatsapp}</span>
                                             </div>
                                         )}
                                     </div>
@@ -149,102 +194,151 @@ const AdminUsers: React.FC = () => {
                 </div>
             </div>
 
-            {/* Add User Modal */}
-            {showAddModal && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-12 overflow-y-auto">
-                    <motion.div 
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        onClick={() => setShowAddModal(false)}
-                        className="fixed inset-0 bg-brand-deep/40 backdrop-blur-md"
-                    />
-                    <motion.div 
-                        initial={{ scale: 0.95, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-[2rem] sm:rounded-[3rem] shadow-2xl overflow-hidden my-auto"
-                    >
-                        <div className="p-6 sm:p-10">
-                            <h3 className="text-xl sm:text-2xl font-black text-brand-deep dark:text-white font-outfit mb-2 tracking-tight uppercase">Create <span className="text-edu-teal">Account</span></h3>
-                            <p className="text-[10px] sm:text-sm text-slate-500 font-bold uppercase tracking-widest mb-6 sm:mb-8">Set up a new {roleFilter.toLowerCase()} profile.</p>
+            {/* Modal - Unified for Add/Edit */}
+            <AnimatePresence>
+                {showModal && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-12">
+                        <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setShowModal(false)}
+                            className="fixed inset-0 bg-brand-deep/40 backdrop-blur-md"
+                        />
+                        <motion.div 
+                            initial={{ scale: 0.95, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.95, opacity: 0 }}
+                            className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-[2rem] sm:rounded-[3rem] shadow-2xl overflow-hidden my-auto"
+                        >
+                            <div className="p-6 sm:p-10">
+                                <h3 className="text-xl sm:text-2xl font-black text-brand-deep dark:text-white font-outfit mb-2 tracking-tight uppercase">
+                                    {modalMode === 'create' ? 'Create' : 'Edit'} <span className="text-edu-teal">Account</span>
+                                </h3>
+                                <p className="text-[10px] sm:text-sm text-slate-500 font-bold uppercase tracking-widest mb-6 sm:mb-8">
+                                    {modalMode === 'create' ? `Set up a new ${roleFilter.toLowerCase()} profile.` : `Updating ${selectedUser?.name}'s details.`}
+                                </p>
 
-                            <form onSubmit={handleCreateUser} className="space-y-4 sm:space-y-6">
-                                <div>
-                                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Full Name</label>
-                                    <input 
-                                        type="text" 
-                                        required
-                                        value={formData.name}
-                                        onChange={e => setFormData({...formData, name: e.target.value})}
-                                        className="w-full px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-teal focus:ring-4 focus:ring-edu-teal/10 transition-all font-bold text-xs sm:text-sm dark:text-white"
-                                        placeholder="Full name"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Email</label>
-                                    <input 
-                                        type="email" 
-                                        required
-                                        value={formData.email}
-                                        onChange={e => setFormData({...formData, email: e.target.value})}
-                                        className="w-full px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-teal focus:ring-4 focus:ring-edu-teal/10 transition-all font-bold text-xs sm:text-sm dark:text-white"
-                                        placeholder="email@tharqiya.com"
-                                    />
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
+                                <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                                     <div>
-                                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Phone</label>
+                                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Full Name</label>
                                         <input 
                                             type="text" 
-                                            value={formData.phone}
-                                            onChange={e => setFormData({...formData, phone: e.target.value})}
+                                            required
+                                            value={formData.name}
+                                            onChange={e => setFormData({...formData, name: e.target.value})}
                                             className="w-full px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-teal focus:ring-4 focus:ring-edu-teal/10 transition-all font-bold text-xs sm:text-sm dark:text-white"
-                                            placeholder="Mobile"
+                                            placeholder="Full name"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1 text-edu-teal">WhatsApp</label>
+                                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Email</label>
                                         <input 
-                                            type="text" 
-                                            value={formData.whatsapp}
-                                            onChange={e => setFormData({...formData, whatsapp: e.target.value})}
-                                            className="w-full px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-slate-50 dark:bg-white/5 border border-edu-teal/30 focus:border-edu-teal focus:ring-4 focus:ring-edu-teal/10 transition-all font-bold text-xs sm:text-sm dark:text-white"
-                                            placeholder="WhatsApp"
+                                            type="email" 
+                                            required
+                                            value={formData.email}
+                                            onChange={e => setFormData({...formData, email: e.target.value})}
+                                            className="w-full px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-teal focus:ring-4 focus:ring-edu-teal/10 transition-all font-bold text-xs sm:text-sm dark:text-white"
+                                            placeholder="email@tharqiya.com"
                                         />
                                     </div>
-                                </div>
-                                <div>
-                                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Password</label>
-                                    <input 
-                                        type="password" 
-                                        required
-                                        value={formData.password}
-                                        onChange={e => setFormData({...formData, password: e.target.value})}
-                                        className="w-full px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-teal focus:ring-4 focus:ring-edu-teal/10 transition-all font-bold text-xs sm:text-sm dark:text-white"
-                                        placeholder="••••••••"
-                                    />
-                                </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Phone</label>
+                                            <input 
+                                                type="text" 
+                                                value={formData.phone}
+                                                onChange={e => setFormData({...formData, phone: e.target.value})}
+                                                className="w-full px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-teal focus:ring-4 focus:ring-edu-teal/10 transition-all font-bold text-xs sm:text-sm dark:text-white"
+                                                placeholder="Mobile"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1 text-edu-teal">WhatsApp</label>
+                                            <input 
+                                                type="text" 
+                                                value={formData.whatsapp}
+                                                onChange={e => setFormData({...formData, whatsapp: e.target.value})}
+                                                className="w-full px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-slate-50 dark:bg-white/5 border border-edu-teal/30 focus:border-edu-teal focus:ring-4 focus:ring-edu-teal/10 transition-all font-bold text-xs sm:text-sm dark:text-white"
+                                                placeholder="WhatsApp"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Password {modalMode === 'edit' && '(Leave blank to keep current)'}</label>
+                                        <input 
+                                            type="password" 
+                                            required={modalMode === 'create'}
+                                            value={formData.password}
+                                            onChange={e => setFormData({...formData, password: e.target.value})}
+                                            className="w-full px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-teal focus:ring-4 focus:ring-edu-teal/10 transition-all font-bold text-xs sm:text-sm dark:text-white"
+                                            placeholder="••••••••"
+                                        />
+                                    </div>
 
-                                <div className="flex flex-col sm:flex-row gap-3 pt-4">
-                                    <button 
-                                        type="button"
-                                        onClick={() => setShowAddModal(false)}
-                                        className="w-full py-4 rounded-xl sm:rounded-2xl bg-slate-100 dark:bg-white/5 text-slate-500 font-black text-xs uppercase tracking-widest hover:bg-slate-200 transition-colors order-2 sm:order-1"
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button 
-                                        type="submit"
-                                        className="w-full py-4 rounded-xl sm:rounded-2xl bg-edu-teal text-white font-black text-xs uppercase tracking-widest shadow-xl shadow-edu-teal/20 hover:scale-[1.02] transition-all order-1 sm:order-2"
-                                    >
-                                        Create Account
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </motion.div>
-                </div>
-            )}
+                                    <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                                        <button 
+                                            type="button"
+                                            onClick={() => setShowModal(false)}
+                                            className="w-full py-4 rounded-xl sm:rounded-2xl bg-slate-100 dark:bg-white/5 text-slate-500 font-black text-xs uppercase tracking-widest hover:bg-slate-200 transition-colors order-2 sm:order-1"
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button 
+                                            type="submit"
+                                            className="w-full py-4 rounded-xl sm:rounded-2xl bg-edu-teal text-white font-black text-xs uppercase tracking-widest shadow-xl shadow-edu-teal/20 hover:scale-[1.02] transition-all order-1 sm:order-2"
+                                        >
+                                            {modalMode === 'create' ? 'Create Account' : 'Save Changes'}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
+
+            {/* Delete Confirmation Modal */}
+            <AnimatePresence>
+                {showDeleteConfirm && (
+                    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+                        <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setShowDeleteConfirm(null)}
+                            className="fixed inset-0 bg-brand-deep/60 backdrop-blur-sm"
+                        />
+                        <motion.div 
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            className="relative w-full max-w-sm bg-white dark:bg-slate-900 rounded-[2rem] p-8 sm:p-10 shadow-3xl text-center"
+                        >
+                            <div className="w-16 h-16 rounded-full bg-red-50 dark:bg-red-500/10 flex items-center justify-center mx-auto mb-6 text-red-600">
+                                <AlertTriangle size={32} />
+                            </div>
+                            <h3 className="text-xl sm:text-2xl font-black text-brand-deep dark:text-white font-outfit mb-2">Are you sure?</h3>
+                            <p className="text-xs sm:text-sm text-slate-500 font-bold mb-8">This action is permanent and will completely remove the interviewer account.</p>
+                            
+                            <div className="space-y-3">
+                                <button 
+                                    onClick={() => handleDelete(showDeleteConfirm)}
+                                    className="w-full py-4 bg-red-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-red-700 transition-colors shadow-lg shadow-red-600/20"
+                                >
+                                    Delete Permanently
+                                </button>
+                                <button 
+                                    onClick={() => setShowDeleteConfirm(null)}
+                                    className="w-full py-4 bg-slate-100 dark:bg-white/5 text-slate-500 font-black text-xs uppercase tracking-widest hover:bg-slate-200 transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </AdminLayout>
     );
 };

@@ -68,15 +68,15 @@ export const publishResult = asyncHandler(async (req: AuthRequest, res: Response
     });
 
     if (student && student.userId && student.user) {
-        // 1. Trigger Marks Published notification
-        await triggerNotification(student.userId, 'INTERVIEW_MARKS_PUBLISHED', {
+        // 1. Trigger Result Published notification
+        await triggerNotification(student.userId, 'INTERVIEW_RESULT_PUBLISHED', {
             StudentName: student.user.name,
             TotalMarks: result.totalMarks.toString()
         });
 
-        // 2. Trigger Allotment Result if Accepted
+        // 2. Trigger Allotment Published if Accepted
         if (result.decision === 'ACCEPTED') {
-            await triggerNotification(student.userId, 'ALLOTMENT_RESULT', {
+            await triggerNotification(student.userId, 'ALLOTMENT_PUBLISHED', {
                 StudentName: student.user.name,
                 CampusName: student.firstOption || 'Main Campus'
             });

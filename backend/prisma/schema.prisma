@@ -22,7 +22,8 @@ model User {
   profileImageUrl        String?
   profileImagePublicId   String?
   interviewer            Interviewer?
-  notifications Notification[]
+  notifications        Notification[] @relation("UserNotifications")
+  adminRetries         Notification[] @relation("AdminRetries")
   auditLogs     AuditLog[]
   student       Student?
   otp           String?
@@ -54,6 +55,7 @@ model Student {
   secondOption    String?
   thirdOption     String?
   whatsapp        String?
+  primeHifzMentor String?
   application     Application?
   user            User?             @relation(fields: [userId], references: [id])
 }
@@ -128,14 +130,21 @@ model Result {
 }
 
 model Notification {
-  id      String   @id @default(uuid())
-  userId  String
-  type    String
-  event   String
-  message String
-  sentAt  DateTime @default(now())
-  status  String   @default("SENT")
-  user    User     @relation(fields: [userId], references: [id])
+  id          String   @id @default(uuid())
+  userId      String?
+  type        String
+  event       String
+  message     String
+  data        Json?
+  senderEmail String?
+  triggeredBy String   @default("SYSTEM") // SYSTEM or ADMIN
+  adminId     String?
+  sentAt      DateTime @default(now())
+  status      String   @default("SENT")
+  error       String?
+  
+  user        User?    @relation("UserNotifications", fields: [userId], references: [id])
+  admin       User?    @relation("AdminRetries", fields: [adminId], references: [id])
 }
 
 model Setting {

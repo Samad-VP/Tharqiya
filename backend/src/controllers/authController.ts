@@ -152,6 +152,80 @@ export const loginUser = asyncHandler(async (req: Request, res: Response, next: 
     }
 });
 
+export const updateUser = asyncHandler(async (req: AuthRequest, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    const { name, email, phone, whatsapp, role, password } = req.body;
+    const requesterRole = req.user?.role;
+
+    const user = await prisma.user.findUnique({ where: { id: id as string } });
+    if (!user) {
+        return next(new AppError('User not found', 404));
+    }
+
+    // Hierarchy checks
+    if (role && role === 'ADMIN' && requesterRole !== 'SUPER_ADMIN') {
+        return next(new AppError('Only Super Admin can promote to Admin', 403));
+    }
+    
+    if (user.role === 'SUPER_ADMIN' && requesterRole !== 'SUPER_ADMIN') {
+        return next(new AppError('Only Super Admin can edit another Super Admin', 403));
+    }
+
+    const data: any = {
+        name: name || user.name,
+        email: email || user.email,
+        phone: phone !== undefined ? phone : user.phone,
+        whatsapp: whatsapp !== undefined ? whatsapp : user.whatsapp,
+        role: role || user.role,
+    };
+
+    if (password) {
+        data.password = await hashPassword(password);
+    }
+
+    // Check email uniqueness if changed
+    if (email && email !== user.email) {
+        const existing = await prisma.user.findUnique({ where: { email } });
+        if (existing) return next(new AppError('Email already in use', 400));
+    }
+
+    const updatedUser = await prisma.user.update({
+        where: { id: id as string },
+        data,
+        select: { id: true, name: true, email: true, role: true, phone: true, whatsapp: true }
+    });
+
+    res.json({
+        status: 'success',
+        data: updatedUser
+    });
+});
+
+export const deleteUser = asyncHandler(async (req: AuthRequest, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    const requesterRole = req.user?.role;
+
+    const user = await prisma.user.findUnique({ where: { id: id as string } });
+    if (!user) return next(new AppError('User not found', 404));
+
+    if (user.role === 'SUPER_ADMIN' && requesterRole !== 'SUPER_ADMIN') {
+        return next(new AppError('Only Super Admin can delete a Super Admin', 403));
+    }
+
+    // Handle role-specific cleanup
+    await prisma.$transaction(async (tx) => {
+        if (user.role === 'INTERVIEWER') {
+            await tx.interviewer.deleteMany({ where: { userId: id as string } });
+        }
+        await tx.user.delete({ where: { id: id as string } });
+    });
+
+    res.json({
+        status: 'success',
+        message: 'User deleted successfully'
+    });
+});
+
 export const updateProfile = asyncHandler(async (req: AuthRequest, res: Response, next: NextFunction) => {
     const { name, email, whatsapp, phone } = req.body;
     const userId = req.user?.id;

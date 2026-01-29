@@ -47,7 +47,9 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         ]),
         ...(user?.role === 'SUPER_ADMIN' ? [
             { icon: ShieldCheck, label: 'Admins', path: '/admin/users?role=ADMIN' },
-            { icon: History, label: 'Notif Logs', path: '/admin/notifications' },
+        ] : []),
+        ...(user?.role === 'SUPER_ADMIN' || user?.role === 'ADMIN' || user?.role === 'PRINCIPAL' ? [
+            { icon: History, label: 'Notif Logs', path: user?.role === 'PRINCIPAL' ? '/principal/notifications' : '/admin/notifications' },
         ] : []),
         ...(user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN' || user?.role === 'PRINCIPAL' ? [
             { icon: UserCheck, label: 'Interviewers', path: user?.role === 'PRINCIPAL' ? '/principal/users?role=INTERVIEWER' : '/admin/users?role=INTERVIEWER' },

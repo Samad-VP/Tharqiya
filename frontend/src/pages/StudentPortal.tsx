@@ -169,10 +169,10 @@ const StudentPortal: React.FC = () => {
                             <Link to="/student/profile" className="px-5 py-3 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px] tracking-widest rounded-xl hover:text-tharqiya-orange transition-colors">
                                 My Profile
                             </Link>
-                            <button className="p-4 bg-slate-100 dark:bg-slate-900 text-slate-400 dark:text-slate-500 rounded-2xl relative hover:text-tharqiya-orange dark:hover:text-tharqiya-gold transition-colors">
+                            <Link to="/student/notifications" className="p-4 bg-slate-100 dark:bg-slate-900 text-slate-400 dark:text-slate-500 rounded-2xl relative hover:text-tharqiya-orange dark:hover:text-tharqiya-gold transition-colors">
                                 <Bell size={24} />
                                 <div className="absolute top-3 right-3 w-3 h-3 bg-rose-500 rounded-full border-2 border-white dark:border-slate-900" />
-                            </button>
+                            </Link>
                         </div>
                     </div>
                 </motion.div>

@@ -210,12 +210,12 @@ export const updateInterview = asyncHandler(async (req: Request, res: Response) 
         });
 
         if (interviewWithDetails && interviewWithDetails.application.student.userId && interviewWithDetails.application.student.user) {
-            await triggerNotification(interviewWithDetails.application.student.userId, 'INTERVIEW_RESCHEDULED', {
+            await triggerNotification(interviewWithDetails.application.student.userId, 'INTERVIEW_SCHEDULED', {
                 StudentName: interviewWithDetails.application.student.user.name,
                 InterviewDate: scheduledDate.toLocaleDateString(),
                 InterviewTime: scheduledDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 Location: location || 'Darussalam Edu Village',
-                RescheduleReason: rescheduleReason
+                RescheduleReason: rescheduleReason // Template handles optional RescheduleReason
             });
         }
     }
