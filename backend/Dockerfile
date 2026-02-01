@@ -27,10 +27,10 @@ RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
 # Copy only production dependencies and built assets
 COPY package*.json ./
+COPY --from=builder /app/prisma ./prisma
 RUN npm install --omit=dev
 
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/prisma ./prisma
 
 EXPOSE 5000
 
