@@ -32,8 +32,8 @@ const AlumniPage: React.FC = () => {
     return (
         <div className="bg-brand-cream dark:bg-slate-950 transition-colors duration-500 min-h-screen">
             <SEO 
-                title="Alumni" 
-                description="Celebrating the success of our graduates who are leading as ethical leaders in various fields." 
+                title="Tharqiya Alumni Network | Global Success Stories" 
+                description="Join 250+ graduates who are leading as ethical leaders, scholars, and professionals in over 12 countries. Explore the success of Darussalam huffaz." 
             />
             {/* Hero Section */}
             <section className="relative pt-24 pb-12 sm:pt-48 sm:pb-32 bg-brand-cream/50 dark:bg-slate-950 overflow-hidden">

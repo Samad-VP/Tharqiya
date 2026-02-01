@@ -81,7 +81,7 @@ const Navbar: React.FC = () => {
                     <Link to="/" className="flex items-center gap-3 group transition-opacity duration-300 self-center shrink-0">
                         <div className="relative flex items-center shrink-0">
                             <div className="h-10 lg:h-12 w-auto flex items-center justify-center transition-transform group-hover:scale-110 duration-500">
-                                <img src={logo} alt="Darussalam Logo Icon" className="h-full w-auto object-contain" />
+                                <img src={logo} alt="Darussalam Edu Village Official Logo" className="h-full w-auto object-contain" />
                             </div>
                         </div>
                         <div className="leading-tight flex flex-col justify-center">

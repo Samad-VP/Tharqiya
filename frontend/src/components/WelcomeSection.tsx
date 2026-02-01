@@ -62,16 +62,16 @@ const WelcomeSection: React.FC = () => {
                         className="lg:w-2/5 relative w-full mt-8 lg:mt-0"
                     >
                         <div className="relative rounded-[1.5rem] sm:rounded-[3rem] overflow-hidden shadow-xl border-4 sm:border-8 border-white dark:border-slate-800 rotate-0 sm:rotate-2 group cursor-pointer lg:cursor-none">
-                            <img 
-                                src={campusBg} 
-                                alt="Campus Life" 
-                                className="w-full h-[300px] sm:h-[400px] md:h-[600px] object-cover group-hover:scale-110 transition-transform duration-1000"
-                            />
+                                <img 
+                                    src={campusBg} 
+                                    alt="Tharqiya Campus View - Darussalam Edu Village" 
+                                    className="w-full h-[300px] sm:h-[400px] md:h-[600px] object-cover group-hover:scale-110 transition-transform duration-1000"
+                                />
                             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/20 to-transparent" />
                             
                             {/* Logo Overlay */}
                             <div className="absolute top-4 right-4 sm:top-8 sm:right-8 p-0 h-12 sm:h-20 w-auto flex items-center justify-center">
-                                <img src={logo} alt="Logo" className="h-full w-auto object-contain drop-shadow-2xl" />
+                                <img src={logo} alt="Darussalam Edu Village Logo" className="h-full w-auto object-contain drop-shadow-2xl" />
                             </div>
                         </div>
                     </motion.div>

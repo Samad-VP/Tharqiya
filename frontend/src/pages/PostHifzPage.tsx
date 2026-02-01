@@ -91,11 +91,30 @@ const PostHifzPage: React.FC = () => {
         { title: "Leadership Seminars", desc: "Monthly workshops by global leaders on psychology, management, and Da'wa strategies.", icon: Lightbulb },
     ];
 
+    const courseSchema = {
+        "@context": "https://schema.org",
+        "@type": "Course",
+        "name": "Tharqiya Post-Hifz Integrated Course",
+        "description": "A unique 10-year integrated curriculum blending traditional Quranic sciences with modern academic scholarship (SSLC, Plus Two, Degree, PG).",
+        "provider": {
+            "@type": "EducationalOrganization",
+            "name": "Darussalam Edu Village",
+            "sameAs": "https://darussalameduvillage.com"
+        },
+        "courseCode": "THQ-001",
+        "hasCourseInstance": {
+            "@type": "CourseInstance",
+            "courseMode": "Full-time",
+            "location": "Koyilandy, Kerala"
+        }
+    };
+
     return (
         <div className="bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500">
             <SEO 
-                title="Post-Hifz Programme" 
-                description="Explore our unique 10-year integrated curriculum blending Quranic sciences with modern academic excellence." 
+                title="10-Year Integrated Post-Hifz Programme | Curriculum & Syllabus" 
+                description="Explore the Tharqiya Course syllabus: A 10-year journey from SSLC to PG, integrating Hifz revision with multi-disciplinary academic excellence." 
+                jsonLd={courseSchema}
             />
             {/* Hero Section */}
             <section className="relative pt-24 pb-12 sm:pt-48 sm:pb-40 bg-brand-cream/50 dark:bg-slate-950 overflow-hidden">

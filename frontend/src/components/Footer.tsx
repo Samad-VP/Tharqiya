@@ -19,7 +19,7 @@ const Footer: React.FC = () => {
                      <div className="col-span-2 md:col-span-2 lg:col-span-1 flex flex-col items-center text-center space-y-6 sm:space-y-8">
                         <div className="flex items-center gap-3 mb-2 sm:mb-6">
                             <div className="h-8 sm:h-10 w-auto flex items-center justify-center transition-transform group-hover:scale-110 duration-500">
-                                <img src={logo} alt="Darussalam Logo Icon" className="h-full w-auto object-contain" />
+                                <img src={logo} alt="Darussalam Edu Village Official Logo" className="h-full w-auto object-contain" />
                             </div>
                             <div className="leading-tight">
                                 <span className="block text-lg sm:text-xl font-black tracking-tighter font-outfit text-edu-coral">Darussalam</span>

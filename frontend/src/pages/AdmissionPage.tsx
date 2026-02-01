@@ -133,11 +133,35 @@ const AdmissionPage: React.FC = () => {
         }
     };
 
+    const faqSchema = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "How to apply for Tharqiya Course?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "You can apply online through our official admission portal by filling out the registration form and uploading required documents."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "What are the eligibility criteria for Post-Hifz admission?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Candidates must have completed Hifz-ul-Quran and be eligible for SSLC (10th) or higher secondary education depending on the entry level."
+                }
+            }
+        ]
+    };
+
     return (
         <div className="bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500 min-h-screen pb-20">
             <SEO 
-                title="Admissions" 
-                description="Join the legacy. Apply online for the Tharqiya Course and start your journey of spiritual and academic excellence." 
+                title="Apply Online for 2026 Admissions | Tharqiya Course" 
+                description="Start your journey at Darussalam Edu Village. Submit your application online for the Tharqiya Post-Hifz integrated programme. Limited seats available." 
+                jsonLd={faqSchema}
             />
             {/* Hero Section */}
             <section className="relative h-[30vh] md:h-[50vh] flex items-center justify-center overflow-hidden bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500 pt-20 sm:pt-0">
