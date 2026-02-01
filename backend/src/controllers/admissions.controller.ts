@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { PrismaClient, ApplicationStatus } from '@prisma/client';
+import pkg from '@prisma/client';
+const { ApplicationStatus } = pkg;
+import prisma from '../config/db.js';
 import { logAction } from '../services/audit.service.js';
-
-const prisma = new PrismaClient();
 
 // Verify Documents
 export const verifyDocuments = async (req: Request, res: Response) => {
