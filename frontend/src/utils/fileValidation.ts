@@ -18,11 +18,11 @@ export const validateFile = (
 
   // Check type
   if (type === 'image') {
-    const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png'];
     if (!allowedImageTypes.includes(file.type)) {
       return {
         isValid: false,
-        error: 'Only JPG, PNG, and WebP images are allowed'
+        error: 'Only JPG and PNG images are allowed (WebP is not supported)'
       };
     }
   } else if (type === 'document') {

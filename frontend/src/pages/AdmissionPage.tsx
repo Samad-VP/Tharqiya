@@ -19,6 +19,7 @@ import {
     Mail
 } from 'lucide-react';
 import api from '../api/axiosInstance';
+import { INDIAN_STATES } from '../utils/constants';
 import toast from 'react-hot-toast';
 import logo from '../assets/logo.png';
 import FileUploader from '../components/common/FileUploader';
@@ -44,26 +45,59 @@ const AdmissionPage: React.FC = () => {
         secondOption: '',
         thirdOption: '',
         primeHifzMentor: '',
+        madrasaEducation: '',
+        pincode: '',
+        state: '',
+        country: 'India',
         documents: {} as Record<string, string>
     });
 
     const campuses = [
-        "Darussalam College of Tharqiyathul Huffaz, Darussalam Edu Village, Koyilandi",
-        "Shamsul Ulama College of Tharqiyathul Huffaz, Mannarkkad, Palakkad",
-        "Umariyya College of Tharqiyathul Huffaz, Athinjal, Kanjangad"
+        "Darussalam Tharqiyathul Huffaz, Darussalam Edu Village, Muchukunnu",
+        "Shamsul Ulama Tharqiyathul Huffaz, Mannarkkad, Palakkad",
+        "Umariyya Tharqiyathul Huffaz, Athinjal, Kanjangad"
     ];
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+        
+        // Auto-fetch location for Indian pincodes
+        if (name === 'pincode' && value.length === 6 && formData.country === 'India') {
+            fetchLocation(value);
+        }
+    };
+
+    const fetchLocation = async (pincode: string) => {
+        const loadingToast = toast.loading('Fetching location details...');
+        try {
+            const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
+            const data = await response.json();
+            
+            if (data[0].Status === 'Success') {
+                const details = data[0].PostOffice[0];
+                setFormData(prev => ({
+                    ...prev,
+                    district: details.District,
+                    state: details.State,
+                    place: prev.place || details.Name
+                }));
+                toast.success('Location details updated!', { id: loadingToast });
+            } else {
+                toast.error('Invalid Pincode', { id: loadingToast });
+            }
+        } catch (error) {
+            console.error('Pincode fetch error:', error);
+            toast.error('Failed to fetch location', { id: loadingToast });
+        }
     };
 
     const validateStep = (currentStep: number) => {
         let requiredFields: string[] = [];
         if (currentStep === 1) {
-            requiredFields = ['name', 'parentName', 'motherName', 'address', 'dob', 'place', 'district', 'phone', 'email', 'whatsapp'];
+            requiredFields = ['name', 'parentName', 'motherName', 'address', 'dob', 'place', 'district', 'state', 'pincode', 'country', 'phone', 'email', 'whatsapp'];
         } else if (currentStep === 2) {
-            requiredFields = ['hifzCenter', 'dawrasCount', 'schoolEducation', 'primeHifzMentor'];
+            requiredFields = ['hifzCenter', 'dawrasCount', 'schoolEducation', 'madrasaEducation', 'primeHifzMentor'];
         } else if (currentStep === 3) {
             requiredFields = ['firstOption', 'secondOption', 'thirdOption'];
         }
@@ -89,8 +123,11 @@ const AdmissionPage: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         
-        if (!formData.documents.photo || !formData.documents.certificate) {
-            toast.error("Please upload both your Photo and Certificate to submit.");
+        const requiredDocs = ['photo', 'certificate', 'generalEdu', 'madrasaEdu'];
+        const missingDocs = requiredDocs.filter(doc => !formData.documents[doc]);
+        
+        if (missingDocs.length > 0) {
+            toast.error("Please upload all required documents: Photo, SSLC, General Education, and Madrasa Education.");
             return;
         }
 
@@ -240,18 +277,76 @@ const AdmissionPage: React.FC = () => {
                                             <textarea name="address" required value={formData.address} onChange={handleInputChange} rows={3} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="Complete postal address" />
                                         </div>
 
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Country <span className="text-red-500">*</span></label>
+                                                <div className="relative">
+                                                    <Flag className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                                                    <select name="country" required value={formData.country} onChange={handleInputChange} className="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white">
+                                                        <option value="India">India</option>
+                                                        <option value="United Arab Emirates">United Arab Emirates</option>
+                                                        <option value="Saudi Arabia">Saudi Arabia</option>
+                                                        <option value="Oman">Oman</option>
+                                                        <option value="Qatar">Qatar</option>
+                                                        <option value="Kuwait">Kuwait</option>
+                                                        <option value="Bahrain">Bahrain</option>
+                                                        <option value="Other">Other</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">{formData.country === 'India' ? 'Pincode' : 'Zip/Postal Code'} <span className="text-red-500">*</span></label>
+                                                <div className="relative">
+                                                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                                                    <input name="pincode" required value={formData.pincode} onChange={handleInputChange} className="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder={formData.country === 'India' ? "6 Digit Pincode" : "Postal Code"} />
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                                             <div className="sm:col-span-1 space-y-2">
-                                                <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Date of Birth <span className="text-red-500">*</span></label>
-                                                <input type="date" name="dob" required value={formData.dob} onChange={handleInputChange} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" />
-                                            </div>
-                                            <div className="sm:col-span-1 space-y-2">
-                                                <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Place <span className="text-red-500">*</span></label>
-                                                <input name="place" required value={formData.place} onChange={handleInputChange} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="Gramam/City" />
+                                                <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">State / Union Territory <span className="text-red-500">*</span></label>
+                                                {formData.country === 'India' ? (
+                                                    <select 
+                                                        name="state" 
+                                                        required 
+                                                        value={formData.state} 
+                                                        onChange={handleInputChange} 
+                                                        className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white"
+                                                    >
+                                                        <option value="">Select State/UT</option>
+                                                        {INDIAN_STATES.map(state => (
+                                                            <option key={state} value={state}>{state}</option>
+                                                        ))}
+                                                    </select>
+                                                ) : (
+                                                    <input 
+                                                        name="state" 
+                                                        required 
+                                                        value={formData.state} 
+                                                        onChange={handleInputChange} 
+                                                        className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" 
+                                                        placeholder="State/Province" 
+                                                    />
+                                                )}
                                             </div>
                                             <div className="sm:col-span-1 space-y-2">
                                                 <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">District <span className="text-red-500">*</span></label>
                                                 <input name="district" required value={formData.district} onChange={handleInputChange} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="District" />
+                                            </div>
+                                            <div className="sm:col-span-1 space-y-2">
+                                                <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Place / City <span className="text-red-500">*</span></label>
+                                                <input name="place" required value={formData.place} onChange={handleInputChange} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="City/Town" />
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                            <div className="sm:col-span-1 space-y-2">
+                                                <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Date of Birth <span className="text-red-500">*</span></label>
+                                                <div className="relative">
+                                                     <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
+                                                     <input type="date" name="dob" required value={formData.dob} onChange={handleInputChange} className="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" />
+                                                </div>
                                             </div>
                                         </div>
 
@@ -306,6 +401,10 @@ const AdmissionPage: React.FC = () => {
                                             <div className="space-y-2">
                                                 <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">School Education <span className="text-red-500">*</span></label>
                                                 <input name="schoolEducation" required value={formData.schoolEducation} onChange={handleInputChange} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="Class/Qualification" />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Madrasa Education <span className="text-red-500">*</span></label>
+                                                <input name="madrasaEducation" required value={formData.madrasaEducation} onChange={handleInputChange} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="Madrasa Qualification" />
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Prime Hifz Mentor <span className="text-red-500">*</span></label>
@@ -406,23 +505,61 @@ const AdmissionPage: React.FC = () => {
                                                     <FileUploader 
                                                         label="Upload Photo"
                                                         type="image"
-                                                        onUploadSuccess={(url) => setFormData(prev => ({ ...prev, documents: { ...prev.documents, photo: url } }))}
+                                                        docType="profiles"
+                                                        email={formData.email}
+                                                        onUploadSuccess={(url, publicId) => setFormData(prev => ({ ...prev, documents: { ...prev.documents, photo: url, photoPublicId: publicId } }))}
                                                         onRemove={() => setFormData(prev => {
                                                             const newDocs = { ...prev.documents };
                                                             delete newDocs.photo;
+                                                            delete newDocs.photoPublicId;
                                                             return { ...prev, documents: newDocs };
                                                         })}
                                                     />
                                                 </div>
                                                 <div className="space-y-4">
-                                                    <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">SSLC/Cert (PDF Only) (Max 2MB) <span className="text-red-500">*</span></label>
+                                                    <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">SSLC/Cert (PDF/JPG) (Max 500KB) <span className="text-red-500">*</span></label>
                                                     <FileUploader 
                                                         label="Upload Certificate"
                                                         type="document"
-                                                        onUploadSuccess={(url) => setFormData(prev => ({ ...prev, documents: { ...prev.documents, certificate: url } }))}
+                                                        docType="certificates"
+                                                        email={formData.email}
+                                                        onUploadSuccess={(url, publicId) => setFormData(prev => ({ ...prev, documents: { ...prev.documents, certificate: url, certificatePublicId: publicId } }))}
                                                         onRemove={() => setFormData(prev => {
                                                             const newDocs = { ...prev.documents };
                                                             delete newDocs.certificate;
+                                                            delete newDocs.certificatePublicId;
+                                                            return { ...prev, documents: newDocs };
+                                                        })}
+                                                    />
+                                                </div>
+                                                <div className="space-y-4">
+                                                    <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">General Education Doc (PDF/JPG) (Max 500KB) <span className="text-red-500">*</span></label>
+                                                    <FileUploader 
+                                                        label="Upload General Edu Doc"
+                                                        type="document"
+                                                        docType="general_edu"
+                                                        email={formData.email}
+                                                        onUploadSuccess={(url, publicId) => setFormData(prev => ({ ...prev, documents: { ...prev.documents, generalEdu: url, generalEduPublicId: publicId } }))}
+                                                        onRemove={() => setFormData(prev => {
+                                                            const newDocs = { ...prev.documents };
+                                                            delete newDocs.generalEdu;
+                                                            delete newDocs.generalEduPublicId;
+                                                            return { ...prev, documents: newDocs };
+                                                        })}
+                                                    />
+                                                </div>
+                                                <div className="space-y-4">
+                                                    <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Madrasa Education Doc (PDF/JPG) (Max 500KB) <span className="text-red-500">*</span></label>
+                                                    <FileUploader 
+                                                        label="Upload Madrasa Edu Doc"
+                                                        type="document"
+                                                        docType="madrasa_edu"
+                                                        email={formData.email}
+                                                        onUploadSuccess={(url, publicId) => setFormData(prev => ({ ...prev, documents: { ...prev.documents, madrasaEdu: url, madrasaEduPublicId: publicId } }))}
+                                                        onRemove={() => setFormData(prev => {
+                                                            const newDocs = { ...prev.documents };
+                                                            delete newDocs.madrasaEdu;
+                                                            delete newDocs.madrasaEduPublicId;
                                                             return { ...prev, documents: newDocs };
                                                         })}
                                                     />

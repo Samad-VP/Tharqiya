@@ -1,5 +1,5 @@
 import express from 'express';
-import { applyForAdmission, getMyStatus, getAllApplications, downloadApplicationPDF, downloadResultPDF, updateApplicationStatus, updateMyProfile, getMyNotifications } from '../controllers/admissionController.js';
+import { applyForAdmission, getMyStatus, getAllApplications, downloadApplicationPDF, downloadResultPDF, downloadAllotmentPDF, downloadApplicantsListPDF, updateApplicationStatus, updateMyProfile, getMyNotifications, markNotificationsRead } from '../controllers/admissionController.js';
 import { submitPublicApplication } from '../controllers/publicAdmissionController.js';
 import { confirmAdmission } from '../controllers/confirmAdmissionController.js';
 import { verifyDocuments, generateProvisionalAllotment, submitAllotmentForApproval, processAdmission } from '../controllers/admissions.controller.js';
@@ -9,15 +9,18 @@ const router = express.Router();
 
 router.post('/public/apply', submitPublicApplication);
 router.post('/apply', protect, authorize('STUDENT'), applyForAdmission);
-router.get('/my-status', protect, authorize('STUDENT'), getMyStatus);
-router.get('/my-notifications', protect, authorize('STUDENT'), getMyNotifications);
-router.get('/my-application/pdf', protect, authorize('STUDENT'), downloadApplicationPDF);
-router.get('/my-result/pdf', protect, authorize('STUDENT'), downloadResultPDF);
+router.get('/my-status', protect, authorize('STUDENT', 'PRINCIPAL', 'ADMIN', 'SUPER_ADMIN'), getMyStatus);
+router.get('/my-notifications', protect, authorize('STUDENT', 'PRINCIPAL', 'ADMIN', 'SUPER_ADMIN'), getMyNotifications);
+router.patch('/notifications/read', protect, authorize('STUDENT', 'PRINCIPAL', 'ADMIN', 'SUPER_ADMIN'), markNotificationsRead);
+router.get('/my-application/pdf', protect, authorize('STUDENT', 'PRINCIPAL', 'ADMIN', 'SUPER_ADMIN'), downloadApplicationPDF);
+router.get('/my-result/pdf', protect, authorize('STUDENT', 'PRINCIPAL', 'ADMIN', 'SUPER_ADMIN'), downloadResultPDF);
+router.get('/my-allotment/pdf', protect, authorize('STUDENT', 'PRINCIPAL', 'ADMIN', 'SUPER_ADMIN'), downloadAllotmentPDF);
 router.post('/confirm', protect, authorize('STUDENT'), confirmAdmission);
-router.patch('/my-profile', protect, authorize('STUDENT'), updateMyProfile);
+router.patch('/my-profile', protect, authorize('STUDENT', 'PRINCIPAL', 'ADMIN', 'SUPER_ADMIN'), updateMyProfile);
 
 // Admin Routes
 router.get('/all', protect, authorize('ADMIN', 'SUPER_ADMIN', 'PRINCIPAL'), getAllApplications);
+router.get('/applicants/pdf', protect, authorize('ADMIN', 'SUPER_ADMIN', 'PRINCIPAL'), downloadApplicantsListPDF);
 router.patch('/:id/status', protect, authorize('ADMIN', 'SUPER_ADMIN'), updateApplicationStatus);
 
 // Internal Admin Operations

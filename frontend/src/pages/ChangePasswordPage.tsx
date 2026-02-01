@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axiosInstance';
-import { Lock, Loader2, ShieldCheck, ArrowRight } from 'lucide-react';
+import { Lock, Loader2, ShieldCheck, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import logo from '../assets/logo.png';
@@ -11,6 +11,9 @@ const ChangePasswordPage: React.FC = () => {
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [showCurrentPass, setShowCurrentPass] = useState(false);
+    const [showNewPass, setShowNewPass] = useState(false);
+    const [showConfirmPass, setShowConfirmPass] = useState(false);
     const [error, setError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -77,13 +80,20 @@ const ChangePasswordPage: React.FC = () => {
                         <div className="relative">
                             <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                             <input
-                                type="password"
+                                type={showCurrentPass ? "text" : "password"}
                                 required
-                                className="w-full pl-12 pr-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl outline-none focus:ring-4 focus:ring-tharqiya-gold/10 dark:text-white"
+                                className="w-full pl-12 pr-12 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl outline-none focus:ring-4 focus:ring-tharqiya-gold/10 dark:text-white"
                                 placeholder="Enter current password"
                                 value={currentPassword}
                                 onChange={(e) => setCurrentPassword(e.target.value)}
                             />
+                            <button
+                                type="button"
+                                onClick={() => setShowCurrentPass(!showCurrentPass)}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-edu-coral dark:hover:text-edu-teal transition-colors"
+                            >
+                                {showCurrentPass ? <EyeOff size={20} /> : <Eye size={20} />}
+                            </button>
                         </div>
                     </div>
 
@@ -92,13 +102,20 @@ const ChangePasswordPage: React.FC = () => {
                         <div className="relative">
                             <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                             <input
-                                type="password"
+                                type={showNewPass ? "text" : "password"}
                                 required
-                                className="w-full pl-12 pr-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl outline-none focus:ring-4 focus:ring-tharqiya-gold/10 dark:text-white"
+                                className="w-full pl-12 pr-12 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl outline-none focus:ring-4 focus:ring-tharqiya-gold/10 dark:text-white"
                                 placeholder="Enter new password"
                                 value={newPassword}
                                 onChange={(e) => setNewPassword(e.target.value)}
                             />
+                            <button
+                                type="button"
+                                onClick={() => setShowNewPass(!showNewPass)}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-edu-coral dark:hover:text-edu-teal transition-colors"
+                            >
+                                {showNewPass ? <EyeOff size={20} /> : <Eye size={20} />}
+                            </button>
                         </div>
                     </div>
 
@@ -107,13 +124,20 @@ const ChangePasswordPage: React.FC = () => {
                         <div className="relative">
                             <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                             <input
-                                type="password"
+                                type={showConfirmPass ? "text" : "password"}
                                 required
-                                className="w-full pl-12 pr-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl outline-none focus:ring-4 focus:ring-tharqiya-gold/10 dark:text-white"
+                                className="w-full pl-12 pr-12 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl outline-none focus:ring-4 focus:ring-tharqiya-gold/10 dark:text-white"
                                 placeholder="Confirm new password"
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                             />
+                            <button
+                                type="button"
+                                onClick={() => setShowConfirmPass(!showConfirmPass)}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-edu-coral dark:hover:text-edu-teal transition-colors"
+                            >
+                                {showConfirmPass ? <EyeOff size={20} /> : <Eye size={20} />}
+                            </button>
                         </div>
                     </div>
 

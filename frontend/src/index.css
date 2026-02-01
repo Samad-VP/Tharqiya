@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Amiri:wght@400;700&display=swap');
 
 @import "tailwindcss";
 
@@ -10,6 +10,10 @@
   --color-edu-yellow: #F9C067;
   --color-brand-deep: #4A4A4A;
   --color-brand-cream: #FDF5E6;
+
+  --color-tharqiya-deep: #1F2937;
+  --color-tharqiya-gold: #D97706;
+  --color-tharqiya-orange: #EA580C;
 
   --font-outfit: "Outfit", sans-serif;
   --font-inter: "Inter", sans-serif;
@@ -60,8 +64,33 @@ h6 {
   @apply text-gold-orange;
 }
 
-.font-islamic {
-  font-family: 'Playfair Display', serif;
+.font-amiri {
+  font-family: 'Amiri', serif;
+}
+
+/* Global Typography Utilities */
+@utility h-premium-xl {
+  @apply text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black font-outfit tracking-tighter leading-[1.1] uppercase;
+}
+
+@utility h-premium-lg {
+  @apply text-2xl sm:text-4xl md:text-5xl font-black font-outfit tracking-tighter leading-tight uppercase;
+}
+
+@utility h-premium-md {
+  @apply text-lg sm:text-2xl md:text-3xl font-black font-outfit tracking-tighter leading-tight uppercase;
+}
+
+@utility h-premium-sm {
+  @apply text-base sm:text-xl font-black font-outfit tracking-tight leading-tight uppercase;
+}
+
+@utility text-premium-body {
+  @apply text-sm sm:text-base md:text-lg font-medium leading-relaxed;
+}
+
+@utility text-premium-xs {
+  @apply text-[9px] sm:text-[10px] md:text-xs font-black uppercase tracking-[0.2em];
 }
 
 /* Stunning Glassmorphic Effects */
@@ -130,7 +159,7 @@ h6 {
 
 /* Scrollbar Styling */
 ::-webkit-scrollbar {
-  width: 8px;
+  @apply w-1.5 sm:w-2;
 }
 
 ::-webkit-scrollbar-track {

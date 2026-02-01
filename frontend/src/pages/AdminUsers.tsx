@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { UserPlus, Search, Shield, Mail, Phone, Edit, Trash2, X, Loader2, AlertTriangle } from 'lucide-react';
+import { UserPlus, Search, Shield, Mail, Phone, Edit, Trash2, X, Loader2, AlertTriangle, Eye, EyeOff } from 'lucide-react';
+import FileUploader from '../components/common/FileUploader';
 import AdminLayout from '../components/AdminLayout';
 import api from '../api/axiosInstance';
 import { useAuth } from '../context/AuthContext';
@@ -18,6 +19,7 @@ const AdminUsers: React.FC = () => {
     const [showModal, setShowModal] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
     const [selectedUser, setSelectedUser] = useState<any>(null);
+    const [showPassword, setShowPassword] = useState(false);
     
     const [formData, setFormData] = useState({
         name: '',
@@ -25,7 +27,9 @@ const AdminUsers: React.FC = () => {
         password: '',
         role: roleFilter,
         phone: '',
-        whatsapp: ''
+        whatsapp: '',
+        profileImageUrl: '',
+        profileImagePublicId: ''
     });
 
     useEffect(() => {
@@ -50,7 +54,7 @@ const AdminUsers: React.FC = () => {
 
     const handleOpenCreate = () => {
         setModalMode('create');
-        setFormData({ name: '', email: '', password: '', role: roleFilter, phone: '', whatsapp: '' });
+        setFormData({ name: '', email: '', password: '', role: roleFilter, phone: '', whatsapp: '', profileImageUrl: '', profileImagePublicId: '' });
         setShowModal(true);
     };
 
@@ -63,7 +67,9 @@ const AdminUsers: React.FC = () => {
             password: '', // Keep empty unless changing
             role: user.role,
             phone: user.phone || '',
-            whatsapp: user.whatsapp || ''
+            whatsapp: user.whatsapp || '',
+            profileImageUrl: user.profileImageUrl || '',
+            profileImagePublicId: user.profileImagePublicId || ''
         });
         setShowModal(true);
     };
@@ -265,15 +271,35 @@ const AdminUsers: React.FC = () => {
                                         </div>
                                     </div>
                                     <div>
-                                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Password {modalMode === 'edit' && '(Leave blank to keep current)'}</label>
-                                        <input 
-                                            type="password" 
-                                            required={modalMode === 'create'}
-                                            value={formData.password}
-                                            onChange={e => setFormData({...formData, password: e.target.value})}
-                                            className="w-full px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-teal focus:ring-4 focus:ring-edu-teal/10 transition-all font-bold text-xs sm:text-sm dark:text-white"
-                                            placeholder="••••••••"
+                                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Profile Photo</label>
+                                        <FileUploader
+                                            onUploadSuccess={(url, publicId) => setFormData({ ...formData, profileImageUrl: url, profileImagePublicId: publicId })}
+                                            onRemove={() => setFormData({ ...formData, profileImageUrl: '', profileImagePublicId: '' })}
+                                            label="Upload Profile Photo"
+                                            type="image"
+                                            currentPublicId={formData.profileImagePublicId}
+                                            docType="profile_images"
                                         />
+                                    </div>
+                                    <div>
+                                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Password {modalMode === 'edit' && '(Leave blank to keep current)'}</label>
+                                        <div className="relative">
+                                            <input 
+                                                type={showPassword ? "text" : "password"} 
+                                                required={modalMode === 'create'}
+                                                value={formData.password}
+                                                onChange={e => setFormData({...formData, password: e.target.value})}
+                                                className="w-full px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-teal focus:ring-4 focus:ring-edu-teal/10 transition-all font-bold text-xs sm:text-sm dark:text-white"
+                                                placeholder="••••••••"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowPassword(!showPassword)}
+                                                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-edu-teal transition-colors"
+                                            >
+                                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                            </button>
+                                        </div>
                                     </div>
 
                                     <div className="flex flex-col sm:flex-row gap-3 pt-4">

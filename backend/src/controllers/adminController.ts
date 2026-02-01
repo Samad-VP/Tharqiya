@@ -20,13 +20,18 @@ export const getDashboardStats = asyncHandler(async (req: AuthRequest, res: Resp
     // 3. Interviews Scheduled
     const interviewsScheduled = await prisma.interview.count();
 
-    // 4. Average Score (from Evaluations)
-    const aggregateScore = await prisma.evaluation.aggregate({
+    // 4. Average Score (from Results)
+    const aggregateScore = await prisma.result.aggregate({
         _avg: {
-            marks: true
+            averageMarks: true
         }
     });
-    const averageScore = aggregateScore._avg.marks ? (aggregateScore._avg.marks / 10).toFixed(1) : '0.0';
+    const averageScore = aggregateScore._avg.averageMarks ? aggregateScore._avg.averageMarks.toFixed(1) : '0.0';
+
+    // 5. Finalized Seats
+    const finalizedSeats = await prisma.allotment.count({
+        where: { isFinalized: true }
+    });
 
     // 5. Recent Activities (Latest 5 Applications)
     const recentApplications = await prisma.application.findMany({
@@ -59,6 +64,7 @@ export const getDashboardStats = asyncHandler(async (req: AuthRequest, res: Resp
         pendingReview,
         interviewsScheduled,
         averageScore,
+        finalizedSeats,
         recentActivities
     };
 
@@ -141,25 +147,86 @@ export const retryNotification = asyncHandler(async (req: AuthRequest, res: Resp
     }
 
     let result: { success: boolean, error?: string, message?: string, sender?: string };
-    let dataToUse: any;
+    let dataToUse: any = null;
 
-    if (notification.data) {
+    // 1. Try to get structured data from the 'data' field
+    if (notification.data && typeof notification.data === 'object' && Object.keys(notification.data).length > 0) {
         dataToUse = notification.data;
-    } else {
+    } 
+    
+    // 2. Fallback: Check if 'message' contains stringified JSON (common in failed attempts)
+    if (!dataToUse && notification.message) {
         try {
-            // Attempt fallback if data is missing but message might be JSON
-            dataToUse = JSON.parse(notification.message);
+            const parsed = JSON.parse(notification.message);
+            if (parsed && typeof parsed === 'object') {
+                dataToUse = parsed;
+            }
         } catch (e) {
-            console.error(`[RETRY ERROR] Log ${id} missing structured data and message is not JSON`);
-            return next(new AppError('Incompatible notification format for retry. This log lacks the necessary structured data for resending.', 400));
+            // 2b. Regex Fallback: If it's HTML, try to scrape specific fields like passwords or names
+            const msg = notification.message;
+            if (msg.includes('Temporary Password') || msg.includes('OTP')) {
+                const passMatch = msg.match(/(?:Temporary Password|OTP|Password):?\s*<\/strong>\s*<code[^>]*>(.*?)<\/code>/i) || 
+                                 msg.match(/(?:Temporary Password|OTP|Password):?\s*(?:<\/strong>)?\s*([A-Za-z0-9]{4,10})/i);
+                
+                if (passMatch && passMatch[1]) {
+                    dataToUse = dataToUse || {};
+                    dataToUse.TempPassword = passMatch[1].trim();
+                    console.log(`[RETRY] Scraped credential from HTML: ${dataToUse.TempPassword}`);
+                }
+            }
         }
+    }
+
+    // 3. Fallback: Reconstruct from User Record (If userId exists)
+    if ((!dataToUse || Object.keys(dataToUse).length === 0) && notification.userId) {
+        console.log(`[RETRY] Attempting to reconstruct data for user ${notification.userId}`);
+        const user = notification.user;
+        if (user) {
+            dataToUse = {
+                StudentName: user.name,
+                Username: user.username || user.email,
+                Email: user.email,
+                Phone: user.phone || user.whatsapp
+            };
+            
+            // If we have a student record, get application details
+            const student = await prisma.student.findUnique({ where: { userId: user.id } });
+            if (student) {
+                dataToUse.ApplicationID = student.applicationNo;
+            }
+        }
+    }
+
+    // 4. Final Fallback: Literal Message (For simple alerts)
+    if ((!dataToUse || Object.keys(dataToUse).length === 0) && notification.message) {
+        console.log(`[RETRY] Using literal message fallback for event: ${notification.event}`);
+        dataToUse = {
+            RescheduleReason: notification.message, // Used by ADMIN_ALERT
+            StudentName: 'Admin/System',
+            Metadata: notification.message
+        };
+    }
+
+    // 4. Final Check: Validation
+    if (!dataToUse || Object.keys(dataToUse).length === 0) {
+        console.error(`[RETRY ERROR] Log ${id} (Event: ${notification.event}) lacks data. UserID: ${notification.userId}. Msg present: ${!!notification.message}`);
+        return next(new AppError(`The "${notification.event}" notification lacks the data for resending. If this is an OTP or credential email, please trigger a new one.`, 400));
     }
 
     const notificationAny = notification as any;
 
     if (notification.type === 'EMAIL') {
-        const email = notificationAny.user?.email || (dataToUse.SupportEmail); 
-        if (!email) return next(new AppError('No recipient email found', 400));
+        // Find recipient: User email, or data override, or default Admin if it's a system alert
+        let email = notificationAny.user?.email || dataToUse.Email; 
+        
+        if (!email && notification.event === 'ADMIN_ALERT') {
+            email = process.env.EMAIL_ADMIN || 'admin@darussalameduvillage.com';
+        }
+
+        if (!email) {
+            return next(new AppError('No recipient email found for this notification.', 400));
+        }
+
         result = await sendEmail(email, notification.event, dataToUse);
     } else if (notification.type === 'WHATSAPP') {
         // Security Rule: WhatsApp: Never send credentials

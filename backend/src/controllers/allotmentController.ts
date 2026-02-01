@@ -52,6 +52,29 @@ export const proposeAllotment = asyncHandler(async (req: Request, res: Response)
         throw new AppError('Application ID and Campus are required', 400);
     }
 
+
+    // Check Seat Availability
+    const campusData = await prisma.campus.findUnique({
+        where: { name: campus }
+    });
+
+    if (campusData) {
+        // Count current allotments for this campus
+        const currentCount = await prisma.allotment.count({
+            where: { campus: campus }
+        });
+
+        // Check if updating existing allotment
+        const existingAllotment = await prisma.allotment.findUnique({
+            where: { applicationId }
+        });
+
+        // If new allotment OR changing campus, check limit
+        if ((!existingAllotment || existingAllotment.campus !== campus) && currentCount >= campusData.maxSeats) {
+            throw new AppError(`Seat limit exceeded for ${campus}. Max capacity: ${campusData.maxSeats}`, 400);
+        }
+    }
+
     const allotment = await prisma.allotment.upsert({
         where: { applicationId },
         update: { campus, course, isFinalized: false },
@@ -62,7 +85,14 @@ export const proposeAllotment = asyncHandler(async (req: Request, res: Response)
     // Maybe keep it as ALLOTMENT_READY until finalized?
     await prisma.application.update({
         where: { id: applicationId },
-        data: { status: 'ALLOTMENT_READY' }
+        data: { 
+            status: 'ALLOTMENT_READY',
+            student: {
+                update: {
+                    status: 'ALLOTMENT_READY'
+                }
+            }
+        }
     });
 
     res.status(201).json({
@@ -101,7 +131,14 @@ export const finalizeAllotments = asyncHandler(async (req: Request, res: Respons
             // Design says ADMISSION_AUTHORIZED implies Principal Approved.
             await prisma.application.update({
                 where: { id: appId },
-                data: { status: 'ADMISSION_AUTHORIZED' }
+                data: { 
+                    status: 'ADMISSION_AUTHORIZED',
+                    student: {
+                        update: {
+                            status: 'ADMISSION_AUTHORIZED'
+                        }
+                    }
+                }
             });
 
             // Trigger Notification

@@ -25,21 +25,43 @@ export const submitEvaluation = asyncHandler(async (req: AuthRequest, res: Respo
         return next(new AppError('Not authorized to evaluate this interview', 403));
     }
 
-    const evaluation = await prisma.evaluation.create({
-        data: {
+    // Check if evaluation for this subject already exists
+    const existingEvaluation = await prisma.evaluation.findFirst({
+        where: {
             interviewId,
-            subject,
-            marks: parseInt(marks),
-            remarks,
-        },
+            subject
+        }
     });
+
+    let evaluation;
+    if (existingEvaluation) {
+        evaluation = await prisma.evaluation.update({
+            where: { id: existingEvaluation.id },
+            data: {
+                marks: parseInt(marks),
+                remarks
+            }
+        });
+    } else {
+        evaluation = await prisma.evaluation.create({
+            data: {
+                interviewId,
+                subject,
+                marks: parseInt(marks),
+                remarks,
+            },
+        });
+    }
 
     // Check if all subjects (Hifz, English, General) are evaluated
     const allEvaluations = await prisma.evaluation.findMany({
         where: { interviewId }
     });
+    
+    // Count unique subjects
+    const uniqueSubjects = new Set(allEvaluations.map(e => e.subject));
 
-    if (allEvaluations.length >= 3) {
+    if (uniqueSubjects.has('Hifz') && uniqueSubjects.has('English') && uniqueSubjects.has('General')) {
         await prisma.application.update({
             where: { id: interview.applicationId },
             data: { status: 'EVALUATED' }

@@ -52,12 +52,34 @@ const AdminDashboard: React.FC = () => {
                 {/* Hero / Welcome */}
                 <div className="relative p-6 sm:p-10 rounded-[2rem] sm:rounded-[2.5rem] bg-white dark:bg-slate-900 overflow-hidden shadow-2xl border border-slate-100 dark:border-slate-800 transition-colors duration-500">
                     <div className="relative z-10">
-                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-black font-outfit tracking-tighter mb-3 sm:mb-4">
+                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-brand-deep dark:text-white font-outfit tracking-tighter mb-3 sm:mb-4">
                             Welcome Back, Admin
                         </h2>
-                        <p className="text-slate-500 dark:text-slate-400 max-w-xl text-sm sm:text-base md:text-lg font-medium leading-relaxed">
-                            Track your admission metrics, manage scholar applications, and oversee the interview process from one central command center.
-                        </p>
+                        <div className="flex flex-col sm:flex-row gap-4 mt-6">
+                            <p className="text-slate-500 dark:text-slate-400 max-w-xl text-sm sm:text-base md:text-lg font-medium leading-relaxed">
+                                Track your admission metrics, manage scholar applications, and oversee the interview process from one central command center.
+                            </p>
+                            <button 
+                                onClick={async () => {
+                                    const loadToast = toast.loading("Generating Roster PDF...");
+                                    try {
+                                        const response = await api.get('/admissions/applicants/pdf', { responseType: 'blob' });
+                                        const url = window.URL.createObjectURL(new Blob([response.data]));
+                                        const link = document.createElement('a');
+                                        link.href = url;
+                                        link.setAttribute('download', `Applicants-Roster-${new Date().getTime()}.pdf`);
+                                        document.body.appendChild(link);
+                                        link.click();
+                                        toast.success("Roster Exported", { id: loadToast });
+                                    } catch (err) {
+                                        toast.error("Failed to export roster", { id: loadToast });
+                                    }
+                                }}
+                                className="shrink-0 px-6 py-3 bg-edu-teal text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-edu-teal/20 flex items-center gap-2"
+                            >
+                                <Users size={16} /> Export Roster
+                            </button>
+                        </div>
                     </div>
                     {/* Decorative Elements */}
                     <div className="absolute -top-20 -right-20 w-80 h-80 bg-white/10 blur-[100px] rounded-full" />
@@ -85,8 +107,8 @@ const AdminDashboard: React.FC = () => {
                                     {stat.trend} <TrendingUp size={14} className={stat.trend.startsWith('-') ? 'rotate-180' : ''} />
                                 </div>
                             </div>
-                            <h3 className="text-2xl sm:text-3xl font-black text-brand-deep dark:text-white font-outfit mb-1">{stat.value}</h3>
-                            <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-widest">{stat.label}</p>
+                            <h3 className="text-xl sm:text-2xl md:text-3xl font-black text-brand-deep dark:text-white font-outfit mb-1">{stat.value}</h3>
+                            <p className="text-premium-xs text-slate-500">{stat.label}</p>
                         </motion.div>
                     ))}
                 </div>
@@ -96,8 +118,8 @@ const AdminDashboard: React.FC = () => {
                     <div className="lg:col-span-2 p-6 sm:p-10 rounded-[2rem] sm:rounded-[2.5rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xl min-h-[300px] sm:min-h-[400px]">
                         <div className="flex justify-between items-center mb-6 sm:mb-10">
                             <div>
-                                <h4 className="text-xl sm:text-2xl font-black text-brand-deep dark:text-white font-outfit tracking-tight">Application Trends</h4>
-                                <p className="text-[10px] sm:text-sm font-bold text-slate-500 uppercase tracking-widest leading-tight">Growth over the last 30 days</p>
+                                <h4 className="h-premium-md text-brand-deep dark:text-white">Application Trends</h4>
+                                <p className="text-premium-xs text-slate-500 leading-tight">Growth over the last 30 days</p>
                             </div>
                             <button className="p-2 sm:p-3 rounded-xl bg-slate-50 dark:bg-white/5 text-slate-500 hover:text-edu-coral transition-all">
                                 <ArrowUpRight size={20} />

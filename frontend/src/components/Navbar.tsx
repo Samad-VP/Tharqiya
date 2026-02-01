@@ -5,6 +5,7 @@ import logo from '../assets/logo.png';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import NotificationBell from './common/NotificationBell';
 
 const Navbar: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -57,7 +58,7 @@ const Navbar: React.FC = () => {
         if (user.role === 'ADMIN' || user.role === 'SUPER_ADMIN') return '/admin';
         if (user.role === 'INTERVIEWER') return '/interviewer';
         if (user.role === 'PRINCIPAL') return '/principal';
-        return '/portal';
+        return '/student/portal';
     };
 
     const getDashboardLabel = () => {
@@ -116,6 +117,9 @@ const Navbar: React.FC = () => {
                         <div className="flex items-center ml-auto gap-1 lg:gap-2">
                             <div className="h-6 w-px bg-slate-200 dark:bg-slate-800 mx-2 lg:mx-3 xl:mx-4" />
 
+                            {/* Notification Bell */}
+                            {user && <NotificationBell />}
+
                             {/* Theme Toggle */}
                             <button
                                 onClick={toggleTheme}
@@ -144,6 +148,7 @@ const Navbar: React.FC = () => {
 
                     {/* Mobile Controls */}
                     <div className="md:hidden flex items-center gap-4">
+                        {user && <NotificationBell />}
                         <button
                             onClick={toggleTheme}
                             className={`p-2 rounded-full transition-all ${isOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'} ${!scrolled

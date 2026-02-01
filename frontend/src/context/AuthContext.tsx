@@ -11,6 +11,11 @@ interface User {
     isFirstLogin?: boolean;
     token: string;
     phone?: string;
+    whatsapp?: string;
+    profileImageUrl?: string;
+    profileImagePublicId?: string;
+    emailNotificationsEnabled?: boolean;
+    whatsappNotificationsEnabled?: boolean;
 }
 
 interface AuthContextType {
@@ -18,6 +23,7 @@ interface AuthContextType {
     login: (email: string, password: string) => Promise<User>;
     logout: () => void;
     register: (userData: any) => Promise<User>;
+    updateUser: (data: Partial<User>) => void;
     loading: boolean;
 }
 
@@ -70,8 +76,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
+    const updateUser = (data: Partial<User>) => {
+        setUser(prev => {
+            if (!prev) return null;
+            const updated = { ...prev, ...data };
+            localStorage.setItem('edu_village_user', JSON.stringify(updated));
+            return updated;
+        });
+    };
+
     return (
-        <AuthContext.Provider value={{ user, login, logout, register, loading }}>
+        <AuthContext.Provider value={{ user, login, logout, register, updateUser, loading }}>
             {!loading && children}
         </AuthContext.Provider>
     );

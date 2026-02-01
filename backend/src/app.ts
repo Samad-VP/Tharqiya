@@ -14,6 +14,9 @@ import adminRoutes from './routes/adminRoutes.js';
 import settingRoutes from './routes/settingRoutes.js';
 import allotmentRoutes from './routes/allotmentRoutes.js';
 import principalRoutes from './routes/principalRoutes.js';
+import facultyRoutes from './routes/facultyRoutes.js';
+import alumniRoutes from './routes/alumniRoutes.js';
+import campusRoutes from './routes/campusRoutes.js';
 import { globalErrorHandler } from './middleware/errorMiddleware.js';
 
 const app = express();
@@ -28,7 +31,7 @@ app.use(express.urlencoded({ extended: true }));
 // Rate limiting
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // Limit each IP to 100 requests per windowMs
+    max: 1000, // Limit each IP to 1000 requests per windowMs
     message: 'Too many requests from this IP, please try again after 15 minutes'
 });
 app.use('/api', limiter);
@@ -44,6 +47,9 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/settings', settingRoutes);
 app.use('/api/allotments', allotmentRoutes);
 app.use('/api/principal', principalRoutes);
+app.use('/api/faculty', facultyRoutes);
+app.use('/api/alumni', alumniRoutes);
+app.use('/api/campus', campusRoutes);
 
 // Basic Route
 app.get('/api/health', (_req: Request, res: Response) => {

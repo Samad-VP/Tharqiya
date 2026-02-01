@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Lock, Mail, Loader2, Sparkles } from 'lucide-react';
+import { Lock, Mail, Loader2, Sparkles, Eye, EyeOff } from 'lucide-react';
 import logo from '../assets/logo.png';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
@@ -10,6 +10,7 @@ import campus from '../assets/campus.jpg';
 const LoginPage: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -31,8 +32,10 @@ const LoginPage: React.FC = () => {
                 navigate('/admin');
             } else if (user.role === 'INTERVIEWER') {
                 navigate('/interviewer');
+            } else if (user.role === 'PRINCIPAL') {
+                navigate('/principal');
             } else {
-                navigate('/portal');
+                navigate('/student/portal');
             }
         } catch (err: any) {
             const msg = err.message || 'Invalid credentials. Please try again.';
@@ -98,13 +101,20 @@ const LoginPage: React.FC = () => {
                         <div className="relative group">
                              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-edu-coral dark:group-focus-within:text-edu-teal transition-colors" />
                             <input
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 required
-                                className="w-full pl-12 pr-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 dark:focus:ring-tharqiya-gold/10 focus:border-tharqiya-orange dark:focus:border-tharqiya-gold transition-all outline-none font-medium dark:text-white"
+                                className="w-full pl-12 pr-12 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 dark:focus:ring-tharqiya-gold/10 focus:border-tharqiya-orange dark:focus:border-tharqiya-gold transition-all outline-none font-medium dark:text-white"
                                 placeholder="••••••••"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-edu-coral dark:hover:text-edu-teal transition-colors"
+                            >
+                                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                            </button>
                         </div>
                     </div>
 

@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Lock, Mail, User, ShieldCheck, AlertCircle, CheckCircle2, Eye, EyeOff } from 'lucide-react';
+import { Lock, Mail, User, ShieldCheck, AlertCircle, CheckCircle2, Eye, EyeOff, MapPin } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/axiosInstance';
+import toast from 'react-hot-toast';
 import AdminLayout from '../components/AdminLayout';
 import InterviewerLayout from '../components/InterviewerLayout';
 
 const SettingsPage: React.FC = () => {
-    const { user, loading: authLoading } = useAuth();
+    const { user, loading: authLoading, updateUser } = useAuth();
     
     // Profile State
     const [profileData, setProfileData] = useState({
@@ -34,6 +35,8 @@ const SettingsPage: React.FC = () => {
         confirmPassword: ''
     });
     const [showPass, setShowPass] = useState(false);
+    const [showCurrentPass, setShowCurrentPass] = useState(false);
+    const [showConfirmPass, setShowConfirmPass] = useState(false);
     const [passLoading, setPassLoading] = useState(false);
     const [passStatus, setPassStatus] = useState<{ type: 'success' | 'error', msg: string } | null>(null);
 
@@ -127,7 +130,123 @@ const SettingsPage: React.FC = () => {
         }
     };
 
+    const handleToggle = async (type: 'email' | 'whatsapp') => {
+        try {
+            const field = type === 'email' ? 'emailNotificationsEnabled' : 'whatsappNotificationsEnabled';
+            const newValue = !user?.[field];
+            
+            await api.put('/auth/notification-preferences', {
+                [field]: newValue
+            });
+            
+            updateUser({ [field]: newValue });
+            toast.success(`${type.charAt(0).toUpperCase() + type.slice(1)} notifications ${newValue ? 'enabled' : 'disabled'}`);
+        } catch (error: any) {
+            toast.error(error.response?.data?.message || `Failed to update ${type} preferences`);
+        }
+    };
+
+
+    
+    // Campus Settings Component
+    const CampusSettings = () => {
+        const [campuses, setCampuses] = useState<any[]>([]);
+
+        React.useEffect(() => {
+            fetchCampuses();
+        }, []);
+
+        const fetchCampuses = async () => {
+             try {
+                const res = await api.get('/campus');
+                setCampuses(res.data.data);
+             } catch (err: any) {
+                console.error('Fetch Campuses Error:', err);
+                toast.error(err.response?.data?.message || 'Failed to fetch campuses');
+             }
+        };
+
+        const updateCapacity = async (id: string, seats: string) => {
+            try {
+                const seatCount = parseInt(seats);
+                if (isNaN(seatCount) || seatCount < 0) {
+                    return toast.error('Please enter a valid number');
+                }
+
+                await api.put(`/campus/${id}`, { maxSeats: seatCount });
+                toast.success('Capacity updated successfully');
+                // No need to fetch again if we update local state correctly, but safer to fetch
+                fetchCampuses(); 
+            } catch (err: any) {
+                console.error('Update Capacity Error:', err);
+                toast.error(err.response?.data?.message || 'Failed to update capacity');
+            }
+        };
+
+        const handleInputChange = (id: string, value: string) => {
+            setCampuses(prev => prev.map(c => 
+                c.id === id ? { ...c, maxSeats: value } : c
+            ));
+        };
+
+        return (
+            <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="p-6 sm:p-10 rounded-[2rem] sm:rounded-[2.5rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xl mt-8 sm:mt-12"
+            >
+                <div className="flex items-center gap-4 mb-8">
+                    <div className="p-3 rounded-2xl bg-edu-teal/10 text-edu-teal">
+                        <MapPin size={24} />
+                    </div>
+                    <div>
+                        <h3 className="text-xl font-black text-brand-deep dark:text-white font-outfit uppercase tracking-tight">Campus <span className="text-edu-teal">Capacities</span></h3>
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Manage seat availability per campus</p>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {campuses.map((campus) => (
+                        <div key={campus.id} className="p-6 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-slate-800 group hover:border-edu-teal transition-all">
+                            <div className="flex justify-between items-start mb-4">
+                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{campus.name}</span>
+                                <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-lg ${campus.occupied >= campus.maxSeats ? 'bg-red-500/10 text-red-500' : 'bg-emerald-500/10 text-emerald-500'}`}>
+                                    {campus.occupied >= campus.maxSeats ? 'Full' : 'Available'}
+                                </span>
+                            </div>
+                            
+                            <div className="relative w-full mb-4">
+                                <input 
+                                    type="number"
+                                    value={campus.maxSeats}
+                                    onChange={(e) => handleInputChange(campus.id, e.target.value)}
+                                    className="w-full text-center py-4 bg-white dark:bg-slate-900 rounded-xl font-black text-2xl text-edu-teal outline-none border-2 border-transparent focus:border-edu-teal shadow-inner [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                />
+                                <span className="absolute right-4 top-1/2 -translate-y-1/2 font-black text-[10px] text-slate-300 uppercase tracking-widest pointer-events-none">Seats</span>
+                            </div>
+
+                            <button 
+                                onClick={() => updateCapacity(campus.id, campus.maxSeats.toString())}
+                                className="w-full py-3 bg-brand-deep dark:bg-edu-teal text-white rounded-xl font-black text-[10px] uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-brand-deep/10 flex items-center justify-center gap-2 mb-4"
+                            >
+                                <CheckCircle2 size={14} />
+                                Set Availability
+                            </button>
+                            
+                            <div className="flex justify-between items-center px-1">
+                                <span className="text-[9px] font-bold text-slate-400">Occupied: <span className="text-brand-deep dark:text-white">{campus.occupied}</span></span>
+                                <span className="text-[9px] font-bold text-slate-400">Vacant: <span className="text-brand-deep dark:text-white">{Math.max(0, parseInt(campus.maxSeats) - campus.occupied)}</span></span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </motion.div>
+        );
+    };
+
     const SettingsContent = (
+
         <div className="max-w-4xl mx-auto space-y-8 sm:space-y-12">
             <div className="mb-8 sm:mb-12">
                 <h2 className="text-2xl sm:text-3xl font-black text-brand-deep dark:text-white font-outfit tracking-tighter uppercase leading-tight">
@@ -217,14 +336,23 @@ const SettingsPage: React.FC = () => {
 
                         <div>
                             <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Current Password</label>
-                            <input 
-                                type="password"
-                                required
-                                value={passwords.currentPassword}
-                                onChange={e => setPasswords({...passwords, currentPassword: e.target.value})}
-                                className="w-full px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-coral focus:ring-4 focus:ring-edu-coral/10 transition-all font-bold text-xs sm:text-sm text-brand-deep dark:text-white"
-                                placeholder="••••••••"
-                            />
+                            <div className="relative">
+                                <input 
+                                    type={showCurrentPass ? 'text' : 'password'}
+                                    required
+                                    value={passwords.currentPassword}
+                                    onChange={e => setPasswords({...passwords, currentPassword: e.target.value})}
+                                    className="w-full px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-coral focus:ring-4 focus:ring-edu-coral/10 transition-all font-bold text-xs sm:text-sm text-brand-deep dark:text-white"
+                                    placeholder="••••••••"
+                                />
+                                <button 
+                                    type="button"
+                                    onClick={() => setShowCurrentPass(!showCurrentPass)}
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand-deep dark:hover:text-white"
+                                >
+                                    {showCurrentPass ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
+                            </div>
                         </div>
 
                         <div>
@@ -250,14 +378,23 @@ const SettingsPage: React.FC = () => {
 
                         <div>
                             <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Confirm Password</label>
-                            <input 
-                                type="password"
-                                required
-                                value={passwords.confirmPassword}
-                                onChange={e => setPasswords({...passwords, confirmPassword: e.target.value})}
-                                className="w-full px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-coral focus:ring-4 focus:ring-edu-coral/10 transition-all font-bold text-xs sm:text-sm text-brand-deep dark:text-white"
-                                placeholder="Repeat password"
-                            />
+                            <div className="relative">
+                                <input 
+                                    type={showConfirmPass ? 'text' : 'password'}
+                                    required
+                                    value={passwords.confirmPassword}
+                                    onChange={e => setPasswords({...passwords, confirmPassword: e.target.value})}
+                                    className="w-full px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-coral focus:ring-4 focus:ring-edu-coral/10 transition-all font-bold text-xs sm:text-sm text-brand-deep dark:text-white"
+                                    placeholder="Repeat password"
+                                />
+                                <button 
+                                    type="button"
+                                    onClick={() => setShowConfirmPass(!showConfirmPass)}
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand-deep dark:hover:text-white"
+                                >
+                                    {showConfirmPass ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
+                            </div>
                         </div>
 
                         <button 
@@ -269,6 +406,62 @@ const SettingsPage: React.FC = () => {
                     </form>
                 </motion.div>
             </div>
+
+            {/* Notification Preferences Section */}
+            <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="p-6 sm:p-10 rounded-[2rem] sm:rounded-[2.5rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xl"
+            >
+                <div className="flex items-center gap-4 mb-8">
+                    <div className="p-3 rounded-2xl bg-amber-500/10 text-amber-500">
+                        <Mail size={24} />
+                    </div>
+                    <div>
+                        <h3 className="text-xl font-black text-brand-deep dark:text-white font-outfit uppercase tracking-tight">Notification <span className="text-amber-500">Preferences</span></h3>
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Control how you receive institutional updates</p>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="flex items-center justify-between p-6 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-slate-800">
+                        <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-xl bg-edu-teal/10 flex items-center justify-center text-edu-teal">
+                                <Mail size={20} />
+                            </div>
+                            <div>
+                                <p className="text-sm font-bold text-brand-deep dark:text-white">Email Notifications</p>
+                                <p className="text-[10px] text-slate-500 font-medium">Critical alerts and updates</p>
+                            </div>
+                        </div>
+                        <button 
+                            onClick={() => handleToggle('email')}
+                            className={`w-12 h-6 rounded-full p-1 transition-all duration-300 ${user?.emailNotificationsEnabled ? 'bg-edu-teal' : 'bg-slate-300 dark:bg-slate-700'}`}
+                        >
+                            <div className={`w-4 h-4 bg-white rounded-full transition-all duration-300 ${user?.emailNotificationsEnabled ? 'translate-x-6' : 'translate-x-0'}`} />
+                        </button>
+                    </div>
+
+                    <div className="flex items-center justify-between p-6 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-slate-800">
+                        <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500">
+                                <ShieldCheck size={20} />
+                            </div>
+                            <div>
+                                <p className="text-sm font-bold text-brand-deep dark:text-white">WhatsApp Notifications</p>
+                                <p className="text-[10px] text-slate-500 font-medium">Instant mobile alerts</p>
+                            </div>
+                        </div>
+                        <button 
+                            onClick={() => handleToggle('whatsapp')}
+                            className={`w-12 h-6 rounded-full p-1 transition-all duration-300 ${user?.whatsappNotificationsEnabled ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-700'}`}
+                        >
+                            <div className={`w-4 h-4 bg-white rounded-full transition-all duration-300 ${user?.whatsappNotificationsEnabled ? 'translate-x-6' : 'translate-x-0'}`} />
+                        </button>
+                    </div>
+                </div>
+            </motion.div>
 
             {/* Evaluation Standards (Admin Only) */}
             {(user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN') && (
@@ -345,6 +538,11 @@ const SettingsPage: React.FC = () => {
                         </button>
                     </form>
                 </motion.div>
+            )}
+
+            {/* Campus Capacity (Principal Only) */}
+            {(user?.role === 'PRINCIPAL' || user?.role === 'SUPER_ADMIN') && (
+                <CampusSettings />
             )}
         </div>
     );

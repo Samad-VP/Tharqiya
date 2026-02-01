@@ -24,7 +24,8 @@ export const createPendingApplication = async (formData: any) => {
         whatsapp, hifzCenter, hifzInstitution,
         dawrasCount, schoolEducation, kitabsStudied, 
         firstOption, secondOption, thirdOption, 
-        parentName, motherName, documents, email, primeHifzMentor
+        parentName, motherName, documents, email, primeHifzMentor,
+        pincode, state, country
     } = formData;
 
     try {
@@ -39,6 +40,9 @@ export const createPendingApplication = async (formData: any) => {
         const loginUrl = `${process.env.FRONTEND_URL || 'https://darussalameduvillage.com'}/login`;
 
         // 3. Create User, Student and Application (Transaction)
+        const photoUrl = documents?.photo || '';
+        const photoId = documents?.photoPublicId || '';
+
         const result = await prisma.$transaction(async (tx) => {
             const user = await tx.user.create({
                 data: {
@@ -50,6 +54,8 @@ export const createPendingApplication = async (formData: any) => {
                     phone: whatsapp || phone,
                     whatsapp: whatsapp || phone,
                     isFirstLogin: false,
+                    profileImageUrl: photoUrl,
+                    profileImagePublicId: photoId
                 }
             });
 
@@ -73,6 +79,9 @@ export const createPendingApplication = async (formData: any) => {
                     fatherName: parentName || 'N/A',
                     motherName: motherName || 'N/A',
                     primeHifzMentor: primeHifzMentor || 'N/A',
+                    pincode: pincode || 'N/A',
+                    state: state || 'N/A',
+                    country: country || 'India',
                     status: 'PENDING',
                     documents: documents || {},
                     resources: { email: email || null } as any

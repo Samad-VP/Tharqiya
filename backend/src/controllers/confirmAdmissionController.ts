@@ -24,7 +24,7 @@ export const confirmAdmission = asyncHandler(async (req: AuthRequest, res: Respo
         throw new AppError('Application not found', 404);
     }
 
-    if (student.application.status !== 'ALLOTTED') {
+    if (student.application.status !== 'ALLOTTED' && student.application.status !== 'ADMISSION_AUTHORIZED') {
         throw new AppError('No active allotment found to confirm', 400);
     }
 

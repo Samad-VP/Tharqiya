@@ -15,7 +15,14 @@ export const verifyDocuments = async (req: Request, res: Response) => {
         // Reject
         await prisma.application.update({
             where: { id: applicationId },
-            data: { status: ApplicationStatus.REJECTED } // Or keep pending with notes? Design says REJECTED or DOCS_VERIFIED
+            data: { 
+                status: ApplicationStatus.REJECTED,
+                student: {
+                    update: {
+                        status: ApplicationStatus.REJECTED
+                    }
+                }
+            }
         });
         // TODO: Send Email Notification about Rejection
         await logAction(adminId, 'VERIFY_DOCS_REJECTED', applicationId, { reason: rejectionReason });
@@ -24,7 +31,14 @@ export const verifyDocuments = async (req: Request, res: Response) => {
 
     const application = await prisma.application.update({
       where: { id: applicationId },
-      data: { status: ApplicationStatus.DOCS_VERIFIED },
+      data: { 
+        status: ApplicationStatus.DOCS_VERIFIED,
+        student: {
+            update: {
+                status: ApplicationStatus.DOCS_VERIFIED
+            }
+        }
+      },
     });
 
     await logAction(adminId, 'VERIFY_DOCS_APPROVED', applicationId);
@@ -110,7 +124,14 @@ export const processAdmission = async (req: Request, res: Response) => {
         // Update Application Status
         await prisma.application.update({
             where: { id: applicationId },
-            data: { status: ApplicationStatus.ACCEPTED }
+            data: { 
+                status: ApplicationStatus.ACCEPTED,
+                student: {
+                    update: {
+                        status: ApplicationStatus.ACCEPTED
+                    }
+                }
+            }
         });
         
         // TODO: Send Email with Username/Password

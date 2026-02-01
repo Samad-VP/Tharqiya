@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Upload, X, FileText, CheckCircle, AlertCircle, Loader2, RefreshCcw } from 'lucide-react';
+import { Upload, X, FileText, Loader2, RefreshCcw } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../../api/axiosInstance';
 import { useAuth } from '../../context/AuthContext';
@@ -13,6 +13,8 @@ interface FileUploaderProps {
   accept?: string;
   type?: 'image' | 'document';
   currentPublicId?: string; // For replacement
+  docType?: string; // For Cloudinary subfolder
+  email?: string; // For public uploads identification
 }
 
 const FileUploader: React.FC<FileUploaderProps> = ({
@@ -22,7 +24,9 @@ const FileUploader: React.FC<FileUploaderProps> = ({
   label = 'Upload File',
   accept = 'image/*,application/pdf',
   type = 'image',
-  currentPublicId
+  currentPublicId,
+  docType,
+  email
 }) => {
   const { user: currentUser } = useAuth();
   const [isUploading, setIsUploading] = useState(false);
@@ -32,8 +36,8 @@ const FileUploader: React.FC<FileUploaderProps> = ({
   const [showReplace, setShowReplace] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Set limits based on category
-  const maxSizeKB = type === 'image' ? 300 : 2048;
+  // Set limits based on category - matches backend (300KB for photo, 500KB for docs)
+  const maxSizeKB = type === 'image' ? 300 : 500;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
@@ -73,10 +77,16 @@ const FileUploader: React.FC<FileUploaderProps> = ({
     // Pass old public ID if replacing
     if (currentPublicId) {
       formData.append('oldPublicId', currentPublicId);
-      formData.append('resourceType', type === 'image' ? 'image' : 'raw');
+      formData.append('resourceType', type === 'image' ? 'image' : 'auto');
     }
 
-    const endpoint = type === 'image' ? '/uploads/image' : '/uploads/document';
+    // Pass identifier and docType in query params for Cloudinary folder logic
+    const params = new URLSearchParams();
+    if (docType) params.append('docType', docType);
+    if (email) params.append('email', email);
+    
+    const baseEndpoint = type === 'image' ? '/uploads/image' : '/uploads/document';
+    const endpoint = `${baseEndpoint}?${params.toString()}`;
 
     try {
       const response = await api.post(endpoint, formData, {
@@ -146,7 +156,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
             </div>
             <p className="text-sm font-medium text-gray-700 dark:text-gray-200">{label}</p>
             <p className="text-xs text-gray-500 mt-1">
-              Max size: {maxSizeKB > 1000 ? (maxSizeKB / 1024).toFixed(1) + 'MB' : maxSizeKB + 'KB'}
+              Max size: {maxSizeKB}KB
             </p>
           </div>
         )}

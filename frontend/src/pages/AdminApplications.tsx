@@ -23,6 +23,7 @@ import AdminLayout from '../components/AdminLayout';
 import api from '../api/axiosInstance';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
+import { INDIAN_STATES } from '../utils/constants';
 
 const AdminApplications: React.FC = () => {
     const { user: currentUser, loading: authLoading } = useAuth();
@@ -39,11 +40,34 @@ const AdminApplications: React.FC = () => {
     });
     const [selectedStudentNotifications, setSelectedStudentNotifications] = React.useState<any[]>([]);
     const [loadingNotifications, setLoadingNotifications] = React.useState(false);
+    
+    // Filter States
+    const [search, setSearch] = React.useState('');
+    const [showFilters, setShowFilters] = React.useState(false);
+    const [filters, setFilters] = React.useState({
+        status: '',
+        schoolEducation: '',
+        dawrasCount: '',
+        minAge: '',
+        maxAge: '',
+        state: '',
+        country: ''
+    });
 
     const fetchApplications = async () => {
         try {
             setLoading(true);
-            const response = await api.get('/admissions/all');
+            const params = new URLSearchParams();
+            if (search) params.append('search', search);
+            if (filters.status) params.append('status', filters.status);
+            if (filters.schoolEducation) params.append('schoolEducation', filters.schoolEducation);
+            if (filters.dawrasCount) params.append('dawrasCount', filters.dawrasCount);
+            if (filters.minAge) params.append('minAge', filters.minAge);
+            if (filters.maxAge) params.append('maxAge', filters.maxAge);
+            if (filters.state) params.append('state', filters.state);
+            if (filters.country) params.append('country', filters.country);
+
+            const response = await api.get(`/admissions/all?${params.toString()}`);
             setApplications(response.data.data);
         } catch (error) {
             console.error('Error fetching applications:', error);
@@ -64,10 +88,13 @@ const AdminApplications: React.FC = () => {
 
     React.useEffect(() => {
         if (!authLoading && currentUser) {
-            fetchApplications();
+            const timeoutId = setTimeout(() => {
+                fetchApplications();
+            }, 500);
             fetchInterviewers();
+            return () => clearTimeout(timeoutId);
         }
-    }, [authLoading, currentUser]);
+    }, [authLoading, currentUser, search, filters]);
 
     const handleStatusUpdate = async (applicationId: string, newStatus: string) => {
         try {
@@ -136,6 +163,25 @@ const AdminApplications: React.FC = () => {
         }
     };
 
+    const adminStatuses = [
+        { label: 'Pending', value: 'PENDING' },
+        { label: 'Docs Verified', value: 'DOCS_VERIFIED' },
+        { label: 'Interview Scheduled', value: 'INTERVIEW_SCHEDULED' },
+        { label: 'Reviewed', value: 'REVIEWED' },
+        { label: 'Rejected', value: 'REJECTED' },
+    ];
+
+    const principalStatuses = [
+        { label: 'Evaluated', value: 'EVALUATED' },
+        { label: 'Allotment Ready', value: 'ALLOTMENT_READY' },
+        { label: 'Admission Authorized', value: 'ADMISSION_AUTHORIZED' },
+        { label: 'Allotted', value: 'ALLOTTED' },
+        { label: 'Accepted', value: 'ACCEPTED' },
+        { label: 'Rejected', value: 'REJECTED' },
+    ];
+
+    const statusOptions = ['PRINCIPAL', 'SUPER_ADMIN'].includes(currentUser?.role || '') ? principalStatuses : adminStatuses;
+
     return (
         <AdminLayout>
              <div className="space-y-6 sm:space-y-8">
@@ -149,22 +195,151 @@ const AdminApplications: React.FC = () => {
                     </div>
                     
                     <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
-                        <div className="relative w-full sm:w-80">
+                        <div className="relative w-full sm:w-80 font-bold">
                             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                             <input 
                                 type="text" 
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
                                 placeholder="Search candidates..."
-                                className="w-full pl-11 pr-6 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl sm:rounded-2xl focus:ring-4 focus:ring-edu-teal/10 focus:border-edu-teal transition-all outline-none font-bold text-xs sm:text-sm dark:text-white shadow-sm"
+                                className="w-full pl-11 pr-6 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl sm:rounded-2xl focus:ring-4 focus:ring-edu-teal/10 focus:border-edu-teal transition-all outline-none font-bold text-xs sm:text-sm text-brand-deep dark:text-white shadow-sm"
                             />
                         </div>
-                        <div className="flex items-center gap-3 w-full sm:w-auto">
-                            <button className="flex-grow sm:flex-none p-3 rounded-xl sm:rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-500 hover:text-edu-teal transition-all shadow-sm flex items-center justify-center">
+                        <div className="flex items-center gap-3 w-full sm:w-auto relative">
+                            <button 
+                                onClick={() => setShowFilters(!showFilters)}
+                                className={`flex-grow sm:flex-none p-3 rounded-xl sm:rounded-2xl border transition-all shadow-sm flex items-center justify-center ${showFilters ? 'bg-edu-teal text-white border-edu-teal' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-500 hover:text-edu-teal'}`}
+                            >
                                 <Filter size={18} />
-                                <span className="sm:hidden ml-2 text-xs font-bold uppercase tracking-widest">Filter</span>
+                                <span className={`${showFilters ? 'inline' : 'hidden'} lg:inline ml-2 text-xs font-bold uppercase tracking-widest`}>Filters</span>
+                                {(filters.status || filters.schoolEducation || filters.dawrasCount || filters.minAge || filters.maxAge) && (
+                                    <div className="ml-2 w-2 h-2 rounded-full bg-edu-coral animate-pulse" />
+                                )}
                             </button>
-                            <button className="flex-grow sm:flex-none p-3 rounded-xl sm:rounded-2xl bg-edu-coral text-white shadow-lg shadow-edu-coral/20 hover:-translate-y-1 transition-all flex items-center justify-center">
+
+                            <AnimatePresence>
+                                {showFilters && (
+                                    <motion.div 
+                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        className="absolute top-full right-0 mt-4 w-72 sm:w-80 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl p-6 z-[60] space-y-4"
+                                    >
+                                        <div className="flex justify-between items-center mb-2">
+                                            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Advanced Filters</h4>
+                                            <button 
+                                                onClick={() => setFilters({ status: '', schoolEducation: '', dawrasCount: '', minAge: '', maxAge: '', state: '', country: '' })}
+                                                className="text-[8px] font-black uppercase tracking-widest text-edu-coral hover:underline"
+                                            >
+                                                Reset
+                                            </button>
+                                        </div>
+
+                                        <div className="space-y-4">
+                                            <div>
+                                                <label className="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">Age Range</label>
+                                                <div className="flex items-center gap-2">
+                                                    <input 
+                                                        type="number" placeholder="Min" 
+                                                        value={filters.minAge} 
+                                                        onChange={(e) => setFilters({...filters, minAge: e.target.value})}
+                                                        className="w-full px-4 py-2 bg-slate-50 dark:bg-white/5 border-none rounded-xl text-xs font-bold text-brand-deep dark:text-white"
+                                                    />
+                                                    <span className="text-slate-300">-</span>
+                                                    <input 
+                                                        type="number" placeholder="Max" 
+                                                        value={filters.maxAge} 
+                                                        onChange={(e) => setFilters({...filters, maxAge: e.target.value})}
+                                                        className="w-full px-4 py-2 bg-slate-50 dark:bg-white/5 border-none rounded-xl text-xs font-bold text-brand-deep dark:text-white"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">Education (10th/Inter)</label>
+                                                <input 
+                                                    type="text" placeholder="e.g. 10th" 
+                                                    value={filters.schoolEducation} 
+                                                    onChange={(e) => setFilters({...filters, schoolEducation: e.target.value})}
+                                                    className="w-full px-4 py-2 bg-slate-50 dark:bg-white/5 border-none rounded-xl text-xs font-bold text-brand-deep dark:text-white"
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">Dawras Count</label>
+                                                <input 
+                                                    type="text" placeholder="e.g. 3" 
+                                                    value={filters.dawrasCount} 
+                                                    onChange={(e) => setFilters({...filters, dawrasCount: e.target.value})}
+                                                    className="w-full px-4 py-2 bg-slate-50 dark:bg-white/5 border-none rounded-xl text-xs font-bold text-brand-deep dark:text-white"
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">Application Status</label>
+                                                <select 
+                                                    value={filters.status} 
+                                                    onChange={(e) => setFilters({...filters, status: e.target.value})}
+                                                    className="w-full px-4 py-2 bg-slate-50 dark:bg-white/5 border-none rounded-xl text-xs font-bold outline-none text-brand-deep dark:text-white"
+                                                >
+                                                    <option value="" className="bg-white dark:bg-slate-900">All Statuses</option>
+                                                    {statusOptions.map(option => (
+                                                        <option key={option.value} value={option.value} className="bg-white dark:bg-slate-900">
+                                                            {option.label}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">State / Union Territory</label>
+                                                <select 
+                                                    value={filters.state} 
+                                                    onChange={(e) => setFilters({...filters, state: e.target.value})}
+                                                    className="w-full px-4 py-2 bg-slate-50 dark:bg-white/5 border-none rounded-xl text-xs font-bold outline-none text-brand-deep dark:text-white"
+                                                >
+                                                    <option value="" className="bg-white dark:bg-slate-900">All States/UTs</option>
+                                                    {INDIAN_STATES.map(state => (
+                                                        <option key={state} value={state} className="bg-white dark:bg-slate-900">{state}</option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+
+                            <button 
+                                onClick={async () => {
+                                    const params = new URLSearchParams();
+                                    if (search) params.append('search', search);
+                                    if (filters.status) params.append('status', filters.status);
+                                    if (filters.schoolEducation) params.append('schoolEducation', filters.schoolEducation);
+                                    if (filters.dawrasCount) params.append('dawrasCount', filters.dawrasCount);
+                                    if (filters.minAge) params.append('minAge', filters.minAge);
+                                    if (filters.maxAge) params.append('maxAge', filters.maxAge);
+                                    if (filters.state) params.append('state', filters.state);
+                                    
+                                    const loadToast = toast.loading("Generating PDF...");
+                                    try {
+                                        const response = await api.get(`/admissions/applicants/pdf?${params.toString()}`, {
+                                            responseType: 'blob'
+                                        });
+                                        const url = window.URL.createObjectURL(new Blob([response.data]));
+                                        const link = document.createElement('a');
+                                        link.href = url;
+                                        link.setAttribute('download', `Applicants-Roster-${new Date().getTime()}.pdf`);
+                                        document.body.appendChild(link);
+                                        link.click();
+                                        toast.success("PDF Downloaded", { id: loadToast });
+                                    } catch (err) {
+                                        toast.error("Failed to generate PDF", { id: loadToast });
+                                    }
+                                }}
+                                className="flex-grow sm:flex-none p-3 rounded-xl sm:rounded-2xl bg-edu-coral text-white shadow-lg shadow-edu-coral/20 hover:-translate-y-1 transition-all flex items-center justify-center"
+                            >
                                 <Download size={18} />
-                                <span className="sm:hidden ml-2 text-xs font-bold uppercase tracking-widest">Export</span>
+                                <span className="hidden lg:inline ml-2 text-xs font-bold uppercase tracking-widest">Export</span>
                             </button>
                         </div>
                     </div>
@@ -286,17 +461,33 @@ const AdminApplications: React.FC = () => {
                                         </td>
                                         <td className="px-8 py-6 text-slate-500 font-bold text-[13px]">{new Date(app.appliedAt).toLocaleDateString()}</td>
                                         <td className="px-8 py-6">
-                                            <div className="flex items-center gap-2">
-                                                <div className="w-12 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                                                    <div className="h-full bg-edu-teal" style={{ width: `0%` }} />
+                                            {app.interview?.evaluations?.length > 0 ? (
+                                                <div className="flex items-center gap-2">
+                                                    <div className="w-12 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                                                        <div 
+                                                            className="h-full bg-edu-teal" 
+                                                            style={{ width: `${(app.interview.evaluations.reduce((acc: number, curr: any) => acc + curr.marks, 0) / (app.interview.evaluations.length * 100)) * 100}%` }} 
+                                                        />
+                                                    </div>
+                                                    <span className="font-black text-brand-deep dark:text-white text-[11px]">
+                                                        {(app.interview.evaluations.reduce((acc: number, curr: any) => acc + curr.marks, 0) / app.interview.evaluations.length).toFixed(1)}
+                                                    </span>
                                                 </div>
-                                                <span className="font-black text-brand-deep dark:text-white">N/A</span>
-                                            </div>
+                                            ) : (
+                                                <span className="font-black text-slate-300 uppercase italic text-[10px]">Pending</span>
+                                            )}
                                         </td>
                                         <td className="px-8 py-6">
-                                            <span className={`px-4 py-2 rounded-full text-[10px] font-black tracking-widest uppercase ${getStatusColor(app.status)}`}>
-                                                {app.status.replace('_', ' ')}
-                                            </span>
+                                            <div className="flex flex-col gap-1.5">
+                                                <span className={`px-3 py-1.5 rounded-full text-[9px] font-black tracking-widest uppercase w-fit ${getStatusColor(app.status)}`}>
+                                                    {app.status.replace(/_/g, ' ')}
+                                                </span>
+                                                {app.allotment && (
+                                                    <span className="text-[9px] font-black text-edu-teal uppercase tracking-widest flex items-center gap-1">
+                                                        <CheckCircle2 size={10} /> {app.allotment.campus}
+                                                    </span>
+                                                )}
+                                            </div>
                                         </td>
                                         <td className="px-8 py-6 text-right">
                                             <div className="flex items-center justify-end gap-2">
@@ -310,6 +501,7 @@ const AdminApplications: React.FC = () => {
                                 >
                                     <Eye size={16} />
                                 </button>
+                                                {['ADMIN', 'SUPER_ADMIN'].includes(currentUser?.role || '') && (
                                                 <button 
                                                     disabled={!!app.interview}
                                                     onClick={() => { setSelectedApplication(app); setShowScheduleModal(true); }}
@@ -318,6 +510,7 @@ const AdminApplications: React.FC = () => {
                                                 >
                                                     {app.interview ? <CheckCircle2 size={18} /> : <Calendar size={18} />}
                                                 </button>
+                                                )}
                                                 <button className="p-2 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-400 hover:text-brand-deep dark:hover:text-white transition-all">
                                                     <MoreHorizontal size={18} />
                                                 </button>
@@ -378,9 +571,29 @@ const AdminApplications: React.FC = () => {
                                             <p className="text-xs font-black text-slate-400 uppercase tracking-widest">{selectedApplication.student?.applicationNo}</p>
                                         </div>
                                     </div>
-                                    <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${getStatusColor(selectedApplication.status)}`}>
-                                        {selectedApplication.status.replace('_', ' ')}
-                                    </span>
+
+                                    <div className="flex flex-col items-end gap-2">
+                                        <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${getStatusColor(selectedApplication.status)}`}>
+                                            {selectedApplication.status.replace('_', ' ')}
+                                        </span>
+                                        {['ADMIN', 'SUPER_ADMIN'].includes(currentUser?.role || '') && (
+                                            <select
+                                                value={selectedApplication.status}
+                                                onChange={(e) => handleStatusUpdate(selectedApplication.id, e.target.value)}
+                                                className="px-2 py-1 text-[10px] font-bold bg-slate-100 dark:bg-white/5 border-none rounded-lg outline-none cursor-pointer hover:bg-slate-200 dark:hover:bg-white/10 transition-colors"
+                                            >
+                                                <option value="PENDING">Pending</option>
+                                                <option value="DOCS_VERIFIED">Docs Verified</option>
+                                                <option value="INTERVIEW_SCHEDULED">Interview Scheduled</option>
+                                                <option value="EVALUATED">Evaluated</option>
+                                                <option value="ALLOTMENT_READY">Allotment Ready</option>
+                                                <option value="ADMISSION_AUTHORIZED">Admission Authorized</option>
+                                                <option value="ALLOTTED">Allotted</option>
+                                                <option value="ACCEPTED">Accepted</option>
+                                                <option value="REJECTED">Rejected</option>
+                                            </select>
+                                        )}
+                                    </div>
                                 </div>
 
                                 <div className="grid sm:grid-cols-2 gap-8 mb-10">
@@ -406,7 +619,6 @@ const AdminApplications: React.FC = () => {
                                                 </div>
                                             </div>
                                         </div>
-
                                         <div>
                                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Preferences</p>
                                             <div className="space-y-3">
@@ -420,6 +632,50 @@ const AdminApplications: React.FC = () => {
                                                 </div>
                                             </div>
                                         </div>
+
+                                        {selectedApplication.allotment && (
+                                            <div>
+                                                <p className="text-[10px] font-black text-edu-teal uppercase tracking-[0.2em] mb-2">Allotment Details</p>
+                                                <div className="p-4 rounded-2xl bg-edu-teal/5 border border-edu-teal/20">
+                                                    <div className="flex justify-between items-center mb-2">
+                                                        <span className="text-[10px] font-bold text-slate-500 uppercase">Selected Campus</span>
+                                                        <span className="text-sm font-black text-brand-deep dark:text-white uppercase font-outfit">{selectedApplication.allotment.campus}</span>
+                                                    </div>
+                                                    <div className="flex justify-between items-center">
+                                                        <span className="text-[10px] font-bold text-slate-500 uppercase">Finalized Status</span>
+                                                        <span className={`px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-widest ${selectedApplication.allotment.isFinalized ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'}`}>
+                                                            {selectedApplication.allotment.isFinalized ? 'Confirmed' : 'Provisional'}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {selectedApplication.interview?.evaluations?.length > 0 && (
+                                            <div className="pt-2">
+                                                <div className="flex items-center justify-between mb-2">
+                                                    <p className="text-[10px] font-black text-edu-coral uppercase tracking-[0.2em]">Evaluation Phase</p>
+                                                    <div className="px-2 py-0.5 bg-edu-coral/10 text-edu-coral rounded-lg text-[10px] font-black uppercase">
+                                                        Avg: {(selectedApplication.interview.evaluations.reduce((acc: number, curr: any) => acc + curr.marks, 0) / selectedApplication.interview.evaluations.length).toFixed(1)}
+                                                    </div>
+                                                </div>
+                                                <div className="space-y-2">
+                                                    {selectedApplication.interview.evaluations.map((evalItem: any, i: number) => (
+                                                        <div key={i} className="p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-100/50 dark:border-slate-800/50">
+                                                            <div className="flex justify-between items-center mb-1">
+                                                                <span className="text-[10px] font-black text-brand-deep dark:text-white uppercase truncate max-w-[120px]">{evalItem.subject}</span>
+                                                                <span className="text-[10px] font-black text-edu-coral">{evalItem.marks}/100</span>
+                                                            </div>
+                                                            {evalItem.remarks && (
+                                                                <p className="text-[9px] font-medium text-slate-500 dark:text-slate-400 italic leading-tight">
+                                                                    "{evalItem.remarks}"
+                                                                </p>
+                                                            )}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
 
                                     <div className="space-y-6">
@@ -450,7 +706,10 @@ const AdminApplications: React.FC = () => {
                                                 </div>
                                                 <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/5">
                                                     <span className="block text-[8px] font-bold text-slate-500 uppercase mb-1">Address</span>
-                                                    <span className="text-[10px] font-black leading-tight italic">{selectedApplication.student?.address}, {selectedApplication.student?.place}, {selectedApplication.student?.district}</span>
+                                                    <span className="text-[10px] font-black leading-tight italic">
+                                                        {selectedApplication.student?.address}, {selectedApplication.student?.place}, {selectedApplication.student?.district}, {selectedApplication.student?.state}, {selectedApplication.student?.country} 
+                                                        {selectedApplication.student?.pincode && ` - ${selectedApplication.student.pincode}`}
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
@@ -579,7 +838,7 @@ const AdminApplications: React.FC = () => {
                                 
                                     <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-slate-100 dark:border-slate-800">
                                     <div className="flex gap-2 flex-grow">
-                                        {selectedApplication.status === 'PENDING' && (
+                                        {selectedApplication.status === 'PENDING' && ['ADMIN', 'SUPER_ADMIN'].includes(currentUser?.role || '') && (
                                             <button 
                                                 onClick={() => {
                                                     api.patch(`/admissions/${selectedApplication.id}/verify-docs`, { isVerified: true })
@@ -595,7 +854,7 @@ const AdminApplications: React.FC = () => {
                                                 <CheckCircle2 size={18} /> Verify Documents
                                             </button>
                                         )}
-                                        {['DOCS_VERIFIED', 'REVIEWED', 'EVALUATED', 'ALLOTMENT_READY'].includes(selectedApplication.status) && (
+                                        {['PRINCIPAL', 'SUPER_ADMIN'].includes(currentUser?.role || '') && selectedApplication.status === 'ADMISSION_AUTHORIZED' && (
                                            <button 
                                                 onClick={() => handleStatusUpdate(selectedApplication.id, 'ACCEPTED')}
                                                 className="flex-grow py-4 rounded-2xl bg-emerald-500 text-white font-black text-xs uppercase tracking-widest shadow-xl shadow-emerald-500/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
@@ -603,13 +862,25 @@ const AdminApplications: React.FC = () => {
                                                 <Check size={18} /> Approve Admission
                                             </button> 
                                         )}
-                                        
-                                        <button 
-                                            onClick={() => handleStatusUpdate(selectedApplication.id, 'REJECTED')}
-                                            className="flex-grow py-4 rounded-2xl bg-red-500 text-white font-black text-xs uppercase tracking-widest shadow-xl shadow-red-500/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
-                                        >
-                                            <X size={18} /> Reject
-                                        </button>
+
+                                        {['PRINCIPAL', 'SUPER_ADMIN'].includes(currentUser?.role || '') && ['EVALUATED', 'ALLOTMENT_READY'].includes(selectedApplication.status) && (
+                                            <button 
+                                                disabled
+                                                className="flex-grow py-4 rounded-2xl bg-slate-100 dark:bg-white/5 text-slate-400 font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 opacity-70 cursor-not-allowed"
+                                            >
+                                                <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" /> Awaiting Allotment
+                                            </button>
+                                        )}
+
+                                        {((['ADMIN', 'SUPER_ADMIN'].includes(currentUser?.role || '') && ['PENDING', 'DOCS_VERIFIED'].includes(selectedApplication.status)) ||
+                                          (['PRINCIPAL', 'SUPER_ADMIN'].includes(currentUser?.role || '') && ['REVIEWED', 'EVALUATED', 'ALLOTMENT_READY', 'ADMISSION_AUTHORIZED'].includes(selectedApplication.status))) && (
+                                            <button 
+                                                onClick={() => handleStatusUpdate(selectedApplication.id, 'REJECTED')}
+                                                className="flex-grow py-4 rounded-2xl bg-red-500 text-white font-black text-xs uppercase tracking-widest shadow-xl shadow-red-500/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
+                                            >
+                                                <X size={18} /> Reject
+                                            </button>
+                                        )}
                                     </div>
                                     <button 
                                         onClick={() => setShowDetailsModal(false)}
@@ -648,11 +919,11 @@ const AdminApplications: React.FC = () => {
                                             required
                                             value={schedulingData.interviewerId}
                                             onChange={e => setSchedulingData({...schedulingData, interviewerId: e.target.value})}
-                                            className="w-full px-6 py-4 bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-teal rounded-2xl outline-none font-bold text-sm"
+                                            className="w-full px-6 py-4 bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-teal rounded-2xl outline-none font-bold text-sm text-brand-deep dark:text-white"
                                         >
-                                            <option value="">Select an interviewer</option>
+                                            <option value="" className="bg-white dark:bg-slate-900">Select an interviewer</option>
                                             {interviewers.filter(int => int.interviewer).map(int => (
-                                                <option key={int.id} value={int.interviewer?.id}>{int.name}</option>
+                                                <option key={int.id} value={int.interviewer?.id} className="bg-white dark:bg-slate-900">{int.name}</option>
                                             ))}
                                         </select>
                                     </div>
@@ -663,7 +934,7 @@ const AdminApplications: React.FC = () => {
                                             required
                                             value={schedulingData.scheduledAt}
                                             onChange={e => setSchedulingData({...schedulingData, scheduledAt: e.target.value})}
-                                            className="w-full px-6 py-4 bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-teal rounded-2xl outline-none font-bold text-sm"
+                                            className="w-full px-6 py-4 bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-teal rounded-2xl outline-none font-bold text-sm text-brand-deep dark:text-white"
                                         />
                                     </div>
                                     <div>
@@ -673,7 +944,7 @@ const AdminApplications: React.FC = () => {
                                             required
                                             value={schedulingData.location}
                                             onChange={e => setSchedulingData({...schedulingData, location: e.target.value})}
-                                            className="w-full px-6 py-4 bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-teal rounded-2xl outline-none font-bold text-sm"
+                                            className="w-full px-6 py-4 bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-teal rounded-2xl outline-none font-bold text-sm text-brand-deep dark:text-white"
                                             placeholder="Location"
                                         />
                                     </div>

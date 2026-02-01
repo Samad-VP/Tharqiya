@@ -2,22 +2,18 @@ import nodemailer from 'nodemailer';
 import axios from 'axios';
 import prisma from '../config/db.js';
 import { NOTIFICATION_TEMPLATES, EMAIL_ROLES, NotificationData, EmailRole } from '../templates/notificationTemplates.js';
+import { sendBrevoEmail, Department } from './mailer.js';
 
-const createTransporter = (roleKey: EmailRole) => {
-    // Zoho Port 465 (SSL) is more reliable than 587 (TLS) for primary accounts
-    return nodemailer.createTransport({
-        host: process.env.SMTP_HOST || 'smtp.zoho.com',
-        port: parseInt(process.env.SMTP_PORT || '465'),
-        secure: true, // Use SSL/TLS
-        auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS,
-        },
-    });
-};
-
-const getTransporter = () => {
-    return createTransporter('ADMISSIONS');
+// Map existing EmailRole from templates to Mailer Department
+const mapRoleToDepartment = (role: EmailRole): Department => {
+    const map: Record<EmailRole, Department> = {
+        ADMISSIONS: 'ADMISSIONS',
+        SUPPORT: 'SUPPORT',
+        INFO: 'INFO',
+        PRINCIPAL: 'PRINCIPAL',
+        ADMIN: 'ADMIN'
+    };
+    return map[role] || 'INFO';
 };
 
 export const sendEmail = async (to: string, event: string, data: NotificationData) => {
@@ -25,27 +21,30 @@ export const sendEmail = async (to: string, event: string, data: NotificationDat
     if (!templateConfig) throw new Error(`Email template for ${event} not found`);
 
     const roleKey: EmailRole = templateConfig.roleKey || 'ADMISSIONS';
+    const department = mapRoleToDepartment(roleKey);
     
-    // Zoho requires the 'From' address to be the authenticated user or a verified alias.
-    // Using SMTP_USER for 'From' ensures delivery, while 'replyTo' handles communication.
-    const authenticatedUser = process.env.SMTP_USER; 
-    const fromName = templateConfig.fromName || 'Darussalam Edu Village';
-
+    const fromName = templateConfig.fromName;
+    const fromEmail = templateConfig.fromEmail;
     const html = templateConfig.template(data);
+    const text = templateConfig.textTemplate ? templateConfig.textTemplate(data) : undefined;
     const subject = templateConfig.subject;
 
     try {
-        console.log(`[EMAIL] Sending to ${to}...`);
-        const transporter = getTransporter();
-        const info = await transporter.sendMail({
-            from: `"${fromName}" <${authenticatedUser}>`,
-            replyTo: EMAIL_ROLES[roleKey],
+        const result = await sendBrevoEmail({
             to,
             subject,
             html,
+            text,
+            department,
+            fromName,
+            fromEmail,
         });
-        console.log(`[EMAIL SUCCESS] Message ID: ${info.messageId}`);
-        return { success: true, message: html, sender: EMAIL_ROLES[roleKey] };
+
+        if (result.success) {
+            return { success: true, message: html, sender: EMAIL_ROLES[roleKey] };
+        } else {
+            throw new Error(result.error);
+        }
     } catch (error: any) {
         console.error(`[EMAIL ERROR] [Event: ${event}] ${error.message}`);
         return { success: false, error: error.message, message: html, sender: EMAIL_ROLES[roleKey] };
@@ -122,14 +121,24 @@ export const triggerNotification = async (
 
     // 1. Send Email
     if (eventConfig.email && user.email) {
-        const result = await sendEmail(user.email, event, data);
-        await logNotification(userId, 'EMAIL', event, result.message || JSON.stringify(data), result.success ? 'SENT' : 'FAILED', result.error, data, result.sender);
+        if (user.emailNotificationsEnabled) {
+            const result = await sendEmail(user.email, event, data);
+            const logMessage = result.success ? (result.message || JSON.stringify(data)) : JSON.stringify(data);
+            await logNotification(userId, 'EMAIL', event, logMessage, result.success ? 'SENT' : 'FAILED', result.error, data, result.sender);
+        } else {
+            console.log(`[TRIGGER] Email skipped for user ${userId} (User Preference)`);
+        }
     }
 
     // 2. Send WhatsApp
     if (eventConfig.whatsapp && user.phone) {
-        const waResult = await sendWhatsApp(user.phone, event, data);
-        await logNotification(userId, 'WHATSAPP', event, waResult.message || JSON.stringify(data), waResult.success ? 'SENT' : 'FAILED', waResult.error, data);
+        if (user.whatsappNotificationsEnabled) {
+            const waResult = await sendWhatsApp(user.phone, event, data);
+            const logMessage = waResult.success ? (waResult.message || JSON.stringify(data)) : JSON.stringify(data);
+            await logNotification(userId, 'WHATSAPP', event, logMessage, waResult.success ? 'SENT' : 'FAILED', waResult.error, data);
+        } else {
+            console.log(`[TRIGGER] WhatsApp skipped for user ${userId} (User Preference)`);
+        }
     }
 };
 
@@ -153,8 +162,8 @@ export const logNotification = async (
                 userId: userId || undefined,
                 type: channel,
                 event,
-                message: message.substring(0, 5000), // Human readable message
-                data: data || {}, // Fallback to empty object to ensure it's not null in DB
+                message: message.substring(0, 5000), 
+                data: data || {}, // Ensure we never store null if possible
                 status,
                 error: error || undefined,
                 senderEmail: senderEmail || undefined,

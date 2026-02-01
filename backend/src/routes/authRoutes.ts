@@ -1,5 +1,5 @@
 import express from 'express';
-import { registerUser, loginUser, createUser, getUsers, updateUser, deleteUser, updateProfile, updatePassword, forgotPassword, resetPassword } from '../controllers/authController.js';
+import { registerUser, loginUser, createUser, getUsers, updateUser, deleteUser, updateProfile, updatePassword, forgotPassword, resetPassword, updateNotificationPreferences } from '../controllers/authController.js';
 import { protect, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -12,6 +12,7 @@ router.put('/users/:id', protect, authorize('ADMIN', 'SUPER_ADMIN', 'PRINCIPAL')
 router.delete('/users/:id', protect, authorize('ADMIN', 'SUPER_ADMIN', 'PRINCIPAL'), deleteUser);
 router.put('/profile', protect, updateProfile);
 router.put('/password', protect, updatePassword);
+router.put('/notification-preferences', protect, updateNotificationPreferences);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
 

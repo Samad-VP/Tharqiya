@@ -13,6 +13,15 @@ module.exports = {
                     yellow: '#F9C067',
                     deep: '#4A4A4A',
                     cream: '#FDF5E6',
+                },
+                brand: {
+                    deep: '#2D241E',
+                    cream: '#FDF5E6',
+                },
+                tharqiya: {
+                    deep: '#1F2937', // A deep charcoal
+                    gold: '#D97706', // A rich gold
+                    orange: '#EA580C', // A vibrant orange
                 }
             },
             fontFamily: {

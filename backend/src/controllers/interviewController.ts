@@ -72,7 +72,7 @@ export const getAssignedInterviews = asyncHandler(async (req: AuthRequest, res: 
                 include: {
                     student: {
                         include: {
-                            user: { select: { name: true } }
+                            user: { select: { name: true, profileImageUrl: true } }
                         }
                     }
                 }
@@ -97,14 +97,14 @@ export const getAllInterviews = asyncHandler(async (_req: Request, res: Response
                 include: {
                     student: {
                         include: {
-                            user: { select: { name: true } }
+                            user: { select: { name: true, profileImageUrl: true } }
                         }
                     }
                 }
             },
             interviewer: {
                 include: {
-                    user: { select: { name: true } }
+                    user: { select: { name: true, profileImageUrl: true } }
                 }
             }
         },
@@ -233,7 +233,7 @@ export const getMyProfile = asyncHandler(async (req: AuthRequest, res: Response,
 
     const interviewer = await prisma.interviewer.findUnique({
         where: { userId: req.user.id },
-        include: { user: { select: { name: true, email: true, phone: true } } }
+        include: { user: { select: { id: true, name: true, email: true, phone: true, whatsapp: true, profileImageUrl: true, profileImagePublicId: true } } }
     });
 
     if (!interviewer) return next(new AppError('Interviewer profile not found', 404));
@@ -250,7 +250,7 @@ export const getMyProfile = asyncHandler(async (req: AuthRequest, res: Response,
 export const updateMyProfile = asyncHandler(async (req: AuthRequest, res: Response, next: NextFunction) => {
     if (!req.user) return next(new AppError('Unauthorized', 401));
 
-    const { speciality, phone, name } = req.body;
+    const { speciality, phone, whatsapp, name, profileImageUrl, profileImagePublicId } = req.body;
 
     const interviewer = await prisma.interviewer.findUnique({
         where: { userId: req.user.id }
@@ -265,11 +265,24 @@ export const updateMyProfile = asyncHandler(async (req: AuthRequest, res: Respon
     });
 
     // Update User details
-    await prisma.user.update({
+    const updatedUser = await prisma.user.update({
         where: { id: req.user.id },
         data: { 
             phone,
-            name // Allow name update too
+            whatsapp,
+            name,
+            profileImageUrl,
+            profileImagePublicId
+        },
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+            whatsapp: true,
+            profileImageUrl: true,
+            profileImagePublicId: true,
+            role: true
         }
     });
 
@@ -278,7 +291,7 @@ export const updateMyProfile = asyncHandler(async (req: AuthRequest, res: Respon
         message: 'Profile updated successfully',
         data: {
             ...updatedInterviewer,
-            user: { ...req.user, phone, name }
+            user: updatedUser
         }
     });
 });

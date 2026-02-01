@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import api from '../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Lock, KeyRound, Loader2, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Mail, Lock, KeyRound, Loader2, ArrowRight, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import logo from '../assets/logo.png';
@@ -11,6 +11,7 @@ const ForgotPasswordPage: React.FC = () => {
     const [email, setEmail] = useState('');
     const [otp, setOtp] = useState('');
     const [newPassword, setNewPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
 
@@ -111,14 +112,21 @@ const ForgotPasswordPage: React.FC = () => {
                             <div className="relative group">
                                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                                 <input
-                                    type="password"
+                                    type={showPassword ? "text" : "password"}
                                     required
                                     minLength={6}
-                                    className="w-full pl-12 pr-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-gold/10 outline-none dark:text-white"
+                                    className="w-full pl-12 pr-12 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-gold/10 outline-none dark:text-white"
                                     placeholder="••••••••"
                                     value={newPassword}
                                     onChange={(e) => setNewPassword(e.target.value)}
                                 />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-edu-coral dark:hover:text-edu-teal transition-colors"
+                                >
+                                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                </button>
                             </div>
                         </div>
 

@@ -32,6 +32,8 @@ export const registerUser = asyncHandler(async (req: Request, res: Response, nex
             name: user.name,
             email: user.email,
             role: user.role,
+            profileImageUrl: user.profileImageUrl,
+            profileImagePublicId: user.profileImagePublicId,
             token: generateToken(user.id),
         }
     });
@@ -69,7 +71,9 @@ export const createUser = asyncHandler(async (req: AuthRequest, res: Response, n
             password: hashedPassword,
             role: role,
             whatsapp,
-            phone
+            phone,
+            profileImageUrl: req.body.profileImageUrl,
+            profileImagePublicId: req.body.profileImagePublicId
         },
     });
 
@@ -88,7 +92,9 @@ export const createUser = asyncHandler(async (req: AuthRequest, res: Response, n
             id: user.id,
             name: user.name,
             email: user.email,
-            role: user.role
+            role: user.role,
+            profileImageUrl: user.profileImageUrl,
+            profileImagePublicId: user.profileImagePublicId
         }
     });
 });
@@ -144,6 +150,10 @@ export const loginUser = asyncHandler(async (req: Request, res: Response, next: 
                 isFirstLogin: user.isFirstLogin,
                 whatsapp: user.whatsapp,
                 phone: user.phone,
+                profileImageUrl: user.profileImageUrl,
+                profileImagePublicId: user.profileImagePublicId,
+                emailNotificationsEnabled: user.emailNotificationsEnabled,
+                whatsappNotificationsEnabled: user.whatsappNotificationsEnabled,
                 token: generateToken(user.id),
             }
         });
@@ -227,7 +237,7 @@ export const deleteUser = asyncHandler(async (req: AuthRequest, res: Response, n
 });
 
 export const updateProfile = asyncHandler(async (req: AuthRequest, res: Response, next: NextFunction) => {
-    const { name, email, whatsapp, phone } = req.body;
+    const { name, email, whatsapp, phone, profileImageUrl, profileImagePublicId } = req.body;
     const userId = req.user?.id;
 
     const user = await prisma.user.findUnique({ where: { id: userId } });
@@ -250,13 +260,19 @@ export const updateProfile = asyncHandler(async (req: AuthRequest, res: Response
             name: name || user.name,
             email: email || user.email,
             whatsapp: whatsapp !== undefined ? whatsapp : user.whatsapp,
-            phone: phone !== undefined ? phone : user.phone
+            phone: phone !== undefined ? phone : user.phone,
+            profileImageUrl: profileImageUrl !== undefined ? profileImageUrl : user.profileImageUrl,
+            profileImagePublicId: profileImagePublicId !== undefined ? profileImagePublicId : user.profileImagePublicId
         },
         select: {
             id: true,
             name: true,
             email: true,
-            role: true
+            role: true,
+            phone: true,
+            whatsapp: true,
+            profileImageUrl: true,
+            profileImagePublicId: true
         }
     });
 
@@ -294,6 +310,32 @@ export const updatePassword = asyncHandler(async (req: AuthRequest, res: Respons
     res.json({ 
         status: 'success',
         message: 'Password updated successfully' 
+    });
+});
+
+export const updateNotificationPreferences = asyncHandler(async (req: AuthRequest, res: Response, next: NextFunction) => {
+    const { emailNotificationsEnabled, whatsappNotificationsEnabled } = req.body;
+    const userId = req.user?.id;
+
+    if (!userId) return next(new AppError('Unauthorized', 401));
+
+    const updatedUser = await prisma.user.update({
+        where: { id: userId },
+        data: {
+            emailNotificationsEnabled: emailNotificationsEnabled !== undefined ? emailNotificationsEnabled : undefined,
+            whatsappNotificationsEnabled: whatsappNotificationsEnabled !== undefined ? whatsappNotificationsEnabled : undefined
+        },
+        select: {
+            id: true,
+            emailNotificationsEnabled: true,
+            whatsappNotificationsEnabled: true
+        }
+    });
+
+    res.json({
+        status: 'success',
+        message: 'Notification preferences updated',
+        data: updatedUser
     });
 });
 

@@ -1,7 +1,7 @@
 import { Response, NextFunction } from 'express';
 import prisma from '../config/db.js';
 import { AuthRequest } from '../middleware/auth.js';
-import { generateApplicationPDF, generateResultPDF } from '../services/pdfService.js';
+import { generateApplicationPDF, generateResultPDF, generateAllotmentPDF, generateApplicantsListPDF } from '../services/pdfService.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { AppError } from '../utils/AppError.js';
 import { triggerNotification } from '../services/notificationService.js';
@@ -11,7 +11,7 @@ import { promoteToStudentAccount } from '../services/studentService.js';
 // @route   POST /api/admissions/apply
 // @access  Private (Student only)
 export const applyForAdmission = asyncHandler(async (req: AuthRequest, res: Response, next: NextFunction) => {
-    const { dob, address, hifzCenter, fatherName, motherName, documents, primeHifzMentor } = req.body;
+    const { dob, address, hifzCenter, fatherName, motherName, documents, primeHifzMentor, madrasaEducation, pincode, state, country, place, district } = req.body;
 
     if (!req.user) {
         return next(new AppError('User not found in request', 401));
@@ -32,6 +32,12 @@ export const applyForAdmission = asyncHandler(async (req: AuthRequest, res: Resp
             fatherName: fatherName || 'N/A',
             motherName: motherName || 'N/A',
             primeHifzMentor: primeHifzMentor || 'N/A',
+            madrasaEducation: madrasaEducation || 'N/A',
+            pincode,
+            state,
+            country: country || 'India',
+            place,
+            district,
             documents: documents || {},
         },
     });
@@ -79,19 +85,29 @@ export const getMyStatus = asyncHandler(async (req: AuthRequest, res: Response, 
                             interviewer: {
                                 include: {
                                     user: {
-                                        select: { name: true, email: true, phone: true }
+                                        select: { name: true, email: true, phone: true, profileImageUrl: true }
                                     }
                                 }
                             }
                         }
-                    }
+                    },
+                    allotment: true
                 } 
             },
+            user: {
+                select: {
+                    profileImageUrl: true,
+                    profileImagePublicId: true,
+                    name: true,
+                    email: true,
+                    phone: true
+                }
+            }
         },
     });
 
     if (!student) {
-        return next(new AppError('No application found', 404));
+        return next(new AppError('No application found for this account', 404));
     }
 
     res.json({
@@ -103,8 +119,87 @@ export const getMyStatus = asyncHandler(async (req: AuthRequest, res: Response, 
 // @desc    Get all applications (Admin only)
 // @route   GET /api/admissions/all
 // @access  Private (Admin only)
-export const getAllApplications = asyncHandler(async (_req: AuthRequest, res: Response) => {
+export const getAllApplications = asyncHandler(async (req: AuthRequest, res: Response) => {
+    const { 
+        status, 
+        search, 
+        schoolEducation, 
+        dawrasCount, 
+        minAge, 
+        maxAge,
+        state,
+        country
+    } = (req.query as any);
+
+    const where: any = {};
+
+    // Filter by Application Status
+    if (status) {
+        where.status = status;
+    }
+
+    // Advanced Student Filters
+    const studentWhere: any = {};
+
+    // Search by Name or Application Number
+    if (search) {
+        studentWhere.OR = [
+            { name: { contains: search as string, mode: 'insensitive' } },
+            { applicationNo: { contains: search as string, mode: 'insensitive' } }
+        ];
+    }
+
+    // Filter by General Education (e.g., 10th)
+    if (schoolEducation) {
+        studentWhere.schoolEducation = { contains: schoolEducation as string, mode: 'insensitive' };
+    }
+
+    // Filter by Dawras Count
+    if (dawrasCount) {
+        studentWhere.dawrasCount = { contains: dawrasCount as string, mode: 'insensitive' };
+    }
+
+    // Age Filtering Logic
+    if (minAge || maxAge) {
+        const now = new Date();
+        const ageFilter: any = {};
+        
+        if (minAge) {
+            const minDate = new Date();
+            minDate.setFullYear(now.getFullYear() - parseInt(minAge as string) - 1);
+            // If they are 15, they were born at most 15 years ago
+            // Actually: Age 15 means DOB is between today-16y and today-15y
+            // To be at least 15, DOB must be <= today - 15 years
+            const maxDob = new Date();
+            maxDob.setFullYear(now.getFullYear() - parseInt(minAge as string));
+            ageFilter.lte = maxDob;
+        }
+
+        if (maxAge) {
+            const minDob = new Date();
+            minDob.setFullYear(now.getFullYear() - parseInt(maxAge as string) - 1);
+            ageFilter.gte = minDob;
+        }
+
+        studentWhere.dob = ageFilter;
+    }
+
+    // Filter by State
+    if (state) {
+        studentWhere.state = { contains: state as string, mode: 'insensitive' };
+    }
+
+    // Filter by Country
+    if (country) {
+        studentWhere.country = { contains: country as string, mode: 'insensitive' };
+    }
+
+    if (Object.keys(studentWhere).length > 0) {
+        where.student = studentWhere;
+    }
+
     const applications = await prisma.application.findMany({
+        where,
         include: {
             student: {
                 include: {
@@ -119,16 +214,96 @@ export const getAllApplications = asyncHandler(async (_req: AuthRequest, res: Re
                         include: {
                             user: { select: { name: true } }
                         }
-                    }
+                    },
+                    evaluations: true
                 }
-            }
-        }
+            },
+            allotment: true
+        },
+        orderBy: { appliedAt: 'desc' }
     });
+
     res.json({
         status: 'success',
         results: applications.length,
         data: applications
     });
+});
+
+// @desc    Download all applications as PDF with filtering
+// @route   GET /api/admissions/applicants/pdf
+// @access  Private (Admin/Principal only)
+export const downloadApplicantsListPDF = asyncHandler(async (req: AuthRequest, res: Response, next: NextFunction) => {
+    const { 
+        status, 
+        search, 
+        schoolEducation, 
+        dawrasCount, 
+        minAge, 
+        maxAge,
+        state,
+        country
+    } = (req.query as any);
+
+    const where: any = {};
+    if (status) where.status = status;
+
+    const studentWhere: any = {};
+    if (search) {
+        studentWhere.OR = [
+            { name: { contains: search as string, mode: 'insensitive' } },
+            { applicationNo: { contains: search as string, mode: 'insensitive' } }
+        ];
+    }
+    if (schoolEducation) studentWhere.schoolEducation = { contains: schoolEducation as string, mode: 'insensitive' };
+    if (dawrasCount) studentWhere.dawrasCount = { contains: dawrasCount as string, mode: 'insensitive' };
+    
+    if (minAge || maxAge) {
+        const now = new Date();
+        const ageFilter: any = {};
+        if (minAge) {
+            const maxDob = new Date();
+            maxDob.setFullYear(now.getFullYear() - parseInt(minAge as string));
+            ageFilter.lte = maxDob;
+        }
+        if (maxAge) {
+            const minDob = new Date();
+            minDob.setFullYear(now.getFullYear() - parseInt(maxAge as string) - 1);
+            ageFilter.gte = minDob;
+        }
+        studentWhere.dob = ageFilter;
+    }
+    if (state) studentWhere.state = { contains: state as string, mode: 'insensitive' };
+    if (country) studentWhere.country = { contains: country as string, mode: 'insensitive' };
+
+    if (Object.keys(studentWhere).length > 0) {
+        where.student = studentWhere;
+    }
+
+    const applications = await prisma.application.findMany({
+        where,
+        include: {
+            student: {
+                include: {
+                    user: { select: { name: true, email: true } }
+                }
+            },
+            interview: {
+                include: { evaluations: true }
+            }
+        },
+        orderBy: { appliedAt: 'desc' }
+    });
+
+    let filterTitle = 'All Applicants';
+    if (status) filterTitle = `Status: ${status}`;
+    if (search) filterTitle += ` | Search: ${search}`;
+
+    const pdfBytes = await generateApplicantsListPDF(applications, filterTitle);
+
+    res.contentType('application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=Applicants-Roster-${new Date().getTime()}.pdf`);
+    res.send(Buffer.from(pdfBytes));
 });
 
 // @desc    Download student's own application as PDF
@@ -164,24 +339,86 @@ export const downloadResultPDF = asyncHandler(async (req: AuthRequest, res: Resp
 
     if (!student) return next(new AppError('Student not found', 404));
 
-    const result = await prisma.result.findUnique({
-        where: { studentId: student.id }
-    });
-
-    if (!result) return next(new AppError('Result not published yet', 404));
-
     // Get evaluations for the application
     const application = await prisma.application.findUnique({
         where: { studentId: student.id },
         include: { interview: { include: { evaluations: true } } }
     });
 
+    let result = await prisma.result.findUnique({
+        where: { studentId: student.id }
+    });
+
+    // Fallback: If result is not explicitly published but evaluations exist, calculate it on the fly
+    if (!result) {
+        const evaluations = application?.interview?.evaluations || [];
+        
+        if (evaluations.length > 0) {
+            const totalMarks = evaluations.reduce((sum, ev) => sum + ev.marks, 0);
+            // Assuming max marks is 100 per subject or based on count. 
+            // Better to just calculate average roughly if max marks aren't known, or just use percentage if available.
+            // For now, let's assume average is just simple average of marks given.
+            const averageMarks = Math.round(totalMarks / evaluations.length); 
+
+            let decision = 'PENDING';
+            if (application?.status === 'ACCEPTED' || application?.status === 'ALLOTTED' || application?.status === 'ADMISSION_AUTHORIZED') {
+                decision = 'ACCEPTED';
+            } else if (application?.status === 'REJECTED') {
+                decision = 'REJECTED';
+            }
+
+            // Only allow download if a decision is made or at least evaluated
+            if (decision !== 'PENDING' || application?.status === 'EVALUATED') {
+                 result = {
+                    id: 'temp-id',
+                    studentId: student.id,
+                    totalMarks,
+                    averageMarks: parseFloat(averageMarks.toFixed(2)),
+                    decision: decision === 'PENDING' ? 'UNDER REVIEW' : decision,
+                    generatedAt: new Date(),
+                    pdfUrl: null
+                } as any;
+            }
+        }
+    }
+
+    if (!result) return next(new AppError('Result not available yet. Please wait for official publication.', 404));
+
     const evaluations = application?.interview?.evaluations || [];
 
     const pdfBytes = await generateResultPDF(student, result, evaluations);
 
     res.contentType('application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename=Result-${student.applicationNo}.pdf`);
+    res.setHeader('Content-Disposition', `attachment; filename=Selection-Letter-${student.applicationNo}.pdf`);
+    res.send(Buffer.from(pdfBytes));
+});
+
+// @desc    Download student's own allotment as PDF
+// @route   GET /api/admissions/my-allotment/pdf
+// @access  Private (Student only)
+export const downloadAllotmentPDF = asyncHandler(async (req: AuthRequest, res: Response, next: NextFunction) => {
+    if (!req.user) return next(new AppError('Unauthorized', 401));
+
+    const student = await prisma.student.findUnique({
+        where: { userId: req.user.id },
+        include: { 
+            user: true,
+            application: {
+                include: { allotment: true }
+            }
+        }
+    });
+
+    if (!student) return next(new AppError('Student not found', 404));
+
+    const allotment = (student.application as any)?.allotment;
+
+    if (!allotment) return next(new AppError('No allotment records found', 404));
+
+    const pdfBytes = await generateAllotmentPDF(student, allotment);
+
+    res.contentType('application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=Allotment-${student.applicationNo}.pdf`);
     res.send(Buffer.from(pdfBytes));
 });
 // @desc    Update application status
@@ -201,7 +438,14 @@ export const updateApplicationStatus = asyncHandler(async (req: AuthRequest, res
 
     const updatedApplication = await prisma.application.update({
         where: { id },
-        data: { status },
+        data: { 
+            status,
+            student: {
+                update: {
+                    status: status
+                }
+            }
+        },
         include: {
             student: {
                 include: {
@@ -247,8 +491,10 @@ export const updateMyProfile = asyncHandler(async (req: AuthRequest, res: Respon
 
     const { 
         dob, address, hifzCenter, fatherName, motherName, 
-        phone, documents, place, district, whatsapp, primeHifzMentor 
-    } = req.body;
+        phone, documents, place, district, whatsapp, primeHifzMentor, madrasaEducation,
+        profileImageUrl, profileImagePublicId, documentUrl, documentPublicId,
+        pincode, state, country
+    } = (req.body as any);
 
     const student = await prisma.student.findUnique({
         where: { userId: req.user.id }
@@ -266,18 +512,28 @@ export const updateMyProfile = asyncHandler(async (req: AuthRequest, res: Respon
             fatherName,
             motherName,
             documents: documents || undefined,
+            documentUrl: documentUrl !== undefined ? documentUrl : undefined,
+            documentPublicId: documentPublicId !== undefined ? documentPublicId : undefined,
             place,
             district,
             whatsapp,
-            primeHifzMentor
+            primeHifzMentor,
+            madrasaEducation,
+            pincode,
+            state,
+            country
         }
     });
 
-    // Update User phone if provided
-    if (phone) {
+    // Update User details if provided
+    if (phone || profileImageUrl !== undefined || profileImagePublicId !== undefined) {
         await prisma.user.update({
             where: { id: req.user.id },
-            data: { phone }
+            data: { 
+                phone,
+                profileImageUrl: profileImageUrl !== undefined ? profileImageUrl : undefined,
+                profileImagePublicId: profileImagePublicId !== undefined ? profileImagePublicId : undefined
+            }
         });
     }
 
@@ -307,5 +563,27 @@ export const getMyNotifications = asyncHandler(async (req: AuthRequest, res: Res
     res.json({
         status: 'success',
         data: notifications
+    });
+});
+
+// @desc    Mark all unread notifications as read
+// @route   PATCH /api/admissions/notifications/read
+// @access  Private (Student only)
+export const markNotificationsRead = asyncHandler(async (req: AuthRequest, res: Response, next: NextFunction) => {
+    if (!req.user) return next(new AppError('Unauthorized', 401));
+
+    await prisma.notification.updateMany({
+        where: {
+            userId: req.user.id,
+            isRead: false
+        },
+        data: {
+            isRead: true
+        }
+    });
+
+    res.json({
+        status: 'success',
+        message: 'Notifications marked as read'
     });
 });

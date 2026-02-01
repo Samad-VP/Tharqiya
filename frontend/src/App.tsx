@@ -19,6 +19,8 @@ import AlumniPage from './pages/AlumniPage';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminApplications from './pages/AdminApplications';
 import AdminInterviews from './pages/AdminInterviews';
+import AdminFaculty from './pages/AdminFaculty';
+import AdminAlumni from './pages/AdminAlumni';
 import AdminRoute from './components/AdminRoute';
 import InterviewerRoute from './components/InterviewerRoute';
 import InterviewerDashboard from './pages/InterviewerDashboard';
@@ -33,6 +35,14 @@ import AdminNotificationLogs from './pages/AdminNotificationLogs';
 import StudentProfile from './pages/StudentProfile';
 import InterviewerProfile from './pages/InterviewerProfile';
 import StudentNotifications from './pages/StudentNotifications';
+import AdminProfile from './pages/AdminProfile';
+import StudentResources from './pages/StudentResources';
+import StudentAllotment from './pages/StudentAllotment';
+import StudentLayout from './components/StudentLayout';
+import InterviewerEvaluation from './pages/InterviewerEvaluation';
+import InterviewerInterviews from './pages/InterviewerInterviews';
+import InterviewerEvaluations from './pages/InterviewerEvaluations';
+import PerformanceInsights from './pages/PerformanceInsights';
 
 import { UserPlus, PhoneCall, GraduationCap, FileCheck, ArrowRight } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
@@ -177,9 +187,11 @@ const App: React.FC = () => {
                             <Route path="/faculty" element={<><Navbar /><FacultyPage /><Footer /></>} />
                             <Route path="/alumni" element={<><Navbar /><AlumniPage /><Footer /></>} />
                             <Route path="/login" element={<LoginPage />} />
-                            <Route path="/portal" element={<><Navbar /><StudentPortal /><Footer /></>} />
-                            <Route path="/student/profile" element={<><Navbar /><StudentProfile /><Footer /></>} />
-                            <Route path="/student/notifications" element={<><Navbar /><StudentNotifications /><Footer /></>} />
+                            <Route path="/student/portal" element={<StudentLayout><StudentPortal /></StudentLayout>} />
+                            <Route path="/student/profile" element={<StudentLayout><StudentProfile /></StudentLayout>} />
+                            <Route path="/student/notifications" element={<StudentLayout><StudentNotifications /></StudentLayout>} />
+                            <Route path="/student/resources" element={<StudentLayout><StudentResources /></StudentLayout>} />
+                            <Route path="/student/allotment" element={<StudentLayout><StudentAllotment /></StudentLayout>} />
                             <Route path="/change-password" element={<ChangePasswordPage />} />
                             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
@@ -188,8 +200,11 @@ const App: React.FC = () => {
                                 <Route path="/admin" element={<AdminDashboard />} />
                                 <Route path="/admin/applications" element={<AdminApplications />} />
                                 <Route path="/admin/interviews" element={<AdminInterviews />} />
+                                <Route path="/admin/faculty" element={<AdminFaculty />} />
+                                <Route path="/admin/alumni" element={<AdminAlumni />} />
                                 <Route path="/admin/users" element={<AdminUsers />} />
                                 <Route path="/admin/notifications" element={<AdminNotificationLogs />} />
+                                <Route path="/admin/profile" element={<AdminProfile />} />
                                 <Route path="/admin/settings" element={<SettingsPage />} />
                             </Route>
 
@@ -197,6 +212,9 @@ const App: React.FC = () => {
                             <Route element={<InterviewerRoute />}>
                                 <Route path="/interviewer" element={<InterviewerDashboard />} />
                                 <Route path="/interviewer/profile" element={<InterviewerProfile />} />
+                                <Route path="/interviewer/interviews" element={<InterviewerInterviews />} />
+                                <Route path="/interviewer/evaluations" element={<InterviewerEvaluations />} />
+                                <Route path="/interviewer/evaluate/:id" element={<InterviewerEvaluation />} />
                                 <Route path="/interviewer/settings" element={<SettingsPage />} />
                             </Route>
 
@@ -204,9 +222,11 @@ const App: React.FC = () => {
                             <Route element={<PrincipalRoute />}>
                                 <Route path="/principal" element={<PrincipalDashboard />} />
                                 <Route path="/principal/allotments" element={<AllotmentEngine />} />
+                                <Route path="/principal/insights" element={<PerformanceInsights />} />
                                 <Route path="/principal/applications" element={<AdminApplications />} />
                                 <Route path="/principal/notifications" element={<AdminNotificationLogs />} />
                                 <Route path="/principal/users" element={<AdminUsers />} />
+                                <Route path="/principal/profile" element={<AdminProfile />} />
                                 <Route path="/principal/settings" element={<SettingsPage />} />
                             </Route>
                         </Routes>

@@ -28,7 +28,9 @@ model User {
   student       Student?
   otp           String?
   otpExpires    DateTime?
-  whatsapp      String?
+  whatsapp               String?
+  emailNotificationsEnabled Boolean   @default(true)
+  whatsappNotificationsEnabled Boolean @default(true)
 }
 
 model Student {
@@ -56,6 +58,10 @@ model Student {
   thirdOption     String?
   whatsapp        String?
   primeHifzMentor String?
+  madrasaEducation String?
+  pincode         String?
+  state           String?
+  country         String? @default("India")
   application     Application?
   user            User?             @relation(fields: [userId], references: [id])
 }
@@ -103,7 +109,7 @@ model Interview {
   applicationId String       @unique
   interviewerId String
   scheduledAt   DateTime
-  location      String?      @default("Darussalam Tharqiya College")
+  location      String?      @default("Darussalam Tharqiyathul Huffaz")
   evaluations   Evaluation[]
   application   Application  @relation(fields: [applicationId], references: [id])
   interviewer   Interviewer  @relation(fields: [interviewerId], references: [id])
@@ -141,6 +147,7 @@ model Notification {
   adminId     String?
   sentAt      DateTime @default(now())
   status      String   @default("SENT")
+  isRead      Boolean  @default(false)
   error       String?
   
   user        User?    @relation("UserNotifications", fields: [userId], references: [id])
@@ -173,4 +180,41 @@ enum ApplicationStatus {
   ADMISSION_AUTHORIZED
   ACCEPTED
   REJECTED
+}
+
+model Faculty {
+  id              String   @id @default(uuid())
+  name            String
+  photoUrl        String?
+  photoPublicId   String?
+  position        String
+  category        String   // ISLAMIC or GENERAL
+  department      String
+  order           Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Alumni {
+  id              String   @id @default(uuid())
+  name            String
+  photoUrl        String?
+  photoPublicId   String?
+  place           String
+  status          String   // STUDYING or WORKING
+  institution     String?
+  university      String?
+  position        String?
+  organization    String?  // madrasa, masjid, institutions
+  order           Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Campus {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  maxSeats  Int      @default(50)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
