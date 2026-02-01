@@ -1,23 +1,11 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    GraduationCap,
-    FolderOpen,
-    UserRound,
-    MapPin,
-    Phone,
-    Calendar,
-    BookOpen,
-    Flag,
-    CheckCircle2,
-    ArrowRight,
-    ArrowLeft,
-    Send,
-    Building2,
-    AlertCircle,
-    ShieldCheck,
-    Mail
+    User, Mail, Phone, MapPin, Send, CheckCircle, AlertCircle, Loader2, Upload, Trash2,
+    Calendar, BookOpen, GraduationCap, FileText, Languages, FolderOpen, UserRound,
+    Flag, CheckCircle2, ArrowRight, ArrowLeft, Building2, ShieldCheck
 } from 'lucide-react';
+import SEO from '../components/SEO';
 import api from '../api/axiosInstance';
 import { INDIAN_STATES } from '../utils/constants';
 import toast from 'react-hot-toast';
@@ -147,6 +135,10 @@ const AdmissionPage: React.FC = () => {
 
     return (
         <div className="bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500 min-h-screen pb-20">
+            <SEO 
+                title="Admissions" 
+                description="Join the legacy. Apply online for the Tharqiya Course and start your journey of spiritual and academic excellence." 
+            />
             {/* Hero Section */}
             <section className="relative h-[30vh] md:h-[50vh] flex items-center justify-center overflow-hidden bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500 pt-20 sm:pt-0">
                 <div className="relative z-10 text-center px-6">

@@ -263,3 +263,75 @@ export const retryNotification = asyncHandler(async (req: AuthRequest, res: Resp
         message: 'Notification retried successfully'
     });
 });
+
+// @desc    Clear all notification logs
+// @route   DELETE /api/admin/notifications/clear
+// @access  Private (Admin/Super Admin only)
+export const clearNotificationLogs = asyncHandler(async (req: AuthRequest, res: Response) => {
+    await prisma.notification.deleteMany();
+
+    res.status(200).json({
+        status: 'success',
+        message: 'All notification logs cleared successfully'
+    });
+});
+
+// @desc    Trigger credential notifications for pending applicants
+// @route   POST /api/admin/notifications/trigger-pending-credentials
+// @access  Private (Admin/Super Admin only)
+export const triggerPendingCredentials = asyncHandler(async (req: AuthRequest, res: Response) => {
+    const pendingStudents = await prisma.student.findMany({
+        where: {
+            status: 'PENDING',
+            userId: { not: null }
+        },
+        include: {
+            user: true
+        }
+    });
+
+    const results = {
+        total: pendingStudents.length,
+        success: 0,
+        failed: 0,
+        errors: [] as any[]
+    };
+
+    const loginUrl = `${process.env.FRONTEND_URL || 'https://darussalameduvillage.com'}/login`;
+
+    for (const student of pendingStudents) {
+        if (!student.user) continue;
+
+        try {
+            // Re-generate the temporary password since we don't store it in plain text
+            // Note: This relies on the password generation being deterministic or handled via password reset
+            // However, the user wants us to "trigger pending applicants crendencial notification with current tamplate"
+            // Usually this means sending the one they already have, but if we don't know it, 
+            // the safest institutional way is to send them a link to set/reset it or use the default pattern if it's still temp.
+            
+            // Looking at studentService.ts: generateTemporaryPassword(student.whatsapp || '')
+            const { generateTemporaryPassword } = await import('../services/studentService.js');
+            const tempPassword = generateTemporaryPassword(student.whatsapp || student.user.phone || '');
+            
+            // Also need to trigger notification
+            const { triggerNotification } = await import('../services/notificationService.js');
+            
+            await triggerNotification(student.user.id, 'APPLICATION_CREDENTIALS_CREATED', {
+                StudentName: student.name,
+                Username: student.user.username || student.user.email,
+                TempPassword: tempPassword,
+                LoginUrl: loginUrl
+            });
+
+            results.success++;
+        } catch (error: any) {
+            results.failed++;
+            results.errors.push({ studentId: student.id, error: error.message });
+        }
+    }
+
+    res.status(200).json({
+        status: 'success',
+        data: results
+    });
+});

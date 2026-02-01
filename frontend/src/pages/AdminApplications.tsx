@@ -17,7 +17,8 @@ import {
     FolderOpen,
     Mail,
     MessageSquare,
-    Bell
+    Bell,
+    ShieldCheck
 } from 'lucide-react';
 import AdminLayout from '../components/AdminLayout';
 import api from '../api/axiosInstance';
@@ -131,6 +132,28 @@ const AdminApplications: React.FC = () => {
             console.error('Error fetching notifications:', error);
         } finally {
             setLoadingNotifications(false);
+        }
+    };
+
+    const handleNotifyPendingCredentials = async () => {
+        const pendingCount = applications.filter(app => app.status === 'PENDING').length;
+        if (pendingCount === 0) {
+            toast.error("No pending applications found to notify");
+            return;
+        }
+
+        if (!window.confirm(`Are you sure you want to send credential notifications to ${pendingCount} pending applicants?`)) {
+            return;
+        }
+
+        const loadToast = toast.loading(`Sending credentials to ${pendingCount} students...`);
+        try {
+            const response = await api.post('/admin/notifications/trigger-pending-credentials');
+            const { success, failed, total } = response.data.data;
+            toast.success(`Sent ${success} successfully. ${failed} failed. Total: ${total}`, { id: loadToast, duration: 5000 });
+            fetchApplications();
+        } catch (error: any) {
+            toast.error(error.response?.data?.message || "Failed to trigger bulk notifications", { id: loadToast });
         }
     };
 
@@ -341,6 +364,17 @@ const AdminApplications: React.FC = () => {
                                 <Download size={18} />
                                 <span className="hidden lg:inline ml-2 text-xs font-bold uppercase tracking-widest">Export</span>
                             </button>
+
+                            {['ADMIN', 'SUPER_ADMIN'].includes(currentUser?.role || '') && (
+                                <button 
+                                    onClick={handleNotifyPendingCredentials}
+                                    className="flex-grow sm:flex-none p-3 rounded-xl sm:rounded-2xl bg-edu-teal text-white shadow-lg shadow-edu-teal/20 hover:-translate-y-1 transition-all flex items-center justify-center gap-2 group shrink-0"
+                                    title="Bulk Notify Pending Credentials"
+                                >
+                                    <ShieldCheck size={18} />
+                                    <span className="hidden lg:inline text-[10px] font-black uppercase tracking-widest">Bulk Notify</span>
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>

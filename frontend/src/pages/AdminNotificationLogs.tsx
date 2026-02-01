@@ -10,7 +10,8 @@ import {
     User,
     ChevronDown,
     ChevronRight,
-    Search
+    Search,
+    Trash2
 } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import AdminLayout from '../components/AdminLayout';
@@ -66,6 +67,21 @@ const AdminNotificationLogs: React.FC = () => {
         setExpandedGroups(newExpanded);
     };
 
+    const handleClearLogs = async () => {
+        if (!window.confirm('Are you sure you want to PERMANENTLY delete all notification logs? This action cannot be undone.')) {
+            return;
+        }
+
+        const loadToast = toast.loading("Clearing audit logs...");
+        try {
+            await api.delete('/admin/notifications/clear');
+            toast.success("Audit logs cleared successfully", { id: loadToast });
+            fetchLogs();
+        } catch (error: any) {
+            toast.error(error.response?.data?.message || "Failed to clear logs", { id: loadToast });
+        }
+    };
+
     const formatLogMessage = (message: string) => {
         try {
             const parsed = JSON.parse(message);
@@ -118,15 +134,28 @@ const AdminNotificationLogs: React.FC = () => {
                         </p>
                     </div>
 
-                    <div className="relative group w-full md:w-80">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 group-focus-within:text-edu-teal transition-colors" />
-                        <input 
-                            type="text" 
-                            placeholder="Search logs, events, students..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl py-3 pl-11 pr-4 text-sm font-bold text-brand-deep dark:text-white placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-edu-teal/20 transition-all shadow-sm"
-                        />
+                    <div className="flex items-center gap-3 w-full md:w-auto">
+                        <div className="relative group w-full md:w-64">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 group-focus-within:text-edu-teal transition-colors" />
+                            <input 
+                                type="text" 
+                                placeholder="Search logs..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl py-3 pl-11 pr-4 text-xs font-bold text-brand-deep dark:text-white placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-edu-teal/20 transition-all shadow-sm"
+                            />
+                        </div>
+
+                        {userRole !== 'PRINCIPAL' && (
+                            <button 
+                                onClick={handleClearLogs}
+                                className="p-3 bg-red-500/10 text-red-500 rounded-2xl border border-red-500/20 hover:bg-red-500 hover:text-white transition-all shadow-sm flex items-center justify-center gap-2 group shrink-0"
+                                title="Clear All Logs"
+                            >
+                                <Trash2 size={18} />
+                                <span className="hidden lg:inline text-[10px] font-black uppercase tracking-widest">Clear Audit</span>
+                            </button>
+                        )}
                     </div>
                 </div>
 

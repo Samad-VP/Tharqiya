@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { GraduationCap, Briefcase, Globe, Star, Quote, Award, Loader2, MapPin, School, Building2 } from 'lucide-react';
+import { GraduationCap, Briefcase, Globe, Award, Quote, Search, Filter, ExternalLink, Star, Loader2, MapPin, School, Building2 } from 'lucide-react';
+import SEO from '../components/SEO';
 import api from '../api/axiosInstance';
 
 const AlumniPage: React.FC = () => {
@@ -24,12 +25,16 @@ const AlumniPage: React.FC = () => {
     const stats = [
         { label: "Total Graduates", value: "250+", icon: GraduationCap },
         { label: "Global Presence", value: "12+ Countries", icon: Globe },
-        { label: "Higher Pursuits", value: "85%", icon: Star },
+        { label: "Higher Pursuits", value: "85%", icon: Award },
         { label: "In Leadership Roles", value: "120+", icon: Briefcase }
     ];
 
     return (
         <div className="bg-brand-cream dark:bg-slate-950 transition-colors duration-500 min-h-screen">
+            <SEO 
+                title="Alumni" 
+                description="Celebrating the success of our graduates who are leading as ethical leaders in various fields." 
+            />
             {/* Hero Section */}
             <section className="relative pt-24 pb-12 sm:pt-48 sm:pb-32 bg-brand-cream/50 dark:bg-slate-950 overflow-hidden">
                 <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">

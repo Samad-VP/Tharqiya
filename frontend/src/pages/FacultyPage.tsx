@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Award, GraduationCap, Users, Loader2 } from 'lucide-react';
+import { GraduationCap, BookOpen, Microscope, Languages, Music, Heart, Mail, ExternalLink, Award, Users, Loader2 } from 'lucide-react';
+import SEO from '../components/SEO';
 import api from '../api/axiosInstance';
 
 const FacultyPage: React.FC = () => {
@@ -22,7 +23,11 @@ const FacultyPage: React.FC = () => {
     }, []);
 
     return (
-        <div className="bg-brand-cream dark:bg-slate-950 transition-colors duration-500 min-h-screen">
+        <div className="bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500 min-h-screen">
+            <SEO 
+                title="Our Faculty" 
+                description="Meet the internationally trained scholars and experienced academic professors guiding our students." 
+            />
             {/* Hero Section */}
             <section className="relative pt-24 pb-12 sm:pt-48 sm:pb-32 bg-brand-cream/50 dark:bg-slate-950 overflow-hidden">
                 <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">

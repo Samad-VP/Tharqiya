@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { HelmetProvider } from 'react-helmet-async';
+import SEO from './components/SEO';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import LoginPage from './pages/LoginPage';
@@ -95,6 +97,10 @@ const Home: React.FC = () => {
 
     return (
         <div>
+            <SEO 
+                title="Home" 
+                description="Welcome to Darussalam Edu Village - Home of the Tharqiya Course, Kerala's premier Post-Hifz destination." 
+            />
             <Hero />
             <section className="py-12 sm:py-24 md:py-32 bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500 relative overflow-hidden">
                 {/* Background Decorations */}
@@ -173,67 +179,69 @@ const Home: React.FC = () => {
 
 const App: React.FC = () => {
     return (
-        <ThemeProvider>
-            <AuthProvider>
-                <Router>
-                    <ScrollToTop />
-                    <div className="min-h-screen bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-300">
-                        <Routes>
-                            <Route path="/" element={<><Navbar /><Home /><Footer /></>} />
-                            <Route path="/about" element={<><Navbar /><AboutPage /><Footer /></>} />
-                            <Route path="/programme" element={<><Navbar /><PostHifzPage /><Footer /></>} />
-                            <Route path="/admission" element={<><Navbar /><AdmissionPage /><Footer /></>} />
-                            <Route path="/facilities" element={<><Navbar /><FacilitiesPage /><Footer /></>} />
-                            <Route path="/faculty" element={<><Navbar /><FacultyPage /><Footer /></>} />
-                            <Route path="/alumni" element={<><Navbar /><AlumniPage /><Footer /></>} />
-                            <Route path="/login" element={<LoginPage />} />
-                            <Route path="/student/portal" element={<StudentLayout><StudentPortal /></StudentLayout>} />
-                            <Route path="/student/profile" element={<StudentLayout><StudentProfile /></StudentLayout>} />
-                            <Route path="/student/notifications" element={<StudentLayout><StudentNotifications /></StudentLayout>} />
-                            <Route path="/student/resources" element={<StudentLayout><StudentResources /></StudentLayout>} />
-                            <Route path="/student/allotment" element={<StudentLayout><StudentAllotment /></StudentLayout>} />
-                            <Route path="/change-password" element={<ChangePasswordPage />} />
-                            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <HelmetProvider>
+            <ThemeProvider>
+                <AuthProvider>
+                    <Router>
+                        <ScrollToTop />
+                        <div className="min-h-screen bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-300">
+                            <Routes>
+                                <Route path="/" element={<><Navbar /><Home /><Footer /></>} />
+                                <Route path="/about" element={<><Navbar /><AboutPage /><Footer /></>} />
+                                <Route path="/programme" element={<><Navbar /><PostHifzPage /><Footer /></>} />
+                                <Route path="/admission" element={<><Navbar /><AdmissionPage /><Footer /></>} />
+                                <Route path="/facilities" element={<><Navbar /><FacilitiesPage /><Footer /></>} />
+                                <Route path="/faculty" element={<><Navbar /><FacultyPage /><Footer /></>} />
+                                <Route path="/alumni" element={<><Navbar /><AlumniPage /><Footer /></>} />
+                                <Route path="/login" element={<LoginPage />} />
+                                <Route path="/student/portal" element={<StudentLayout><StudentPortal /></StudentLayout>} />
+                                <Route path="/student/profile" element={<StudentLayout><StudentProfile /></StudentLayout>} />
+                                <Route path="/student/notifications" element={<StudentLayout><StudentNotifications /></StudentLayout>} />
+                                <Route path="/student/resources" element={<StudentLayout><StudentResources /></StudentLayout>} />
+                                <Route path="/student/allotment" element={<StudentLayout><StudentAllotment /></StudentLayout>} />
+                                <Route path="/change-password" element={<ChangePasswordPage />} />
+                                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
-                            {/* Admin Protected Routes */}
-                            <Route element={<AdminRoute />}>
-                                <Route path="/admin" element={<AdminDashboard />} />
-                                <Route path="/admin/applications" element={<AdminApplications />} />
-                                <Route path="/admin/interviews" element={<AdminInterviews />} />
-                                <Route path="/admin/faculty" element={<AdminFaculty />} />
-                                <Route path="/admin/alumni" element={<AdminAlumni />} />
-                                <Route path="/admin/users" element={<AdminUsers />} />
-                                <Route path="/admin/notifications" element={<AdminNotificationLogs />} />
-                                <Route path="/admin/profile" element={<AdminProfile />} />
-                                <Route path="/admin/settings" element={<SettingsPage />} />
-                            </Route>
+                                {/* Admin Protected Routes */}
+                                <Route element={<AdminRoute />}>
+                                    <Route path="/admin" element={<AdminDashboard />} />
+                                    <Route path="/admin/applications" element={<AdminApplications />} />
+                                    <Route path="/admin/interviews" element={<AdminInterviews />} />
+                                    <Route path="/admin/faculty" element={<AdminFaculty />} />
+                                    <Route path="/admin/alumni" element={<AdminAlumni />} />
+                                    <Route path="/admin/users" element={<AdminUsers />} />
+                                    <Route path="/admin/notifications" element={<AdminNotificationLogs />} />
+                                    <Route path="/admin/profile" element={<AdminProfile />} />
+                                    <Route path="/admin/settings" element={<SettingsPage />} />
+                                </Route>
 
-                            {/* Interviewer Protected Routes */}
-                            <Route element={<InterviewerRoute />}>
-                                <Route path="/interviewer" element={<InterviewerDashboard />} />
-                                <Route path="/interviewer/profile" element={<InterviewerProfile />} />
-                                <Route path="/interviewer/interviews" element={<InterviewerInterviews />} />
-                                <Route path="/interviewer/evaluations" element={<InterviewerEvaluations />} />
-                                <Route path="/interviewer/evaluate/:id" element={<InterviewerEvaluation />} />
-                                <Route path="/interviewer/settings" element={<SettingsPage />} />
-                            </Route>
+                                {/* Interviewer Protected Routes */}
+                                <Route element={<InterviewerRoute />}>
+                                    <Route path="/interviewer" element={<InterviewerDashboard />} />
+                                    <Route path="/interviewer/profile" element={<InterviewerProfile />} />
+                                    <Route path="/interviewer/interviews" element={<InterviewerInterviews />} />
+                                    <Route path="/interviewer/evaluations" element={<InterviewerEvaluations />} />
+                                    <Route path="/interviewer/evaluate/:id" element={<InterviewerEvaluation />} />
+                                    <Route path="/interviewer/settings" element={<SettingsPage />} />
+                                </Route>
 
-                            {/* Principal Protected Routes */}
-                            <Route element={<PrincipalRoute />}>
-                                <Route path="/principal" element={<PrincipalDashboard />} />
-                                <Route path="/principal/allotments" element={<AllotmentEngine />} />
-                                <Route path="/principal/insights" element={<PerformanceInsights />} />
-                                <Route path="/principal/applications" element={<AdminApplications />} />
-                                <Route path="/principal/notifications" element={<AdminNotificationLogs />} />
-                                <Route path="/principal/users" element={<AdminUsers />} />
-                                <Route path="/principal/profile" element={<AdminProfile />} />
-                                <Route path="/principal/settings" element={<SettingsPage />} />
-                            </Route>
-                        </Routes>
-                    </div>
-                </Router>
-            </AuthProvider>
-        </ThemeProvider>
+                                {/* Principal Protected Routes */}
+                                <Route element={<PrincipalRoute />}>
+                                    <Route path="/principal" element={<PrincipalDashboard />} />
+                                    <Route path="/principal/allotments" element={<AllotmentEngine />} />
+                                    <Route path="/principal/insights" element={<PerformanceInsights />} />
+                                    <Route path="/principal/applications" element={<AdminApplications />} />
+                                    <Route path="/principal/notifications" element={<AdminNotificationLogs />} />
+                                    <Route path="/principal/users" element={<AdminUsers />} />
+                                    <Route path="/principal/profile" element={<AdminProfile />} />
+                                    <Route path="/principal/settings" element={<SettingsPage />} />
+                                </Route>
+                            </Routes>
+                        </div>
+                    </Router>
+                </AuthProvider>
+            </ThemeProvider>
+        </HelmetProvider>
     );
 }
 

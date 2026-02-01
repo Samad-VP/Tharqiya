@@ -1,10 +1,15 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Library, UsersRound, Languages, Trophy, Eye, Target, Sparkles, Building2, Heart } from 'lucide-react';
+import SEO from '../components/SEO';
 
 const AboutPage: React.FC = () => {
     return (
         <div className="bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500">
+            <SEO 
+                title="About Us" 
+                description="Learn about the legacy of faith and scholarly brilliance at Darussalam Tharqiyathul Huffaz." 
+            />
             {/* Hero Section */}
             <section className="relative h-[40vh] md:h-[70vh] flex items-center justify-center overflow-hidden bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500 pt-16 md:pt-0">
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-tharqiya-cream dark:to-slate-950"></div>

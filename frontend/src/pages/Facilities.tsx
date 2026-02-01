@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Monitor, School, Building2, MapPin, CheckCircle2 } from 'lucide-react';
+import { BookOpen, Laptop, Home as HomeIcon, Utensils, HeartPulse, Shield, Bus, Wind, Wifi, Monitor, School, Building2, MapPin, CheckCircle2 } from 'lucide-react';
+import SEO from '../components/SEO';
 
 // Import images
 import adminExt from '../assets/facilities/admin-block-ext-highres.jpg';
@@ -188,7 +189,11 @@ const FacilitiesPage: React.FC = () => {
     ];
 
     return (
-        <div className="pt-24 min-h-screen bg-brand-cream dark:bg-slate-950 transition-colors duration-500 overflow-hidden">
+        <div className="bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500 overflow-hidden">
+            <SEO 
+                title="Campus Facilities" 
+                description="Experience world-class residential and academic facilities at Darussalam Edu Village." 
+            />
             {/* Hero Section */}
             <section className="relative py-20 lg:py-32">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">

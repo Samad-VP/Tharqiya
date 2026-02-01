@@ -14,6 +14,7 @@ import {
     Trophy,
     GraduationCap
 } from 'lucide-react';
+import SEO from '../components/SEO';
 
 const PostHifzPage: React.FC = () => {
     const syllabusData = [
@@ -91,7 +92,11 @@ const PostHifzPage: React.FC = () => {
     ];
 
     return (
-        <div className="bg-brand-cream dark:bg-slate-950 transition-colors duration-500">
+        <div className="bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500">
+            <SEO 
+                title="Post-Hifz Programme" 
+                description="Explore our unique 10-year integrated curriculum blending Quranic sciences with modern academic excellence." 
+            />
             {/* Hero Section */}
             <section className="relative pt-24 pb-12 sm:pt-48 sm:pb-40 bg-brand-cream/50 dark:bg-slate-950 overflow-hidden">
                 <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
