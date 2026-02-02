@@ -11,7 +11,7 @@ We use **GitHub Actions** for our automated workflows.
 - **Production Pipeline**: Triggered on every push to `main` and all Pull Requests. It ensures the code builds correctly, dependencies are valid, and tests pass across both `frontend` and `backend` using `.github/workflows/production.yml`.
 - **Continuous Deployment**: Once the pipeline passes on the `main` branch, the application is automatically deployed:
   - **Frontend**: Deployed to Vercel.
-  - **Backend**: Deployed to Railway.
+  - **Backend**: Deployed to Render (Direct GitHub Integration).
 
 ## 2. Deployment Strategy
 
@@ -24,7 +24,7 @@ We use **GitHub Actions** for our automated workflows.
 
 ### Backend (API Server)
 
-- **Target**: [Railway](https://railway.app) or [Render](https://render.com)
+- **Target**: [Render](https://render.com)
 - **Database**: PostgreSQL (Prisma-managed)
 - **Method**: Automatic deployment via GitHub connection.
 - **Why**: Simple management of Node.js environments and environment variables.
@@ -35,7 +35,7 @@ We use **GitHub Actions** for our automated workflows.
 
 1. **DATABASE_URL**: Update to a production-grade PostgreSQL URL.
 2. **JWT_SECRET**: Use a strong, unique secret key stored in platform secrets.
-3. **PORT**: Typically handled by the PaaS provider (Render/Railway).
+3. **PORT**: Typically handled by the PaaS provider (Render).
 
 ### Frontend Configuration
 
