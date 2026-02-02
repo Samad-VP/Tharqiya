@@ -24,7 +24,7 @@ export const createPendingApplication = async (formData: any) => {
         whatsapp, hifzCenter, hifzInstitution,
         dawrasCount, schoolEducation, kitabsStudied, 
         firstOption, secondOption, thirdOption, 
-        parentName, motherName, documents, email, primeHifzMentor,
+        fatherName, motherName, documents, email, primeHifzMentor,
         pincode, state, country
     } = formData;
 
@@ -76,7 +76,7 @@ export const createPendingApplication = async (formData: any) => {
                     firstOption: firstOption || 'N/A',
                     secondOption: secondOption || 'N/A',
                     thirdOption: thirdOption || 'N/A',
-                    fatherName: parentName || 'N/A',
+                    fatherName: fatherName || 'N/A',
                     motherName: motherName || 'N/A',
                     primeHifzMentor: primeHifzMentor || 'N/A',
                     pincode: pincode || 'N/A',

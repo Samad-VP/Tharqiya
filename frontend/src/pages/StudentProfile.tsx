@@ -38,6 +38,9 @@ const StudentProfile: React.FC = () => {
         pincode: '',
         state: '',
         country: 'India',
+        dawrasCount: '',
+        schoolEducation: '',
+        kitabsStudied: '',
         documents: {} as any
     });
 
@@ -71,6 +74,9 @@ const StudentProfile: React.FC = () => {
                         pincode: student.pincode || '',
                         state: student.state || '',
                         country: student.country || 'India',
+                        dawrasCount: student.dawrasCount || '',
+                        schoolEducation: student.schoolEducation || '',
+                        kitabsStudied: student.kitabsStudied || '',
                         documents: student.documents || {}
                     });
                 }
@@ -438,6 +444,18 @@ const StudentProfile: React.FC = () => {
                             <div className="space-y-3">
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Madrasa Education</label>
                                 <input type="text" name="madrasaEducation" value={formData.madrasaEducation} onChange={handleChange} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl font-black text-slate-800 dark:text-white focus:ring-4 focus:ring-edu-yellow/10 outline-none transition-all" placeholder="e.g., Saniyya" />
+                            </div>
+                            <div className="space-y-3">
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Dawras Completed</label>
+                                <input type="text" name="dawrasCount" value={formData.dawrasCount} onChange={handleChange} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl font-black text-slate-800 dark:text-white focus:ring-4 focus:ring-edu-yellow/10 outline-none transition-all" />
+                            </div>
+                            <div className="space-y-3">
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">School Education</label>
+                                <input type="text" name="schoolEducation" value={formData.schoolEducation} onChange={handleChange} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl font-black text-slate-800 dark:text-white focus:ring-4 focus:ring-edu-yellow/10 outline-none transition-all" />
+                            </div>
+                            <div className="space-y-3 col-span-full">
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Kitabs Studied</label>
+                                <textarea name="kitabsStudied" rows={2} value={formData.kitabsStudied} onChange={handleChange} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl font-bold text-slate-800 dark:text-white focus:ring-4 focus:ring-edu-yellow/10 outline-none transition-all resize-none" />
                             </div>
                         </div>
                     </motion.div>

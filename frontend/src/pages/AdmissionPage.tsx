@@ -19,7 +19,7 @@ const AdmissionPage: React.FC = () => {
         place: '',
         district: '',
         address: '',
-        parentName: '',
+        fatherName: '',
         motherName: '',
         dob: '',
         phone: '',
@@ -83,7 +83,7 @@ const AdmissionPage: React.FC = () => {
     const validateStep = (currentStep: number) => {
         let requiredFields: string[] = [];
         if (currentStep === 1) {
-            requiredFields = ['name', 'parentName', 'motherName', 'address', 'dob', 'place', 'district', 'state', 'pincode', 'country', 'phone', 'email', 'whatsapp'];
+            requiredFields = ['name', 'fatherName', 'motherName', 'address', 'dob', 'place', 'district', 'state', 'pincode', 'country', 'phone', 'email', 'whatsapp'];
         } else if (currentStep === 2) {
             requiredFields = ['hifzCenter', 'dawrasCount', 'schoolEducation', 'madrasaEducation', 'primeHifzMentor'];
         } else if (currentStep === 3) {
@@ -279,7 +279,7 @@ const AdmissionPage: React.FC = () => {
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Father's Name <span className="text-red-500">*</span></label>
-                                                <input name="parentName" required value={formData.parentName} onChange={handleInputChange} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="Guardian Name" />
+                                                <input name="fatherName" required value={formData.fatherName} onChange={handleInputChange} className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-medium dark:text-white" placeholder="Father's Name" />
                                             </div>
                                         </div>
 
