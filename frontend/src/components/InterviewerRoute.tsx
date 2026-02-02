@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import SEO from './SEO';
 
 const InterviewerRoute: React.FC = () => {
     const { user, loading } = useAuth();
@@ -20,7 +21,12 @@ const InterviewerRoute: React.FC = () => {
         return <Navigate to="/login" replace />;
     }
 
-    return <Outlet />;
+    return (
+        <>
+            <SEO noindex title="Interviewer Portal" />
+            <Outlet />
+        </>
+    );
 };
 
 export default InterviewerRoute;

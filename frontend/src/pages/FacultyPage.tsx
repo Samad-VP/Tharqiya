@@ -25,8 +25,8 @@ const FacultyPage: React.FC = () => {
     return (
         <div className="bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500 min-h-screen">
             <SEO 
-                title="Meet Our Faculty | Internationally Trained Scholars & Professors" 
-                description="Our faculty includes world-renowned scholars and experienced professors dedicated to mentoring students in both Deen and Dunya." 
+                title="Our Faculty | World-Class Scholars & Academic Mentors" 
+                description="Meet the distinguished faculty at Tharqiya Course. Internationally trained Islamic scholars and experienced professors dedicated to nurturing the next generation of Huffaz." 
             />
             {/* Hero Section */}
             <section className="relative pt-24 pb-12 sm:pt-48 sm:pb-32 bg-brand-cream/50 dark:bg-slate-950 overflow-hidden">

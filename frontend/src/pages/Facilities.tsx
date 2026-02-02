@@ -191,8 +191,8 @@ const FacilitiesPage: React.FC = () => {
     return (
         <div className="bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500 overflow-hidden">
             <SEO 
-                title="World-Class Campus Facilities | Residential & Academic Infrastructure" 
-                description="Explore our state-of-the-art campus in Koyilandy, featuring residential huffaz blocks, smart classrooms, a modern library, and sports facilities." 
+                title="Premium Campus Facilities | Darussalam Edu Village Infrastructure" 
+                description="Explore our world-class campus in Koyilandy, Kerala. Featuring residential huffaz blocks, advanced IT labs, smart classrooms, and a serene environment for higher learning." 
             />
             {/* Hero Section */}
             <section className="relative py-20 lg:py-32">

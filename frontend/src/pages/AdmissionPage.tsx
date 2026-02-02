@@ -159,8 +159,8 @@ const AdmissionPage: React.FC = () => {
     return (
         <div className="bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500 min-h-screen pb-20">
             <SEO 
-                title="Apply Online for 2026 Admissions | Tharqiya Course" 
-                description="Start your journey at Darussalam Edu Village. Submit your application online for the Tharqiya Post-Hifz integrated programme. Limited seats available." 
+                title="Apply for Tharqiya Course 2026-27 | Online Admission Portal" 
+                description="Secure your seat at Darussalam Edu Village. Start your 10-year integrated Post-Hifz journey today. Fill out the online registration form for the 2026-27 academic session." 
                 jsonLd={faqSchema}
             />
             {/* Hero Section */}

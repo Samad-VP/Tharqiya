@@ -16,6 +16,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import SEO from './SEO';
 import logo from '../assets/logo.png';
 
 interface StudentLayoutProps {
@@ -56,6 +57,7 @@ const StudentLayout: React.FC<StudentLayoutProps> = ({ children }) => {
 
     return (
         <div className="min-h-screen bg-brand-cream dark:bg-slate-950 transition-colors duration-500 flex overflow-hidden relative">
+            <SEO noindex title="Student Portal" />
             {/* Mobile Sidebar Overlay */}
             <AnimatePresence>
                 {isMobile && isSidebarOpen && (

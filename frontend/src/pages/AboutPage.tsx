@@ -7,8 +7,8 @@ const AboutPage: React.FC = () => {
     return (
         <div className="bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500">
             <SEO 
-                title="About Darussalam Edu Village | Legacy of Excellence" 
-                description="Discover the history of Tharqiyathul Huffaz and our vision to nurture ethical leaders through an integrated Quranic and academic curriculum in Kerala." 
+                title="About Darussalam Edu Village | Kerala's Premier Post-Hifz Institution" 
+                description="Learn about Tharqiyathul Huffaz at Darussalam Edu Village. Discover our legacy of integrating Hifz-ul-Quran with modern academic excellence to nurture ethical global leaders." 
             />
             {/* Hero Section */}
             <section className="relative h-[40vh] md:h-[70vh] flex items-center justify-center overflow-hidden bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500 pt-16 md:pt-0">

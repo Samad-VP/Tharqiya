@@ -6,6 +6,7 @@ import logo from '../assets/logo.png';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import campus from '../assets/campus.jpg';
+import SEO from '../components/SEO';
 
 const LoginPage: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -48,6 +49,10 @@ const LoginPage: React.FC = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden transition-colors duration-500 bg-cover bg-center" style={{ backgroundImage: `url(${campus})` }}>
+            <SEO 
+                title="Login | Access Your Portal" 
+                description="Securely access the Darussalam Edu Village portal for students, interviewers, and administrators." 
+            />
             {/* Theme-aware Overlay */}
             <div className="absolute inset-0 bg-brand-cream/80 dark:bg-slate-950/80 backdrop-blur-sm transition-colors duration-500" />
 

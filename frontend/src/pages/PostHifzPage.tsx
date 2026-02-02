@@ -112,8 +112,8 @@ const PostHifzPage: React.FC = () => {
     return (
         <div className="bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500">
             <SEO 
-                title="10-Year Integrated Post-Hifz Programme | Curriculum & Syllabus" 
-                description="Explore the Tharqiya Course syllabus: A 10-year journey from SSLC to PG, integrating Hifz revision with multi-disciplinary academic excellence." 
+                title="10-Year Integrated Post-Hifz Curriculum | Tharqiya Course Syllabus" 
+                description="Explore the comprehensive 10-year integrated curriculum for Huffaz. Blending Quranic sciences with UGC-recognized degrees and professional development at Darussalam Edu Village." 
                 jsonLd={courseSchema}
             />
             {/* Hero Section */}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import SEO from './SEO';
 
 const AdminRoute: React.FC = () => {
     const { user, loading } = useAuth();
@@ -20,7 +21,12 @@ const AdminRoute: React.FC = () => {
         return <Navigate to="/login" replace />;
     }
 
-    return <Outlet />;
+    return (
+        <>
+            <SEO noindex title="Admin Portal" />
+            <Outlet />
+        </>
+    );
 };
 
 export default AdminRoute;

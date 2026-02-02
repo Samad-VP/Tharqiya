@@ -9,6 +9,7 @@ interface SEOProps {
   ogImage?: string;
   twitterHandle?: string;
   jsonLd?: object;
+  noindex?: boolean;
 }
 
 const SEO: React.FC<SEOProps> = ({
@@ -19,6 +20,7 @@ const SEO: React.FC<SEOProps> = ({
   ogImage = '/logo.png', // Fallback to logo
   twitterHandle = '@TharqiyaCourse',
   jsonLd,
+  noindex = false,
 }) => {
   const siteName = 'Darussalam Edu Village';
   const fullTitle = title ? `${title} | ${siteName}` : siteName;
@@ -32,6 +34,7 @@ const SEO: React.FC<SEOProps> = ({
       <title>{fullTitle}</title>
       <meta name="title" content={fullTitle} />
       <meta name="description" content={metaDescription} />
+      {noindex && <meta name="robots" content="noindex, nofollow" />}
       {canonical && <link rel="canonical" href={canonical} />}
 
       {/* Open Graph / Facebook */}
