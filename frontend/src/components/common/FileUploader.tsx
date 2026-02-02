@@ -36,8 +36,8 @@ const FileUploader: React.FC<FileUploaderProps> = ({
   const [showReplace, setShowReplace] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Set limits based on category - matches backend (300KB for photo, 500KB for docs)
-  const maxSizeKB = type === 'image' ? 300 : 500;
+  // Set limits based on category - all uploads now limited to 300KB
+  const maxSizeKB = 300;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];

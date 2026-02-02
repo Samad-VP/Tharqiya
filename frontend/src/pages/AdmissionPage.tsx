@@ -111,11 +111,11 @@ const AdmissionPage: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         
-        const requiredDocs = ['photo', 'certificate', 'generalEdu', 'madrasaEdu'];
+        const requiredDocs = ['photo', 'identityDoc'];
         const missingDocs = requiredDocs.filter(doc => !formData.documents[doc]);
         
         if (missingDocs.length > 0) {
-            toast.error("Please upload all required documents: Photo, SSLC, General Education, and Madrasa Education.");
+            toast.error("Please upload all required documents: Profile Photo and Identity Document.");
             return;
         }
 
@@ -533,23 +533,23 @@ const AdmissionPage: React.FC = () => {
                                                     />
                                                 </div>
                                                 <div className="space-y-4">
-                                                    <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">SSLC/Cert (PDF/JPG) (Max 500KB) <span className="text-red-500">*</span></label>
+                                                    <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Identity Document (Aadhaar/Passport) (Max 300KB) <span className="text-red-500">*</span></label>
                                                     <FileUploader 
-                                                        label="Upload Certificate"
+                                                        label="Upload Identity Document"
                                                         type="document"
-                                                        docType="certificates"
+                                                        docType="identity_docs"
                                                         email={formData.email}
-                                                        onUploadSuccess={(url, publicId) => setFormData(prev => ({ ...prev, documents: { ...prev.documents, certificate: url, certificatePublicId: publicId } }))}
+                                                        onUploadSuccess={(url, publicId) => setFormData(prev => ({ ...prev, documents: { ...prev.documents, identityDoc: url, identityDocPublicId: publicId } }))}
                                                         onRemove={() => setFormData(prev => {
                                                             const newDocs = { ...prev.documents };
-                                                            delete newDocs.certificate;
-                                                            delete newDocs.certificatePublicId;
+                                                            delete newDocs.identityDoc;
+                                                            delete newDocs.identityDocPublicId;
                                                             return { ...prev, documents: newDocs };
                                                         })}
                                                     />
                                                 </div>
                                                 <div className="space-y-4">
-                                                    <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">General Education Doc (PDF/JPG) (Max 500KB) <span className="text-red-500">*</span></label>
+                                                    <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">General Education Certificate (Optional, Max 300KB)</label>
                                                     <FileUploader 
                                                         label="Upload General Edu Doc"
                                                         type="document"
@@ -565,7 +565,7 @@ const AdmissionPage: React.FC = () => {
                                                     />
                                                 </div>
                                                 <div className="space-y-4">
-                                                    <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Madrasa Education Doc (PDF/JPG) (Max 500KB) <span className="text-red-500">*</span></label>
+                                                    <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Madrasa Education Certificate (Optional, Max 300KB)</label>
                                                     <FileUploader 
                                                         label="Upload Madrasa Edu Doc"
                                                         type="document"
