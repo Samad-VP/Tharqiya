@@ -26,7 +26,39 @@ const SEO: React.FC<SEOProps> = ({
   const fullTitle = title ? `${title} | ${siteName}` : siteName;
   const defaultDescription = 'Tharqiya: Kerala\'s premier Post-Hifz destination. Nurturing excellence in Quranic memory and modern academic scholarship.';
   const metaDescription = description || defaultDescription;
-  const url = typeof window !== 'undefined' ? window.location.href : '';
+  const siteUrl = 'https://darussalameduvillage.com';
+  const logoUrl = `${siteUrl}/logo.png`;
+  const url = typeof window !== 'undefined' ? window.location.href : siteUrl;
+
+  // Base branding schema
+  const defaultSchema = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": siteName,
+      "url": siteUrl,
+      "logo": logoUrl,
+      "sameAs": [
+        "https://www.facebook.com/darussalameduvillage",
+        "https://www.instagram.com/darussalameduvillage"
+      ]
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Tharqiya",
+      "url": siteUrl,
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": `${siteUrl}/search?q={search_term_string}`,
+        "query-input": "required name=search_term_string"
+      }
+    }
+  ];
+
+  const processedJsonLd = jsonLd 
+    ? (Array.isArray(jsonLd) ? [...defaultSchema, ...jsonLd] : [...defaultSchema, jsonLd])
+    : defaultSchema;
 
   return (
     <Helmet>
@@ -53,11 +85,9 @@ const SEO: React.FC<SEOProps> = ({
       {twitterHandle && <meta name="twitter:site" content={twitterHandle} />}
 
       {/* JSON-LD Structured Data */}
-      {jsonLd && (
-        <script type="application/ld+json">
-          {JSON.stringify(jsonLd)}
-        </script>
-      )}
+      <script type="application/ld+json">
+        {JSON.stringify(processedJsonLd)}
+      </script>
     </Helmet>
   );
 };

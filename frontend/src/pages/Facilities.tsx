@@ -192,7 +192,25 @@ const FacilitiesPage: React.FC = () => {
         <div className="bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500 overflow-hidden">
             <SEO 
                 title="Premium Campus Facilities | Darussalam Edu Village Infrastructure" 
-                description="Explore our world-class campus in Koyilandy, Kerala. Featuring residential huffaz blocks, advanced IT labs, smart classrooms, and a serene environment for higher learning." 
+                description="Explore our world-class campus in Koyilandy, Kerala. Featuring residential huffaz blocks, advanced IT labs, smart classrooms, and a serenity environment for higher learning." 
+                jsonLd={{
+                    "@context": "https://schema.org",
+                    "@type": "BreadcrumbList",
+                    "itemListElement": [
+                        {
+                            "@type": "ListItem",
+                            "position": 1,
+                            "name": "Home",
+                            "item": "https://darussalameduvillage.com"
+                        },
+                        {
+                            "@type": "ListItem",
+                            "position": 2,
+                            "name": "Facilities",
+                            "item": "https://darussalameduvillage.com/facilities"
+                        }
+                    ]
+                }}
             />
             {/* Hero Section */}
             <section className="relative py-20 lg:py-32">

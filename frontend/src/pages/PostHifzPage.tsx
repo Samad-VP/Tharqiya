@@ -114,7 +114,27 @@ const PostHifzPage: React.FC = () => {
             <SEO 
                 title="10-Year Integrated Post-Hifz Curriculum | Tharqiya Course Syllabus" 
                 description="Explore the comprehensive 10-year integrated curriculum for Huffaz. Blending Quranic sciences with UGC-recognized degrees and professional development at Darussalam Edu Village." 
-                jsonLd={courseSchema}
+                jsonLd={[
+                    courseSchema,
+                    {
+                        "@context": "https://schema.org",
+                        "@type": "BreadcrumbList",
+                        "itemListElement": [
+                            {
+                                "@type": "ListItem",
+                                "position": 1,
+                                "name": "Home",
+                                "item": "https://darussalameduvillage.com"
+                            },
+                            {
+                                "@type": "ListItem",
+                                "position": 2,
+                                "name": "Programme",
+                                "item": "https://darussalameduvillage.com/programme"
+                            }
+                        ]
+                    }
+                ]}
             />
             {/* Hero Section */}
             <section className="relative pt-24 pb-12 sm:pt-48 sm:pb-40 bg-brand-cream/50 dark:bg-slate-950 overflow-hidden">

@@ -9,6 +9,24 @@ const AboutPage: React.FC = () => {
             <SEO 
                 title="About Darussalam Edu Village | Kerala's Premier Post-Hifz Institution" 
                 description="Learn about Tharqiyathul Huffaz at Darussalam Edu Village. Discover our legacy of integrating Hifz-ul-Quran with modern academic excellence to nurture ethical global leaders." 
+                jsonLd={{
+                    "@context": "https://schema.org",
+                    "@type": "BreadcrumbList",
+                    "itemListElement": [
+                        {
+                            "@type": "ListItem",
+                            "position": 1,
+                            "name": "Home",
+                            "item": "https://darussalameduvillage.com"
+                        },
+                        {
+                            "@type": "ListItem",
+                            "position": 2,
+                            "name": "About",
+                            "item": "https://darussalameduvillage.com/about"
+                        }
+                    ]
+                }}
             />
             {/* Hero Section */}
             <section className="relative h-[40vh] md:h-[70vh] flex items-center justify-center overflow-hidden bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500 pt-16 md:pt-0">

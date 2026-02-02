@@ -34,6 +34,24 @@ const AlumniPage: React.FC = () => {
             <SEO 
                 title="Global Alumni Network | Tharqiya Success Stories" 
                 description="Explore the global impact of Tharqiyathul Huffaz graduates. Our alumni are ethical leaders, renowned scholars, and successful professionals in over 12 countries." 
+                jsonLd={{
+                    "@context": "https://schema.org",
+                    "@type": "BreadcrumbList",
+                    "itemListElement": [
+                        {
+                            "@type": "ListItem",
+                            "position": 1,
+                            "name": "Home",
+                            "item": "https://darussalameduvillage.com"
+                        },
+                        {
+                            "@type": "ListItem",
+                            "position": 2,
+                            "name": "Alumni",
+                            "item": "https://darussalameduvillage.com/alumni"
+                        }
+                    ]
+                }}
             />
             {/* Hero Section */}
             <section className="relative pt-24 pb-12 sm:pt-48 sm:pb-32 bg-brand-cream/50 dark:bg-slate-950 overflow-hidden">

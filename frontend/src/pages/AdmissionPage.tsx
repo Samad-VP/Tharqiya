@@ -161,7 +161,27 @@ const AdmissionPage: React.FC = () => {
             <SEO 
                 title="Apply for Tharqiya Course 2026-27 | Online Admission Portal" 
                 description="Secure your seat at Darussalam Edu Village. Start your 10-year integrated Post-Hifz journey today. Fill out the online registration form for the 2026-27 academic session." 
-                jsonLd={faqSchema}
+                jsonLd={[
+                    faqSchema,
+                    {
+                        "@context": "https://schema.org",
+                        "@type": "BreadcrumbList",
+                        "itemListElement": [
+                            {
+                                "@type": "ListItem",
+                                "position": 1,
+                                "name": "Home",
+                                "item": "https://darussalameduvillage.com"
+                            },
+                            {
+                                "@type": "ListItem",
+                                "position": 2,
+                                "name": "Admission",
+                                "item": "https://darussalameduvillage.com/admission"
+                            }
+                        ]
+                    }
+                ]}
             />
             {/* Hero Section */}
             <section className="relative h-[30vh] md:h-[50vh] flex items-center justify-center overflow-hidden bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500 pt-20 sm:pt-0">

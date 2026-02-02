@@ -81,7 +81,12 @@ const Navbar: React.FC = () => {
                     <Link to="/" className="flex items-center gap-3 group transition-opacity duration-300 self-center shrink-0">
                         <div className="relative flex items-center shrink-0">
                             <div className="h-10 lg:h-12 w-auto flex items-center justify-center transition-transform group-hover:scale-110 duration-500">
-                                <img src={logo} alt="Darussalam Edu Village Official Logo" className="h-full w-auto object-contain" />
+                                <img 
+                                    src={logo} 
+                                    alt="Darussalam Edu Village Official Logo" 
+                                    title="Darussalam Edu Village"
+                                    className="h-full w-auto object-contain" 
+                                />
                             </div>
                         </div>
                         <div className="leading-tight flex flex-col justify-center">
@@ -97,6 +102,8 @@ const Navbar: React.FC = () => {
                                 <Link
                                     key={link.path}
                                     to={link.path}
+                                    aria-current={location.pathname === link.path ? 'page' : undefined}
+                                    aria-label={`Navigate to ${link.name}`}
                                     className={`px-3 lg:px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 relative group whitespace-nowrap flex items-center h-10 ${location.pathname === link.path
                                         ? (scrolled ? 'text-edu-teal dark:text-edu-teal' : 'text-edu-teal')
                                         : (!scrolled ? (theme === 'light' ? 'text-brand-deep/70 hover:text-edu-coral' : 'text-white/80 hover:text-white') : 'text-brand-deep dark:text-slate-300 hover:text-edu-coral dark:hover:text-edu-teal')
@@ -127,13 +134,14 @@ const Navbar: React.FC = () => {
                                     ? 'bg-white/10 text-white hover:bg-edu-teal hover:text-slate-950 border border-white/20'
                                     : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-edu-coral hover:text-white dark:hover:bg-edu-teal dark:hover:text-slate-900'
                                     }`}
-                                aria-label="Toggle Theme"
+                                aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
                             >
                                 {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
                             </button>
 
                             <Link 
                                 to={getDashboardLink()} 
+                                aria-label={`Navigate to ${getDashboardLabel()}`}
                                 className={`btn-primary !py-0 !px-4 lg:!px-6 !text-sm flex items-center justify-center h-10 whitespace-nowrap mr-2 !shadow-sm ${user 
                                     ? '!bg-edu-teal !text-slate-950 hover:!bg-edu-teal/90' 
                                     : '!bg-edu-teal !text-slate-950 hover:!bg-edu-teal/90'
@@ -142,7 +150,7 @@ const Navbar: React.FC = () => {
                                 {getDashboardLabel()}
                             </Link>
 
-                            <Link to="/admission" className="btn-primary py-2.5 px-5 !text-sm flex items-center justify-center h-10 whitespace-nowrap">Apply Now</Link>
+                            <Link to="/admission" aria-label="Apply Now for Admission" className="btn-primary py-2.5 px-5 !text-sm flex items-center justify-center h-10 whitespace-nowrap">Apply Now</Link>
                         </div>
                     </div>
 

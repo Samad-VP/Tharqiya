@@ -27,6 +27,24 @@ const FacultyPage: React.FC = () => {
             <SEO 
                 title="Our Faculty | World-Class Scholars & Academic Mentors" 
                 description="Meet the distinguished faculty at Tharqiya Course. Internationally trained Islamic scholars and experienced professors dedicated to nurturing the next generation of Huffaz." 
+                jsonLd={{
+                    "@context": "https://schema.org",
+                    "@type": "BreadcrumbList",
+                    "itemListElement": [
+                        {
+                            "@type": "ListItem",
+                            "position": 1,
+                            "name": "Home",
+                            "item": "https://darussalameduvillage.com"
+                        },
+                        {
+                            "@type": "ListItem",
+                            "position": 2,
+                            "name": "Faculty",
+                            "item": "https://darussalameduvillage.com/faculty"
+                        }
+                    ]
+                }}
             />
             {/* Hero Section */}
             <section className="relative pt-24 pb-12 sm:pt-48 sm:pb-32 bg-brand-cream/50 dark:bg-slate-950 overflow-hidden">

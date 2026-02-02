@@ -95,33 +95,47 @@ const Home: React.FC = () => {
         },
     ];
 
-    const organizationSchema = {
-        "@context": "https://schema.org",
-        "@type": "EducationalOrganization",
-        "name": "Darussalam Edu Village",
-        "url": "https://darussalameduvillage.com",
-        "logo": "https://darussalameduvillage.com/logo.png",
-        "sameAs": [
-            "https://www.facebook.com/darussalameduvillage",
-            "https://www.instagram.com/darussalameduvillage",
-            "https://www.youtube.com/@darussalameduvillage"
-        ],
-        "address": {
-            "@type": "PostalAddress",
-            "streetAddress": "Valiyamala, Muchukunnu",
-            "addressLocality": "Koyilandy",
-            "addressRegion": "Kerala",
-            "postalCode": "673307",
-            "addressCountry": "IN"
+    const pageSchema = [
+        {
+            "@context": "https://schema.org",
+            "@type": "EducationalOrganization",
+            "name": "Darussalam Edu Village",
+            "url": "https://darussalameduvillage.com",
+            "logo": "https://darussalameduvillage.com/logo.png",
+            "sameAs": [
+                "https://www.facebook.com/darussalameduvillage",
+                "https://www.instagram.com/darussalameduvillage",
+                "https://www.youtube.com/@darussalameduvillage"
+            ],
+            "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Valiyamala, Muchukunnu",
+                "addressLocality": "Koyilandy",
+                "addressRegion": "Kerala",
+                "postalCode": "673307",
+                "addressCountry": "IN"
+            }
+        },
+        {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Home",
+                    "item": "https://darussalameduvillage.com"
+                }
+            ]
         }
-    };
+    ];
 
     return (
         <div>
             <SEO 
                 title="Tharqiya Course | Kerala's Premier Post-Hifz Educational Hub" 
                 description="Welcome to Darussalam Edu Village - Home of the Tharqiya Course. Nurturing Quranic excellence and academic brilliance in a holistic environment. Apply now for 2026 admissions." 
-                jsonLd={organizationSchema}
+                jsonLd={pageSchema}
             />
             <Hero />
             <section className="py-12 sm:py-24 md:py-32 bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500 relative overflow-hidden">
