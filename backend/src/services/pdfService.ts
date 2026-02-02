@@ -21,11 +21,23 @@ const COLORS = {
 
 const embedImage = async (pdfDoc: PDFDocument, filename: string) => {
     try {
-        const imagePath = path.join(__dirname, `../assets/${filename}`);
-        if (fs.existsSync(imagePath)) {
-            const imageBytes = fs.readFileSync(imagePath);
-            return await pdfDoc.embedPng(imageBytes);
+        // Check multiple possible paths for production and development
+        const possiblePaths = [
+            path.join(__dirname, `../assets/${filename}`), // Case when running from dist/services/pdfService.js
+            path.join(__dirname, `../../src/assets/${filename}`), // Case when running from src/services/pdfService.ts with tsx
+            path.join(process.cwd(), `assets/${filename}`),
+            path.join(process.cwd(), `dist/assets/${filename}`),
+            path.join(process.cwd(), `backend/assets/${filename}`),
+            path.join(process.cwd(), `backend/dist/assets/${filename}`)
+        ];
+
+        for (const imagePath of possiblePaths) {
+            if (fs.existsSync(imagePath)) {
+                const imageBytes = fs.readFileSync(imagePath);
+                return await pdfDoc.embedPng(imageBytes);
+            }
         }
+        console.warn(`[PDF_SERVICE] Image not found in any of these paths: ${filename}`);
     } catch (error) {
         console.error(`Error embedding image ${filename}:`, error);
     }
