@@ -284,7 +284,7 @@ const StudentProfile: React.FC = () => {
                     <ArrowLeft size={22} className="group-hover:-translate-x-1 transition-transform duration-300" />
                 </Link>
                 <div>
-                    <h2 className="text-3xl sm:text-5xl font-black font-outfit tracking-tighter text-brand-deep dark:text-white uppercase leading-none">
+                    <h2 className="text-3xl sm:text-5xl font-black font-outfit tracking-tighter text-tharqiya-deep dark:text-white uppercase leading-none">
                         Scholar <span className="text-edu-teal">Registry</span>
                     </h2>
                     <p className="text-slate-500 dark:text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em] mt-2">Personal Academic Registry</p>
@@ -310,7 +310,7 @@ const StudentProfile: React.FC = () => {
                                 ) : (
                                     <User size={48} className="text-slate-300 dark:text-slate-700" />
                                 )}
-                                <label className="absolute inset-0 bg-brand-deep/70 backdrop-blur-[4px] flex flex-col items-center justify-center opacity-0 group-hover/photo:opacity-100 transition-all duration-500 cursor-pointer">
+                                <label className="absolute inset-0 bg-tharqiya-deep/70 backdrop-blur-[4px] flex flex-col items-center justify-center opacity-0 group-hover/photo:opacity-100 transition-all duration-500 cursor-pointer">
                                     <Camera size={28} className="text-white mb-2 scale-75 group-hover/photo:scale-100 transition-transform" />
                                     <span className="text-[10px] font-black text-white uppercase tracking-widest">Update Photo</span>
                                     <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, 'photo')} />
@@ -323,7 +323,7 @@ const StudentProfile: React.FC = () => {
                             )}
                         </div>
                         <div className="flex-grow space-y-4">
-                            <h3 className="text-2xl sm:text-3xl font-black text-brand-deep dark:text-white font-outfit uppercase tracking-tighter">Candidate Image</h3>
+                            <h3 className="text-2xl sm:text-3xl font-black text-tharqiya-deep dark:text-white font-outfit uppercase tracking-tighter">Candidate Image</h3>
                             <p className="text-sm text-slate-500 dark:text-slate-400 font-medium leading-relaxed max-w-sm">Your digital identity for admission cards and official certificates.</p>
                             <div className="flex flex-wrap justify-center sm:justify-start gap-4">
                                 <button type="button" onClick={() => (document.querySelector('input[type="file"]') as HTMLInputElement)?.click()} className="px-6 py-3 bg-edu-coral text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-edu-coral/90 transition-all">Replace</button>
@@ -349,7 +349,7 @@ const StudentProfile: React.FC = () => {
                                 <User size={24} />
                             </div>
                             <div>
-                                <h3 className="text-xl sm:text-2xl font-black text-brand-deep dark:text-white font-outfit uppercase tracking-tighter">Personal Records</h3>
+                                <h3 className="text-xl sm:text-2xl font-black text-tharqiya-deep dark:text-white font-outfit uppercase tracking-tighter">Personal Records</h3>
                             </div>
                         </div>
                         
@@ -432,7 +432,7 @@ const StudentProfile: React.FC = () => {
                                 <GraduationCap size={24} />
                             </div>
                             <div>
-                                <h3 className="text-xl sm:text-2xl font-black text-brand-deep dark:text-white font-outfit uppercase tracking-tighter">Academic Origin</h3>
+                                <h3 className="text-xl sm:text-2xl font-black text-tharqiya-deep dark:text-white font-outfit uppercase tracking-tighter">Academic Origin</h3>
                             </div>
                         </div>
                         
@@ -472,7 +472,7 @@ const StudentProfile: React.FC = () => {
                                 <FileText size={24} />
                             </div>
                             <div>
-                                <h3 className="text-xl sm:text-2xl font-black text-brand-deep dark:text-white font-outfit uppercase tracking-tighter">Scholarly Records</h3>
+                                <h3 className="text-xl sm:text-2xl font-black text-tharqiya-deep dark:text-white font-outfit uppercase tracking-tighter">Scholarly Records</h3>
                                 <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1">PDF/JPG (Max 500KB)</p>
                             </div>
                         </div>
@@ -486,7 +486,7 @@ const StudentProfile: React.FC = () => {
                                             <div className="p-2 bg-white dark:bg-slate-800 rounded-lg shadow-sm">
                                                 <FileText size={20} className="text-edu-teal" />
                                             </div>
-                                            <p className="text-[10px] font-black text-brand-deep dark:text-white uppercase">SSLC/Cert</p>
+                                            <p className="text-[10px] font-black text-tharqiya-deep dark:text-white uppercase">SSLC/Cert</p>
                                         </div>
                                         <div className="flex gap-2">
                                             <a href={formData.documentUrl} target="_blank" rel="noopener noreferrer" className="flex-grow text-center py-2 bg-white dark:bg-slate-800 border rounded-lg text-[8px] font-black uppercase">View</a>
@@ -516,7 +516,7 @@ const StudentProfile: React.FC = () => {
                                             <div className="p-2 bg-white dark:bg-slate-800 rounded-lg shadow-sm">
                                                 <FileText size={20} className="text-edu-teal" />
                                             </div>
-                                            <p className="text-[10px] font-black text-brand-deep dark:text-white uppercase">General Edu</p>
+                                            <p className="text-[10px] font-black text-tharqiya-deep dark:text-white uppercase">General Edu</p>
                                         </div>
                                         <div className="flex gap-2">
                                             <a href={formData.generalEduUrl} target="_blank" rel="noopener noreferrer" className="flex-grow text-center py-2 bg-white dark:bg-slate-800 border rounded-lg text-[8px] font-black uppercase">View</a>
@@ -546,7 +546,7 @@ const StudentProfile: React.FC = () => {
                                             <div className="p-2 bg-white dark:bg-slate-800 rounded-lg shadow-sm">
                                                 <FileText size={20} className="text-edu-teal" />
                                             </div>
-                                            <p className="text-[10px] font-black text-brand-deep dark:text-white uppercase">Madrasa Edu</p>
+                                            <p className="text-[10px] font-black text-tharqiya-deep dark:text-white uppercase">Madrasa Edu</p>
                                         </div>
                                         <div className="flex gap-2">
                                             <a href={formData.madrasaEduUrl} target="_blank" rel="noopener noreferrer" className="flex-grow text-center py-2 bg-white dark:bg-slate-800 border rounded-lg text-[8px] font-black uppercase">View</a>
@@ -573,7 +573,7 @@ const StudentProfile: React.FC = () => {
 
                 {/* Footer */}
                 <div className="pt-10 border-t border-slate-200 dark:border-slate-800 flex justify-end">
-                    <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} disabled={saving || uploading !== null} type="submit" className="px-12 h-16 bg-brand-deep dark:bg-white text-white dark:text-brand-deep rounded-2xl font-black text-sm uppercase tracking-[0.2em] flex items-center gap-4 shadow-xl hover:bg-edu-teal hover:text-white transition-all">
+                    <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} disabled={saving || uploading !== null} type="submit" className="px-12 h-16 bg-tharqiya-deep dark:bg-white text-white dark:text-tharqiya-deep rounded-2xl font-black text-sm uppercase tracking-[0.2em] flex items-center gap-4 shadow-xl hover:bg-edu-teal hover:text-white transition-all">
                         {saving ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
                         {saving ? 'Saving...' : 'Update Registry'}
                     </motion.button>

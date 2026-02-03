@@ -50,7 +50,7 @@ const StudentResources: React.FC = () => {
                 className="text-center sm:text-left"
             >
                 <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 mb-4">
-                    <h2 className="text-4xl sm:text-6xl font-black font-outfit tracking-tighter text-brand-deep dark:text-white uppercase leading-none">
+                    <h2 className="text-4xl sm:text-6xl font-black font-outfit tracking-tighter text-tharqiya-deep dark:text-white uppercase leading-none">
                         Scholarly <span className="text-edu-coral">Repository</span>
                     </h2>
                     <div className="hidden sm:block h-px flex-grow bg-slate-100 dark:bg-slate-800" />
@@ -76,7 +76,7 @@ const StudentResources: React.FC = () => {
                             visible: { opacity: 1, y: 0 }
                         }}
                         whileHover={{ y: -10 }}
-                        className="p-8 sm:p-12 rounded-[3rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-2xl hover:shadow-brand-deep/5 dark:hover:shadow-white/5 transition-all duration-500 group flex flex-col justify-between relative overflow-hidden"
+                        className="p-8 sm:p-12 rounded-[3rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-2xl hover:shadow-tharqiya-deep/5 dark:hover:shadow-white/5 transition-all duration-500 group flex flex-col justify-between relative overflow-hidden"
                     >
                         <div className="absolute top-0 right-0 w-40 h-40 bg-slate-50 dark:bg-slate-800/20 -mr-20 -mt-20 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
                         
@@ -84,7 +84,7 @@ const StudentResources: React.FC = () => {
                             <div className={`w-16 h-16 rounded-2xl ${res.bg} ${res.color} flex items-center justify-center mb-10 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-xl shadow-current/10`}>
                                 <res.icon size={32} />
                             </div>
-                            <h3 className="text-2xl sm:text-3xl font-black text-brand-deep dark:text-white font-outfit mb-4 leading-tight group-hover:text-edu-teal transition-colors tracking-tight uppercase">{res.title}</h3>
+                            <h3 className="text-2xl sm:text-3xl font-black text-tharqiya-deep dark:text-white font-outfit mb-4 leading-tight group-hover:text-edu-teal transition-colors tracking-tight uppercase">{res.title}</h3>
                             <p className="text-slate-500 dark:text-slate-400 font-medium mb-12 leading-relaxed text-sm sm:text-base border-l-4 border-slate-50 dark:border-slate-800 pl-6">{res.description}</p>
                         </div>
                         
@@ -92,13 +92,13 @@ const StudentResources: React.FC = () => {
                             <div className="flex flex-col">
                                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Authenticated Download</span>
                                 <div className="flex items-center gap-2">
-                                    <span className="text-xs font-black text-brand-deep dark:text-white uppercase px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-md">{res.type}</span>
+                                    <span className="text-xs font-black text-tharqiya-deep dark:text-white uppercase px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-md">{res.type}</span>
                                     <span className="text-[10px] font-bold text-slate-400 uppercase">Archive Size: {res.size}</span>
                                 </div>
                             </div>
                             <motion.button 
                                 whileTap={{ scale: 0.9 }}
-                                className="flex items-center justify-center w-14 h-14 bg-brand-deep dark:bg-white text-white dark:text-brand-deep hover:bg-edu-coral hover:text-white rounded-2xl transition-all shadow-xl shadow-brand-deep/10 dark:shadow-white/10 group/btn"
+                                className="flex items-center justify-center w-14 h-14 bg-tharqiya-deep dark:bg-white text-white dark:text-tharqiya-deep hover:bg-edu-coral hover:text-white rounded-2xl transition-all shadow-xl shadow-tharqiya-deep/10 dark:shadow-white/10 group/btn"
                             >
                                 <Download size={24} className="group-hover/btn:translate-y-1 transition-transform" />
                             </motion.button>
@@ -112,7 +112,7 @@ const StudentResources: React.FC = () => {
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="mt-20 p-12 sm:p-20 rounded-[3.5rem] bg-brand-deep text-white dark:bg-slate-800/50 border border-slate-200/10 text-center relative overflow-hidden group"
+                className="mt-20 p-12 sm:p-20 rounded-[3.5rem] bg-tharqiya-deep text-white dark:bg-slate-800/50 border border-slate-200/10 text-center relative overflow-hidden group"
             >
                 <div className="relative z-10 flex flex-col items-center">
                     <div className="w-20 h-20 rounded-[2rem] bg-white/10 backdrop-blur-3xl flex items-center justify-center mb-10 group-hover:rotate-12 transition-transform duration-700 ring-1 ring-white/20">

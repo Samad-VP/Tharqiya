@@ -70,7 +70,7 @@ const LoginPage: React.FC = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
                     >
-                        <h2 className="text-4xl font-black text-brand-deep dark:text-white font-outfit tracking-tighter">Welcome Back</h2>
+                        <h2 className="text-4xl font-black text-tharqiya-deep dark:text-white font-outfit tracking-tighter">Welcome Back</h2>
                     </motion.div>
                 </div>
 

@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
+import { fadeInUp } from '../utils/animations';
 import campusBg from '../assets/campus-view.jpg';
 
 const Hero: React.FC = () => {
@@ -28,9 +29,9 @@ const Hero: React.FC = () => {
                 <div className="max-w-4xl">
                     {/* Content */}
                     <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.2 }}
+                        variants={fadeInUp}
+                        initial="initial"
+                        animate="animate"
                         className="text-left"
                     >
                         {/* Status Label */}
@@ -54,10 +55,10 @@ const Hero: React.FC = () => {
                         <div className="space-y-4 mb-10 sm:mb-16 border-l-4 border-edu-teal/30 pl-6 sm:pl-8">
                             <div className="space-y-1">
                                 <h2 className="text-base sm:text-xl font-black text-white uppercase tracking-tight">
-                                    Darussalam Edu Village
+                                    Darussalam Tharqiyathul Huffaz
                                 </h2>
-                                <p className="text-[10px] sm:text-sm font-black text-edu-teal uppercase tracking-widest">
-                                    Under : Darussalam Islamic University
+                                <p className="text-[10px] sm:text-sm font-black text-slate-400 uppercase tracking-widest">
+                                    Under : Darussalam Islamic University (DIU)
                                 </p>
                             </div>
                         </div>

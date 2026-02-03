@@ -107,7 +107,7 @@ const AdminUsers: React.FC = () => {
             <div className="space-y-6 sm:space-y-8">
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                     <div className="w-full">
-                        <h2 className="text-2xl sm:text-3xl font-black text-brand-deep dark:text-white font-outfit tracking-tighter uppercase leading-tight">
+                        <h2 className="text-2xl sm:text-3xl font-black text-tharqiya-deep dark:text-white font-outfit tracking-tighter uppercase leading-tight">
                             Manage <span className="text-edu-teal">{roleFilter}s</span>
                         </h2>
                         <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Add, update or remove {roleFilter.toLowerCase()} accounts.</p>
@@ -115,7 +115,7 @@ const AdminUsers: React.FC = () => {
 
                     <button 
                         onClick={handleOpenCreate}
-                        className="w-full lg:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-brand-deep dark:bg-edu-coral text-white rounded-xl sm:rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-brand-deep/20 hover:scale-[1.02] transition-all"
+                        className="w-full lg:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-tharqiya-deep dark:bg-edu-coral text-white rounded-xl sm:rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-tharqiya-deep/20 hover:scale-[1.02] transition-all"
                     >
                         <UserPlus size={18} /> Add {roleFilter}
                     </button>
@@ -151,7 +151,7 @@ const AdminUsers: React.FC = () => {
                                 <div className="absolute top-0 right-0 p-4 sm:p-6 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
                                     <button 
                                         onClick={() => handleOpenEdit(user)}
-                                        className="p-2 rounded-xl bg-slate-100 dark:bg-white/10 text-brand-deep dark:text-edu-teal hover:bg-edu-teal hover:text-white transition-all shadow-sm"
+                                        className="p-2 rounded-xl bg-slate-100 dark:bg-white/10 text-tharqiya-deep dark:text-edu-teal hover:bg-edu-teal hover:text-white transition-all shadow-sm"
                                         title="Edit User"
                                     >
                                         <Edit size={16} />
@@ -172,13 +172,13 @@ const AdminUsers: React.FC = () => {
                                         </div>
                                     </div>
 
-                                    <h3 className="text-lg sm:text-xl font-black text-brand-deep dark:text-white font-outfit mb-1">{user.name}</h3>
+                                    <h3 className="text-lg sm:text-xl font-black text-tharqiya-deep dark:text-white font-outfit mb-1">{user.name}</h3>
                                     <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 dark:bg-white/5 text-[9px] font-black uppercase tracking-widest text-slate-500 mb-4 sm:mb-6">
                                         <Shield size={12} className="text-edu-teal" /> {user.role}
                                     </div>
 
                                     <div className="w-full space-y-3 sm:space-y-4 pt-4 sm:pt-6 border-t border-slate-50 dark:border-slate-800 text-left">
-                                        <div className="flex items-center gap-3 text-slate-500 group-hover/card:text-brand-deep dark:group-hover/card:text-white transition-colors">
+                                        <div className="flex items-center gap-3 text-slate-500 group-hover/card:text-tharqiya-deep dark:group-hover/card:text-white transition-colors">
                                             <Mail size={16} className="shrink-0 text-edu-teal" />
                                             <span className="text-[10px] sm:text-xs font-bold truncate">{user.email}</span>
                                         </div>
@@ -209,7 +209,7 @@ const AdminUsers: React.FC = () => {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setShowModal(false)}
-                            className="fixed inset-0 bg-brand-deep/40 backdrop-blur-md"
+                            className="fixed inset-0 bg-tharqiya-deep/40 backdrop-blur-md"
                         />
                         <motion.div 
                             initial={{ scale: 0.95, opacity: 0 }}
@@ -218,7 +218,7 @@ const AdminUsers: React.FC = () => {
                             className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-[2rem] sm:rounded-[3rem] shadow-2xl overflow-hidden my-auto"
                         >
                             <div className="p-6 sm:p-10">
-                                <h3 className="text-xl sm:text-2xl font-black text-brand-deep dark:text-white font-outfit mb-2 tracking-tight uppercase">
+                                <h3 className="text-xl sm:text-2xl font-black text-tharqiya-deep dark:text-white font-outfit mb-2 tracking-tight uppercase">
                                     {modalMode === 'create' ? 'Create' : 'Edit'} <span className="text-edu-teal">Account</span>
                                 </h3>
                                 <p className="text-[10px] sm:text-sm text-slate-500 font-bold uppercase tracking-widest mb-6 sm:mb-8">
@@ -333,7 +333,7 @@ const AdminUsers: React.FC = () => {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setShowDeleteConfirm(null)}
-                            className="fixed inset-0 bg-brand-deep/60 backdrop-blur-sm"
+                            className="fixed inset-0 bg-tharqiya-deep/60 backdrop-blur-sm"
                         />
                         <motion.div 
                             initial={{ scale: 0.9, opacity: 0 }}
@@ -344,7 +344,7 @@ const AdminUsers: React.FC = () => {
                             <div className="w-16 h-16 rounded-full bg-red-50 dark:bg-red-500/10 flex items-center justify-center mx-auto mb-6 text-red-600">
                                 <AlertTriangle size={32} />
                             </div>
-                            <h3 className="text-xl sm:text-2xl font-black text-brand-deep dark:text-white font-outfit mb-2">Are you sure?</h3>
+                            <h3 className="text-xl sm:text-2xl font-black text-tharqiya-deep dark:text-white font-outfit mb-2">Are you sure?</h3>
                             <p className="text-xs sm:text-sm text-slate-500 font-bold mb-8">This action is permanent and will completely remove the interviewer account.</p>
                             
                             <div className="space-y-3">

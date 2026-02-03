@@ -3,8 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     User, Mail, Phone, MapPin, Send, CheckCircle, AlertCircle, Loader2, Upload, Trash2,
     Calendar, BookOpen, GraduationCap, FileText, Languages, FolderOpen, UserRound,
-    Flag, CheckCircle2, ArrowRight, ArrowLeft, Building2, ShieldCheck
+    Flag, CheckCircle2, ArrowRight, ArrowLeft, Building2, ShieldCheck, MessageCircle
 } from 'lucide-react';
+import { fadeInUp, staggerContainer } from '../utils/animations';
 import SEO from '../components/SEO';
 import api from '../api/axiosInstance';
 import { INDIAN_STATES } from '../utils/constants';
@@ -106,7 +107,10 @@ const AdmissionPage: React.FC = () => {
     const prevStep = () => setStep(prev => prev - 1);
 
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [successData, setSuccessData] = useState<{ applicationNo: string } | null>(null);
+    const [successData, setSuccessData] = useState<{ 
+        applicationNo: string, 
+        credentials?: { username: string; tempPassword: string } 
+    } | null>(null);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -187,11 +191,12 @@ const AdmissionPage: React.FC = () => {
             <section className="relative h-[30vh] md:h-[50vh] flex items-center justify-center overflow-hidden bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500 pt-20 sm:pt-0">
                 <div className="relative z-10 text-center px-6">
                     <motion.h1
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        variants={fadeInUp}
+                        initial="initial"
+                        animate="animate"
                         className="text-3xl sm:text-5xl md:text-7xl font-black text-tharqiya-deep dark:text-white font-outfit tracking-tighter uppercase"
                     >
-                        Admission <span className="text-tharqiya-gold">2026-27</span>
+                        Admission <span className="text-gold-orange">2026-27</span>
                     </motion.h1>
                     <p className="text-sm sm:text-xl text-tharqiya-deep/80 dark:text-white/80 mt-2 sm:mt-4 font-medium max-w-2xl mx-auto">
                         Join the elite circle of Tharqawi scholars. Applications are now open for the upcoming academic cycle.
@@ -208,14 +213,15 @@ const AdmissionPage: React.FC = () => {
                         className="glass-card p-6 sm:p-8 rounded-[1.5rem] sm:rounded-[2.5rem] border border-slate-100 dark:border-slate-800"
                     >
                         <h3 className="text-2xl font-black text-tharqiya-deep dark:text-white mb-6 font-outfit tracking-tight flex items-center gap-3">
-                            <ShieldCheck className="text-tharqiya-orange dark:text-tharqiya-gold" />
+                            <div className="icon-placard-sm !w-10 !h-10">
+                                <ShieldCheck className="w-5 h-5" />
+                            </div>
                             Eligibility
                         </h3>
                         <ul className="space-y-4">
                             {[
                                 "Successful completion of Quran Hifz",
-                                "Completed SSLC (10th Grade)",
-                                "Age between 13 and 15 years",
+                                "Age between 10 and 19 years",
                                 "Commitment to 10-year integrated study"
                             ].map((item, i) => (
                                 <li key={i} className="flex gap-3 text-slate-600 dark:text-slate-400 font-medium text-sm">
@@ -239,19 +245,28 @@ const AdmissionPage: React.FC = () => {
                                 <div className="w-5 h-5 bg-tharqiya-gold rounded-full flex items-center justify-center shrink-0 mt-0.5">
                                     <span className="text-tharqiya-deep font-black text-[10px]">2</span>
                                 </div>
-                                Select your preferred institutions.
+                                Enter academic and Hifz history.
                             </li>
                             <li className="flex gap-3">
                                 <div className="w-5 h-5 bg-tharqiya-gold rounded-full flex items-center justify-center shrink-0 mt-0.5">
                                     <span className="text-tharqiya-deep font-black text-[10px]">3</span>
+                                </div>
+                                Select campus preferences.
+                            </li>
+                            <li className="flex gap-3">
+                                <div className="w-5 h-5 bg-tharqiya-gold rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                                    <span className="text-tharqiya-deep font-black text-[10px]">4</span>
                                 </div>
                                 Upload required documents.
                             </li>
                         </ul>
                         <p className="text-slate-500 dark:text-white/70 text-xs sm:text-sm mb-4 sm:mb-6 relative z-10 font-bold">Need help with your application? Contact our helpdesk.</p>
                         <div className="flex flex-col gap-3 relative z-10">
-                            <a href="tel:+914962673322" className="flex items-center justify-center gap-2 bg-slate-950/10 dark:bg-white/10 p-3 rounded-2xl font-bold hover:bg-slate-950/20 dark:hover:bg-white/20 text-slate-900 dark:text-white transition-all text-sm">
-                                <Phone size={16} /> +91 496 2673322
+                            <a href="tel:+918086555479" className="flex items-center justify-center gap-2 bg-slate-950/10 dark:bg-white/10 p-3 rounded-2xl font-bold hover:bg-slate-950/20 dark:hover:bg-white/20 text-slate-900 dark:text-white transition-all text-sm">
+                                <Phone size={16} /> Call: +91 8086555479
+                            </a>
+                            <a href="https://wa.me/918086555479" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 bg-green-500/10 p-3 rounded-2xl font-bold hover:bg-green-500/20 text-green-700 dark:text-green-400 transition-all text-sm">
+                                <MessageCircle size={16} /> WhatsApp
                             </a>
                         </div>
                     </div>
@@ -260,8 +275,9 @@ const AdmissionPage: React.FC = () => {
                 {/* Admission Form */}
                 <div className="lg:col-span-2 order-1 lg:order-2">
                     <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        variants={fadeInUp}
+                        initial="initial"
+                        animate="animate"
                         className="glass-card p-6 sm:p-12 rounded-[1.5rem] sm:rounded-[3rem] border border-slate-100 dark:border-slate-800 shadow-xl sm:shadow-2xl relative overflow-hidden"
                     >
 
@@ -482,7 +498,16 @@ const AdmissionPage: React.FC = () => {
                                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">First Option <span className="text-red-500">*</span></label>
                                                     <select name="firstOption" required value={formData.firstOption} onChange={handleInputChange} className="w-full px-6 py-4 bg-tharqiya-cream dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-bold text-sm dark:text-white">
                                                         <option value="">Select Campus</option>
-                                                        {campuses.map(c => <option key={c} value={c}>{c}</option>)}
+                                                        {campuses.map(c => (
+                                                            <option 
+                                                                key={c} 
+                                                                value={c} 
+                                                                disabled={c === formData.secondOption || c === formData.thirdOption}
+                                                                className="disabled:text-slate-300 dark:disabled:text-slate-600"
+                                                            >
+                                                                {c}
+                                                            </option>
+                                                        ))}
                                                     </select>
                                                 </div>
 
@@ -490,7 +515,16 @@ const AdmissionPage: React.FC = () => {
                                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Second Option <span className="text-red-500">*</span></label>
                                                     <select name="secondOption" required value={formData.secondOption} onChange={handleInputChange} className="w-full px-6 py-4 bg-tharqiya-cream dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-bold text-sm dark:text-white">
                                                         <option value="">Select Campus</option>
-                                                        {campuses.map(c => <option key={c} value={c}>{c}</option>)}
+                                                        {campuses.map(c => (
+                                                            <option 
+                                                                key={c} 
+                                                                value={c} 
+                                                                disabled={c === formData.firstOption || c === formData.thirdOption}
+                                                                className="disabled:text-slate-300 dark:disabled:text-slate-600"
+                                                            >
+                                                                {c}
+                                                            </option>
+                                                        ))}
                                                     </select>
                                                 </div>
 
@@ -498,7 +532,16 @@ const AdmissionPage: React.FC = () => {
                                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Third Option <span className="text-red-500">*</span></label>
                                                     <select name="thirdOption" required value={formData.thirdOption} onChange={handleInputChange} className="w-full px-6 py-4 bg-tharqiya-cream dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-tharqiya-orange/10 outline-none font-bold text-sm dark:text-white">
                                                         <option value="">Select Campus</option>
-                                                        {campuses.map(c => <option key={c} value={c}>{c}</option>)}
+                                                        {campuses.map(c => (
+                                                            <option 
+                                                                key={c} 
+                                                                value={c} 
+                                                                disabled={c === formData.firstOption || c === formData.secondOption}
+                                                                className="disabled:text-slate-300 dark:disabled:text-slate-600"
+                                                            >
+                                                                {c}
+                                                            </option>
+                                                        ))}
                                                     </select>
                                                 </div>
                                             </div>
@@ -647,9 +690,36 @@ const AdmissionPage: React.FC = () => {
                                         </div>
 
                                         <div className="flex flex-col gap-4">
-                                            <p className="text-sm font-bold text-slate-600 dark:text-slate-300 leading-relaxed px-6">
-                                                Your application is now under review. Once an administrator approves your documents, your login credentials will be sent to your <span className="text-tharqiya-deep dark:text-white">WhatsApp</span> and <span className="text-tharqiya-deep dark:text-white">Email</span>.
-                                            </p>
+                                            {successData.credentials ? (
+                                                <div className="bg-tharqiya-teal/5 dark:bg-tharqiya-teal/10 p-6 rounded-3xl border border-tharqiya-teal/20 mb-6 text-left">
+                                                    <h5 className="text-sm font-bold text-tharqiya-teal dark:text-tharqiya-gold uppercase tracking-wider mb-4 flex items-center gap-2">
+                                                        <ShieldCheck size={18} /> Login Credentials
+                                                    </h5>
+                                                    <div className="space-y-4">
+                                                        <div>
+                                                            <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">Username</p>
+                                                            <div className="flex items-center justify-between p-3 bg-white dark:bg-slate-800 rounded-xl border border-tharqiya-teal/10">
+                                                                <code className="text-tharqiya-deep dark:text-white font-bold">{successData.credentials.username}</code>
+                                                            </div>
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">Temporary Password</p>
+                                                            <div className="flex items-center justify-between p-3 bg-white dark:bg-slate-800 rounded-xl border border-tharqiya-teal/10">
+                                                                <code className="text-tharqiya-deep dark:text-white font-bold">{successData.credentials.tempPassword}</code>
+                                                            </div>
+                                                        </div>
+                                                        <div className="p-3 bg-amber-50 dark:bg-amber-900/10 rounded-xl border border-amber-100 dark:border-amber-800/20">
+                                                            <p className="text-[10px] font-bold text-amber-800 dark:text-amber-400 uppercase leading-relaxed">
+                                                                IMPORTANT: Please take a screenshot or copy these credentials immediately. They are required to check your status and prepare for the entrance exam.
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <p className="text-sm font-bold text-slate-600 dark:text-slate-300 leading-relaxed px-6">
+                                                    Your application is now under review. Once an administrator approves your documents, your login credentials will be sent to your <span className="text-tharqiya-deep dark:text-white">WhatsApp</span> and <span className="text-tharqiya-deep dark:text-white">Email</span>.
+                                                </p>
+                                            )}
                                             <a href="/" className="btn-primary w-full py-5 text-xl mt-4">Return to Home</a>
                                         </div>
                                     </motion.div>

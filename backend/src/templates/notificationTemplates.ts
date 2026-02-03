@@ -185,6 +185,8 @@ ${ISLAMIC_CLOSING_AR}`.trim(),
             <p><strong>Next Steps:</strong><br>
             You will receive your specific interview schedule (Date, Time, and Mode) via email and WhatsApp shortly. Please ensure your portal access is active.</p>
 
+            ${data.Username ? `<p style="font-size: 14px; color: ${BRAND_SLATE}; margin-bottom: 24px;"><strong>Portal Username:</strong> <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">${data.Username}</code></p>` : ''}
+
             <div style="text-align: center; margin: 32px 0;">
               <a href="${LOGIN_URL}" style="background-color: ${BRAND_TEAL}; color: #ffffff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block;">View Status on Portal</a>
             </div>
@@ -275,6 +277,8 @@ ${ISLAMIC_CLOSING_AR}`.trim(),
             <p><strong>Important Instructions:</strong><br>
             Please log in to your profile for full guidelines and to confirm your attendance. If it is an online interview, the link will be provided in your portal.</p>
 
+            ${data.Username ? `<p style="font-size: 14px; color: ${BRAND_SLATE}; margin-bottom: 24px;"><strong>Portal Username:</strong> <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">${data.Username}</code></p>` : ''}
+
             <div style="text-align: center; margin: 32px 0;">
               <a href="${LOGIN_URL}" style="background-color: ${BRAND_TEAL}; color: #ffffff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block;">Prepare & Confirm on Portal</a>
             </div>
@@ -334,6 +338,8 @@ ${ISLAMIC_CLOSING_AR}`.trim()
             
             <p>Please log in to the portal to view your detailed evaluation and final marks.</p>
 
+            ${data.Username ? `<p style="font-size: 14px; color: ${BRAND_SLATE}; margin-bottom: 24px;"><strong>Portal Username:</strong> <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">${data.Username}</code></p>` : ''}
+
             <div style="text-align: center; margin: 32px 0;">
               <a href="${LOGIN_URL}" style="background-color: ${BRAND_TEAL}; color: #ffffff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block;">View Result on Portal</a>
             </div>
@@ -380,6 +386,8 @@ ${ISLAMIC_CLOSING_AR}`.trim()
             <p><strong>Next Action Required:</strong><br>
             Please log in to your portal immediately to confirm your seat and download your allotment letter. Failure to confirm by the deadline may result in the forfeiture of your seat.</p>
 
+            ${data.Username ? `<p style="font-size: 14px; color: ${BRAND_SLATE}; margin-bottom: 24px;"><strong>Portal Username:</strong> <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">${data.Username}</code></p>` : ''}
+
             <div style="text-align: center; margin: 32px 0;">
               <a href="${LOGIN_URL}" style="background-color: ${BRAND_TEAL}; color: #ffffff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block;">Confirm Seat & Join</a>
             </div>
@@ -424,6 +432,8 @@ ${ISLAMIC_CLOSING_AR}`.trim()
               <p style="margin: 0;"><strong>Joining Instructions & Orientation:</strong><br>
               Please check your portal for the orientation schedule, joining instructions, and the academic calendar.</p>
             </div>
+
+            ${data.Username ? `<p style="font-size: 14px; color: ${BRAND_SLATE}; margin-bottom: 24px;"><strong>Portal Username:</strong> <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">${data.Username}</code></p>` : ''}
 
             <div style="text-align: center; margin: 32px 0;">
               <a href="${LOGIN_URL}" style="background-color: ${BRAND_TEAL}; color: #ffffff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block;">Go to Student Dashboard</a>

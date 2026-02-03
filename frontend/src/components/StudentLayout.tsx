@@ -164,7 +164,7 @@ const StudentLayout: React.FC<StudentLayoutProps> = ({ children }) => {
                             <div className="absolute inset-0 bg-white/20 backdrop-blur-[1px]" />
                         </div>
                         <div className="overflow-hidden">
-                            <p className="text-[11px] font-black truncate text-brand-deep dark:text-white uppercase tracking-tighter leading-tight">{user?.name}</p>
+                            <p className="text-[11px] font-black truncate text-tharqiya-deep dark:text-white uppercase tracking-tighter leading-tight">{user?.name}</p>
                             <p className="text-[9px] font-bold text-slate-500 truncate capitalize tracking-widest mt-0.5">{user?.role?.toLowerCase()}</p>
                         </div>
                     </div>
@@ -185,7 +185,7 @@ const StudentLayout: React.FC<StudentLayoutProps> = ({ children }) => {
                             {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
                         </motion.button>
                         <div className="flex flex-col">
-                            <h1 className="text-base sm:text-xl font-black font-outfit text-brand-deep dark:text-white tracking-widest uppercase leading-none">
+                            <h1 className="text-base sm:text-xl font-black font-outfit text-tharqiya-deep dark:text-white tracking-widest uppercase leading-none">
                                 Applicant <span className="text-edu-teal">Portal</span>
                             </h1>
                             <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1 hidden sm:block">Darussalam Edu Village</span>
@@ -206,7 +206,7 @@ const StudentLayout: React.FC<StudentLayoutProps> = ({ children }) => {
                         
                         <NavLink to="/student/profile" className="flex items-center gap-3 hover:opacity-80 transition-all group">
                             <div className="text-right hidden sm:block">
-                                <p className="text-[11px] font-black text-brand-deep dark:text-white leading-none truncate max-w-[100px] uppercase tracking-wider">{user?.name}</p>
+                                <p className="text-[11px] font-black text-tharqiya-deep dark:text-white leading-none truncate max-w-[100px] uppercase tracking-wider">{user?.name}</p>
                                 <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mt-1 opacity-60">Candidate Dashboard</p>
                             </div>
                             <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-edu-teal via-edu-coral to-edu-yellow p-[1.5px] shadow-lg group-hover:rotate-3 transition-all duration-500">

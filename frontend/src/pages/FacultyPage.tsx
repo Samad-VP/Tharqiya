@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { GraduationCap, BookOpen, Microscope, Languages, Music, Heart, Mail, ExternalLink, Award, Users, Loader2 } from 'lucide-react';
+import { GraduationCap, BookOpen, Microscope, Languages, Music, Heart, Mail, ExternalLink, Award, Users, Loader2, Quote } from 'lucide-react';
+import { fadeInUp, staggerContainer } from '../utils/animations';
 import SEO from '../components/SEO';
 import api from '../api/axiosInstance';
 
@@ -47,20 +48,20 @@ const FacultyPage: React.FC = () => {
                 }}
             />
             {/* Hero Section */}
-            <section className="relative pt-24 pb-12 sm:pt-48 sm:pb-32 bg-brand-cream/50 dark:bg-slate-950 overflow-hidden">
+            <section className="relative pt-24 pb-12 sm:pt-48 sm:pb-32 bg-tharqiya-cream dark:bg-slate-950 overflow-hidden">
                 <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
                     <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8 }}
+                        variants={fadeInUp}
+                        initial="initial"
+                        animate="animate"
                     >
                         <span className="inline-block py-1.5 px-4 rounded-full bg-edu-teal/10 text-edu-teal text-[10px] sm:text-xs font-black tracking-widest uppercase mb-6 border border-edu-teal/20">
                             Academic Excellence
                         </span>
-                        <h1 className="text-4xl sm:text-6xl md:text-8xl font-black text-brand-deep dark:text-white font-outfit mb-6 tracking-tighter uppercase leading-none">
-                            Our <span className="text-edu-teal">Faculty</span>
+                        <h1 className="text-4xl sm:text-6xl md:text-8xl font-black text-tharqiya-deep dark:text-white font-outfit mb-6 tracking-tighter uppercase leading-none">
+                            Our <span className="text-gold-orange">Faculty</span>
                         </h1>
-                        <p className="text-sm sm:text-lg md:text-xl text-brand-deep/80 dark:text-white/80 max-w-3xl mx-auto leading-relaxed font-bold uppercase tracking-tight">
+                        <p className="text-sm sm:text-lg md:text-xl text-academic-muted max-w-3xl mx-auto leading-relaxed font-bold uppercase tracking-tight">
                             A distinguished panel of world-class scholars and academic professors dedicated to nurturing future leaders.
                         </p>
                     </motion.div>
@@ -79,14 +80,14 @@ const FacultyPage: React.FC = () => {
                     ) : faculties.length > 0 ? (
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16">
                             {faculties.map((member, idx) => (
-                                <motion.div
-                                    key={member.id}
-                                    initial={{ opacity: 0, y: 30 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ delay: idx * 0.1, duration: 0.6 }}
-                                    className="group relative"
-                                >
+                                    <motion.div
+                                        key={member.id}
+                                        variants={fadeInUp}
+                                        initial="initial"
+                                        whileInView="animate"
+                                        viewport={{ once: true }}
+                                        className="group relative"
+                                    >
                                     <div className="absolute -inset-4 bg-gradient-to-br from-edu-teal/10 to-transparent rounded-[3rem] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                                     
                                     <div className="relative p-6 sm:p-10 rounded-[3rem] bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-white dark:border-white/5 shadow-2xl flex flex-col md:flex-row gap-8 items-center md:items-start text-center md:text-left transition-all duration-500">
@@ -110,7 +111,7 @@ const FacultyPage: React.FC = () => {
                                             </div>
                                             
                                             <div className="space-y-1">
-                                                <h3 className="text-2xl sm:text-3xl font-black text-brand-deep dark:text-white font-outfit uppercase tracking-tighter leading-tight">
+                                                <h3 className="text-2xl sm:text-3xl font-black text-tharqiya-deep dark:text-slate-100 font-outfit uppercase tracking-tighter leading-tight">
                                                     {member.name}
                                                 </h3>
                                                 <p className="text-xs sm:text-sm font-black text-edu-teal uppercase tracking-widest">
@@ -134,28 +135,62 @@ const FacultyPage: React.FC = () => {
                             <div className="w-20 h-20 bg-slate-50 dark:bg-slate-900 rounded-full flex items-center justify-center mx-auto mb-6">
                                 <Users className="w-10 h-10 text-slate-200" />
                             </div>
-                            <h3 className="text-xl font-black text-brand-deep dark:text-white font-outfit uppercase tracking-[0.2em] mb-4">Registry In Progress</h3>
+                            <h3 className="text-xl font-black text-tharqiya-deep dark:text-slate-100 font-outfit uppercase tracking-[0.2em] mb-4">Registry In Progress</h3>
                             <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Our esteemed faculty list is being updated.</p>
                         </div>
                     )}
                 </div>
             </section>
 
-            {/* Motivational Quote */}
-            <section className="py-24 bg-brand-deep text-white relative overflow-hidden">
-                <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
+            {/* Motivational Quote - Premium Academic Section */}
+            <section className="py-24 sm:py-32 relative overflow-hidden bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500">
+                <div className="max-w-7xl mx-auto px-6 relative z-10">
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.8 }}
+                        variants={fadeInUp}
+                        initial="initial"
+                        whileInView="animate"
+                        viewport={{ once: true }}
+                        className="relative"
                     >
-                        <BookOpen className="w-12 h-12 text-edu-teal/40 mx-auto mb-8 animate-bounce" />
-                        <h2 className="text-2xl sm:text-4xl md:text-5xl font-black font-outfit tracking-tighter max-w-4xl mx-auto leading-tight italic opacity-90">
-                            "The scholar's ink is more sacred than the blood of martyrs. Our faculty represents the living bridge between timeless wisdom and contemporary challenge."
-                        </h2>
+                        {/* Glassmorphic Quote Card */}
+                        <div className="relative p-10 sm:p-20 rounded-[3rem] sm:rounded-[4rem] bg-white/40 dark:bg-slate-900/40 backdrop-blur-3xl border border-white dark:border-white/5 shadow-2xl overflow-hidden group">
+                            {/* Decorative Islamic Pattern Background */}
+                            <div className="absolute inset-0 islamic-pattern opacity-[0.03] dark:opacity-[0.07] pointer-events-none" />
+                            
+                            {/* Animated Background Glow */}
+                            <div className="absolute -top-24 -left-24 w-64 h-64 bg-edu-teal/10 rounded-full blur-[100px] animate-pulse" />
+                            <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-edu-coral/10 rounded-full blur-[100px] animate-pulse [animation-delay:1s]" />
+
+                            <div className="relative z-10 text-center space-y-10">
+                                <div className="relative inline-block">
+                                    <div className="absolute inset-0 bg-edu-teal/20 blur-xl rounded-full scale-150 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                                    <Quote className="w-12 h-12 sm:w-16 sm:h-16 text-edu-teal/40 mx-auto relative z-10" />
+                                </div>
+
+                                <blockquote className="relative">
+                                    <h2 className="text-2xl sm:text-4xl md:text-5xl font-playfair italic leading-[1.3] text-tharqiya-deep dark:text-white transition-colors duration-500 max-w-5xl mx-auto">
+                                        "The <span className="text-gold-orange font-black not-italic font-outfit">Scholar's Ink</span> is more sacred than the blood of martyrs. Our faculty represents the living bridge between <span className="text-gold-orange font-black not-italic font-outfit">Timeless Wisdom</span> and contemporary challenge."
+                                    </h2>
+                                </blockquote>
+
+                                <div className="flex flex-col items-center gap-4">
+                                    <div className="w-20 h-1 bg-gradient-to-r from-transparent via-edu-teal/30 to-transparent rounded-full" />
+                                    <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.4em] text-academic-muted">
+                                        The Tharqiya Academic Ethos
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Floating Accents */}
+                        <div className="absolute -top-10 -right-10 w-24 h-24 bg-white/50 dark:bg-white/5 backdrop-blur-xl border border-white dark:border-white/10 rounded-3xl -rotate-12 animate-float -z-10 hidden lg:block" />
+                        <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white/50 dark:bg-white/5 backdrop-blur-xl border border-white dark:border-white/10 rounded-[2rem] rotate-12 animate-float [animation-delay:2s] -z-10 hidden lg:block" />
                     </motion.div>
                 </div>
-                <div className="absolute inset-0 bg-edu-teal/5 mix-blend-overlay" />
+                
+                {/* Background Decorations */}
+                <div className="absolute top-1/2 left-0 w-64 h-64 bg-edu-teal/5 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2" />
+                <div className="absolute top-1/2 right-0 w-64 h-64 bg-edu-coral/5 rounded-full blur-[120px] translate-x-1/2 -translate-y-1/2" />
             </section>
         </div>
     );

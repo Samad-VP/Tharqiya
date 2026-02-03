@@ -24,24 +24,34 @@ const Navbar: React.FC = () => {
     useEffect(() => {
         if (isOpen) {
             document.body.style.overflow = 'hidden';
+            // Push state for back button interception
+            if (!window.history.state?.menuOpen) {
+                window.history.pushState({ menuOpen: true }, '');
+            }
         } else {
             document.body.style.overflow = 'unset';
+            // Clean up history state if closed manually
+            if (window.history.state?.menuOpen) {
+                window.history.back();
+            }
         }
     }, [isOpen]);
 
-    // Close menu on navigation or back button
+    // Handle back button (popstate)
     useEffect(() => {
-        const handlePopState = () => {
-            if (isOpen) {
-                setIsOpen(false);
-            }
+        const handlePopState = (e: PopStateEvent) => {
+            if (isOpen) setIsOpen(false);
         };
-
         window.addEventListener('popstate', handlePopState);
-        setIsOpen(false); // Close menu when route changes
-
         return () => window.removeEventListener('popstate', handlePopState);
+    }, [isOpen]);
+
+    // Close on path change (link clicks)
+    useEffect(() => {
+        setIsOpen(false);
     }, [location.pathname]);
+
+    const toggleMenu = () => setIsOpen(!isOpen);
 
     const navLinks = [
         { name: 'Home', path: '/' },
@@ -91,7 +101,7 @@ const Navbar: React.FC = () => {
                         </div>
                         <div className="leading-tight flex flex-col justify-center">
                             <span className="block text-xl font-black tracking-tighter font-outfit text-edu-coral">Darussalam</span>
-                            <span className={`block text-[10px] font-bold tracking-[0.2em] transition-colors ${!scrolled ? (theme === 'light' ? 'text-brand-deep' : 'text-white/70') : 'text-brand-deep dark:text-white/70'}`}>Edu Village</span>
+                            <span className={`block text-[10px] font-bold tracking-[0.2em] transition-colors ${!scrolled ? (theme === 'light' ? 'text-tharqiya-deep' : 'text-white/70') : 'text-tharqiya-deep dark:text-white/70'}`}>Edu Village</span>
                         </div>
                     </Link>
 
@@ -106,7 +116,7 @@ const Navbar: React.FC = () => {
                                     aria-label={`Navigate to ${link.name}`}
                                     className={`px-3 lg:px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 relative group whitespace-nowrap flex items-center h-10 ${location.pathname === link.path
                                         ? (scrolled ? 'text-edu-teal dark:text-edu-teal' : 'text-edu-teal')
-                                        : (!scrolled ? (theme === 'light' ? 'text-brand-deep/70 hover:text-edu-coral' : 'text-white/80 hover:text-white') : 'text-brand-deep dark:text-slate-300 hover:text-edu-coral dark:hover:text-edu-teal')
+                                        : (!scrolled ? (theme === 'light' ? 'text-tharqiya-deep/70 hover:text-edu-coral' : 'text-white/80 hover:text-white') : 'text-tharqiya-deep dark:text-slate-300 hover:text-edu-coral dark:hover:text-edu-teal')
                                         }`}
                                 >
                                     {link.name}
@@ -159,7 +169,7 @@ const Navbar: React.FC = () => {
                         {user && <NotificationBell />}
                         <button
                             onClick={toggleTheme}
-                            className={`p-2 rounded-full transition-all ${isOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'} ${!scrolled
+                            className={`p-2 rounded-full transition-all ${!scrolled
                                 ? (theme === 'light' ? 'bg-slate-100 text-slate-600 border border-slate-200' : 'bg-white/10 text-white border border-white/10')
                                 : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400'
                                 }`}
@@ -167,8 +177,8 @@ const Navbar: React.FC = () => {
                             {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
                         </button>
                         <button
-                            onClick={() => setIsOpen(!isOpen)}
-                            className={`p-2.5 rounded-xl transition-all duration-300 active:scale-90 ${isOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'} ${!scrolled
+                            onClick={toggleMenu}
+                            className={`p-2.5 rounded-xl transition-all duration-300 active:scale-90 relative z-[10001] ${!scrolled
                                 ? (theme === 'light' ? 'bg-edu-coral/10 text-edu-coral border border-edu-coral/20' : 'bg-white/10 text-white border border-white/20')
                                 : 'bg-slate-100 dark:bg-slate-900 text-slate-900 dark:text-white'
                                 }`}
@@ -181,6 +191,7 @@ const Navbar: React.FC = () => {
                                         initial={{ rotate: -90, opacity: 0 }}
                                         animate={{ rotate: 0, opacity: 1 }}
                                         exit={{ rotate: 90, opacity: 0 }}
+                                        transition={{ duration: 0.2 }}
                                     >
                                         <X size={24} />
                                     </motion.div>
@@ -190,6 +201,7 @@ const Navbar: React.FC = () => {
                                         initial={{ rotate: 90, opacity: 0 }}
                                         animate={{ rotate: 0, opacity: 1 }}
                                         exit={{ rotate: -90, opacity: 0 }}
+                                        transition={{ duration: 0.2 }}
                                     >
                                         <Menu size={24} />
                                     </motion.div>
@@ -202,14 +214,15 @@ const Navbar: React.FC = () => {
 
             </nav>
 
-            {/* Mobile Menu Overlay moved outside nav to prevent containing block clipping */}
+            {/* Mobile Menu Overlay */}
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
-                        initial={{ opacity: 0, y: -20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        className="fixed inset-0 z-[100] md:hidden bg-brand-cream/100 dark:bg-slate-950/100 backdrop-blur-3xl flex flex-col pt-24 sm:pt-32 px-6 sm:px-10 pb-10 sm:pb-20 shadow-2xl overflow-y-auto"
+                        initial={{ x: '100%' }}
+                        animate={{ x: 0 }}
+                        exit={{ x: '100%' }}
+                        transition={{ type: "tween", duration: 0.3, ease: "circOut" }}
+                        className="fixed inset-0 z-[10000] md:hidden bg-brand-cream dark:bg-slate-950 backdrop-blur-3xl flex flex-col pt-24 sm:pt-32 px-6 sm:px-10 pb-10 sm:pb-20 shadow-2xl overflow-y-auto"
                     >
                         <div className="absolute top-1/4 -right-1/4 w-80 h-80 bg-edu-teal/20 blur-[120px] rounded-full pointer-events-none" />
 
@@ -229,7 +242,7 @@ const Navbar: React.FC = () => {
                                         >
                                             <span className={`text-xl sm:text-3xl font-black font-outfit tracking-tighter transition-colors ${location.pathname === link.path 
                                                 ? 'text-edu-teal dark:text-edu-teal' 
-                                                : 'text-brand-deep dark:text-white'
+                                                : 'text-tharqiya-deep dark:text-white'
                                                 }`}>
                                                 {link.name}
                                             </span>
@@ -251,7 +264,7 @@ const Navbar: React.FC = () => {
                             >
                                 <div className="flex flex-col gap-4">
                                     <Link to="/admission" className="w-full" onClick={() => setIsOpen(false)}>
-                                        <button className="w-full py-4 sm:py-5 bg-brand-deep dark:bg-tharqiya-gold text-white dark:text-slate-950 rounded-2xl sm:rounded-3xl font-black text-base sm:text-xl shadow-2xl active:scale-95 transition-transform flex items-center justify-center gap-3">
+                                        <button className="w-full py-4 sm:py-5 bg-tharqiya-deep dark:bg-tharqiya-gold text-white dark:text-slate-950 rounded-2xl sm:rounded-3xl font-black text-base sm:text-xl shadow-2xl active:scale-95 transition-transform flex items-center justify-center gap-3">
                                             Apply for Admission <ArrowRight size={18} />
                                         </button>
                                     </Link>
@@ -272,13 +285,6 @@ const Navbar: React.FC = () => {
                             </motion.div>
                         </div>
 
-                        {/* Close button inside overlay */}
-                        <button
-                            onClick={() => setIsOpen(false)}
-                            className="absolute top-4 right-4 sm:top-6 sm:right-6 w-10 h-10 sm:w-14 sm:h-14 bg-slate-100 dark:bg-white/10 rounded-full flex items-center justify-center text-slate-900 dark:text-white border border-slate-200 dark:border-white/20 active:scale-90 transition-transform"
-                        >
-                            <X size={24} />
-                        </button>
                     </motion.div>
                 )}
             </AnimatePresence>

@@ -143,7 +143,7 @@ const PrincipalDashboard: React.FC = () => {
                                 </div>
                                 <ArrowUpRight size={18} className="text-slate-300 group-hover:text-edu-teal transition-colors" />
                             </div>
-                            <h3 className="text-2xl sm:text-3xl font-black text-brand-deep dark:text-white font-outfit mb-1">{stat.value}</h3>
+                            <h3 className="text-2xl sm:text-3xl font-black text-tharqiya-deep dark:text-white font-outfit mb-1">{stat.value}</h3>
                             <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-widest">{stat.label}</p>
                             <p className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tighter mt-2">{stat.desc}</p>
                         </motion.div>
@@ -157,7 +157,7 @@ const PrincipalDashboard: React.FC = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
                         whileHover={{ y: -5 }}
-                        className="p-8 sm:p-10 rounded-[2.5rem] bg-gradient-to-br from-brand-deep to-[#1a1a1a] text-white shadow-2xl relative overflow-hidden group border border-white/5"
+                        className="p-8 sm:p-10 rounded-[2.5rem] bg-gradient-to-br from-tharqiya-deep to-[#1a1a1a] text-white shadow-2xl relative overflow-hidden group border border-white/5"
                     >
                         <div className="relative z-10">
                             <div className="w-12 h-12 rounded-2xl bg-edu-teal/20 flex items-center justify-center mb-6 border border-edu-teal/20 backdrop-blur-md">
@@ -168,7 +168,7 @@ const PrincipalDashboard: React.FC = () => {
                                 Deploy candidates to campuses based on their preference lists and interview scores. Propose and finalize enrollment lists.
                             </p>
                             <Link to="/principal/allotments">
-                                <button className="w-full sm:w-auto px-8 py-4 bg-white text-brand-deep rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-edu-teal hover:text-white transition-all flex items-center justify-center gap-3">
+                                <button className="w-full sm:w-auto px-8 py-4 bg-white text-tharqiya-deep rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-edu-teal hover:text-white transition-all flex items-center justify-center gap-3">
                                     Manage Allotments <ChevronRight size={18} />
                                 </button>
                             </Link>
@@ -188,7 +188,7 @@ const PrincipalDashboard: React.FC = () => {
                             <div className="w-12 h-12 rounded-2xl bg-edu-coral/10 flex items-center justify-center mb-6 border border-edu-coral/20">
                                 <TrendingUp size={24} className="text-edu-coral" />
                             </div>
-                            <h3 className="text-3xl font-black font-outfit text-brand-deep dark:text-white mb-4 uppercase tracking-tighter">Performance Insights</h3>
+                            <h3 className="text-3xl font-black font-outfit text-tharqiya-deep dark:text-white mb-4 uppercase tracking-tighter">Performance Insights</h3>
                             <p className="text-slate-500 dark:text-slate-400 font-medium mb-8 leading-relaxed max-w-md">
                                 View detailed analytics on evaluation consistency, score distributions, and academic performance across all batches.
                             </p>
@@ -211,7 +211,7 @@ const PrincipalDashboard: React.FC = () => {
                         className="lg:col-span-2 p-8 sm:p-10 rounded-[2.5rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xl"
                     >
                          <div className="flex items-center justify-between mb-8">
-                            <h4 className="h-premium-md text-brand-deep dark:text-white flex items-center gap-3">
+                            <h4 className="h-premium-md text-tharqiya-deep dark:text-white flex items-center gap-3">
                                 <ClipboardCheck className="text-edu-teal" size={24} />
                                 Recent Approvals
                             </h4>
@@ -234,7 +234,7 @@ const PrincipalDashboard: React.FC = () => {
                                                     {i + 1}
                                                 </div>
                                                 <div>
-                                                    <p className="text-sm font-bold text-brand-deep dark:text-white">
+                                                    <p className="text-sm font-bold text-tharqiya-deep dark:text-white">
                                                         {actionLabels[activity.action] || activity.action.replace(/_/g, ' ')}
                                                     </p>
                                                     <p className="text-[10px] font-medium text-slate-400">
@@ -262,7 +262,7 @@ const PrincipalDashboard: React.FC = () => {
                         transition={{ delay: 0.5 }}
                         className="p-8 sm:p-10 rounded-[2.5rem] bg-edu-yellow/10 border border-edu-yellow/20 dark:bg-slate-900 dark:border-slate-800 shadow-xl relative overflow-hidden"
                     >
-                        <h4 className="text-xl font-black text-brand-deep dark:text-white font-outfit uppercase tracking-tighter mb-8">System Health</h4>
+                        <h4 className="text-xl font-black text-tharqiya-deep dark:text-white font-outfit uppercase tracking-tighter mb-8">System Health</h4>
                         <div className="space-y-6">
                             {[
                                 { label: 'Notification Service', status: 'Optimal', color: 'text-emerald-500' },

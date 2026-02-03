@@ -299,29 +299,22 @@ export const triggerPendingCredentials = asyncHandler(async (req: AuthRequest, r
 
     const loginUrl = `${process.env.FRONTEND_URL || 'https://darussalameduvillage.com'}/login`;
 
+    const { generateTemporaryPassword } = await import('../services/studentService.js');
+    const { triggerNotification } = await import('../services/notificationService.js');
+
     for (const student of pendingStudents) {
         if (!student.user) continue;
 
         try {
-            // Re-generate the temporary password since we don't store it in plain text
-            // Note: This relies on the password generation being deterministic or handled via password reset
-            // However, the user wants us to "trigger pending applicants crendencial notification with current tamplate"
-            // Usually this means sending the one they already have, but if we don't know it, 
-            // the safest institutional way is to send them a link to set/reset it or use the default pattern if it's still temp.
-            
-            // Looking at studentService.ts: generateTemporaryPassword(student.whatsapp || '')
-            const { generateTemporaryPassword } = await import('../services/studentService.js');
             const tempPassword = generateTemporaryPassword(student.whatsapp || student.user.phone || '');
             
-            // Also need to trigger notification
-            const { triggerNotification } = await import('../services/notificationService.js');
-            
-            await triggerNotification(student.user.id, 'APPLICATION_CREDENTIALS_CREATED', {
+            // Trigger in background to avoid browser timeout during bulk processing
+            triggerNotification(student.user.id, 'APPLICATION_CREDENTIALS_CREATED', {
                 StudentName: student.name,
                 Username: student.user.username || student.user.email,
                 TempPassword: tempPassword,
                 LoginUrl: loginUrl
-            });
+            }, true);
 
             results.success++;
         } catch (error: any) {

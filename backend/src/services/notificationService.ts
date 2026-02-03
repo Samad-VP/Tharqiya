@@ -92,6 +92,28 @@ export const sendWhatsApp = async (phone: string, event: string, data: Notificat
 export const triggerNotification = async (
     userId: string, 
     event: string, 
+    data: NotificationData,
+    background: boolean = false
+) => {
+    if (background) {
+        // Run in the background without blocking the caller
+        setImmediate(async () => {
+            try {
+                await processNotification(userId, event, data);
+            } catch (err: any) {
+                console.error(`[BACKGROUND NOTIFICATION ERROR] ${err.message}`);
+            }
+        });
+        return;
+    }
+
+    return await processNotification(userId, event, data);
+};
+
+// Internal logic moved to processNotification to allow both sync and async calls
+const processNotification = async (
+    userId: string, 
+    event: string, 
     data: NotificationData
 ) => {
     console.log(`[TRIGGER] Event: ${event} for Target: ${userId}`);

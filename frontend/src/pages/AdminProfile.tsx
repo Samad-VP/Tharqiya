@@ -132,7 +132,7 @@ const AdminProfile: React.FC = () => {
                         <Link to={backLink} className="inline-flex items-center gap-2 text-slate-500 hover:text-edu-teal transition-colors font-black uppercase text-[10px] tracking-widest">
                             <ArrowLeft size={16} /> Dashboard
                         </Link>
-                        <h1 className="text-4xl sm:text-5xl font-black text-brand-deep dark:text-white font-outfit tracking-tighter uppercase leading-none">
+                        <h1 className="text-4xl sm:text-5xl font-black text-tharqiya-deep dark:text-white font-outfit tracking-tighter uppercase leading-none">
                             Admin <span className="text-edu-teal">Identity</span>
                         </h1>
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Administrative Profile & Security</p>
@@ -161,7 +161,7 @@ const AdminProfile: React.FC = () => {
                                             <span className="text-[8px] font-black uppercase tracking-widest mt-2">{user?.role}</span>
                                         </div>
                                     )}
-                                    <label className="absolute inset-0 bg-brand-deep/70 backdrop-blur-[4px] flex flex-col items-center justify-center opacity-0 group-hover/photo:opacity-100 transition-all duration-500 cursor-pointer">
+                                    <label className="absolute inset-0 bg-tharqiya-deep/70 backdrop-blur-[4px] flex flex-col items-center justify-center opacity-0 group-hover/photo:opacity-100 transition-all duration-500 cursor-pointer">
                                         <Camera size={28} className="text-white mb-2 scale-75 group-hover/photo:scale-100 transition-transform" />
                                         <span className="text-[10px] font-black text-white uppercase tracking-widest">Update Photo</span>
                                         <input type="file" className="hidden" accept="image/*" onChange={handleFileUpload} />
@@ -175,14 +175,14 @@ const AdminProfile: React.FC = () => {
                             </div>
                             <div className="flex-grow space-y-4">
                                 <div className="flex items-center justify-center sm:justify-start gap-3">
-                                    <h3 className="text-2xl sm:text-3xl font-black text-brand-deep dark:text-white font-outfit uppercase tracking-tighter">{user?.name}</h3>
+                                    <h3 className="text-2xl sm:text-3xl font-black text-tharqiya-deep dark:text-white font-outfit uppercase tracking-tighter">{user?.name}</h3>
                                     <div className="px-3 py-1 bg-edu-teal/10 text-edu-teal text-[8px] font-black uppercase tracking-[0.2em] rounded-full border border-edu-teal/20">
                                         Verified {user?.role}
                                     </div>
                                 </div>
                                 <p className="text-sm text-slate-500 dark:text-slate-400 font-medium leading-relaxed max-w-sm">Manage your administrative identity and profile imagery for official institutional activities.</p>
                                 <div className="flex flex-wrap justify-center sm:justify-start gap-4 pt-2">
-                                    <button type="button" onClick={() => (document.querySelector('input[type="file"]') as HTMLInputElement)?.click()} className="px-6 py-3 bg-brand-deep dark:bg-white text-white dark:text-brand-deep rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-edu-teal hover:text-white transition-all shadow-lg">Change Photo</button>
+                                    <button type="button" onClick={() => (document.querySelector('input[type="file"]') as HTMLInputElement)?.click()} className="px-6 py-3 bg-tharqiya-deep dark:bg-white text-white dark:text-tharqiya-deep rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-edu-teal hover:text-white transition-all shadow-lg">Change Photo</button>
                                     {formData.profileImageUrl && (
                                         <button type="button" onClick={removeFile} className="px-6 py-3 bg-rose-50 dark:bg-rose-950/20 text-rose-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-rose-100 transition-all">Remove</button>
                                     )}
@@ -202,7 +202,7 @@ const AdminProfile: React.FC = () => {
                                 <Fingerprint size={24} />
                             </div>
                             <div>
-                                <h2 className="text-xl sm:text-2xl font-black text-brand-deep dark:text-white font-outfit uppercase tracking-tighter">Core Information</h2>
+                                <h2 className="text-xl sm:text-2xl font-black text-tharqiya-deep dark:text-white font-outfit uppercase tracking-tighter">Core Information</h2>
                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Institutional Identification</p>
                             </div>
                         </div>
@@ -270,7 +270,7 @@ const AdminProfile: React.FC = () => {
                                 whileTap={{ scale: 0.98 }}
                                 type="submit" 
                                 disabled={saving}
-                                className="flex items-center gap-3 px-12 py-5 bg-edu-teal text-white rounded-2xl font-black uppercase tracking-[0.2em] shadow-xl shadow-edu-teal/25 hover:bg-brand-deep transition-all disabled:opacity-50 disabled:cursor-not-allowed text-xs"
+                                className="flex items-center gap-3 px-12 py-5 bg-edu-teal text-white rounded-2xl font-black uppercase tracking-[0.2em] shadow-xl shadow-edu-teal/25 hover:bg-tharqiya-deep transition-all disabled:opacity-50 disabled:cursor-not-allowed text-xs"
                             >
                                 {saving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
                                 {saving ? 'Applying Changes...' : 'Save Registry'}

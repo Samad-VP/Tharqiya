@@ -92,7 +92,7 @@ const StudentAllotment: React.FC = () => {
             <div className="w-16 h-16 bg-rose-500/10 text-rose-500 rounded-3xl flex items-center justify-center mb-6">
                 <AlertCircle size={32} />
             </div>
-            <h2 className="text-xl font-black font-outfit text-brand-deep dark:text-slate-100 bg-none bg-clip-border mb-2 tracking-tight uppercase">Access Denied</h2>
+            <h2 className="text-xl font-black font-outfit text-tharqiya-deep dark:text-slate-100 bg-none bg-clip-border mb-2 tracking-tight uppercase">Access Denied</h2>
             <p className="text-slate-500 dark:text-slate-400 font-medium mb-8 max-w-sm text-sm">{error}</p>
             <button onClick={fetchStatus} className="bg-edu-teal text-white px-8 py-3 rounded-xl font-bold uppercase tracking-widest text-xs">Re-authenticate</button>
         </div>
@@ -103,7 +103,7 @@ const StudentAllotment: React.FC = () => {
             <div className="w-24 h-24 bg-slate-50 dark:bg-slate-900 rounded-[2.5rem] flex items-center justify-center mx-auto mb-10 shadow-inner">
                 <MapPin className="w-12 h-12 text-slate-300 dark:text-slate-600" />
             </div>
-            <h2 className="text-3xl sm:text-5xl font-black text-brand-deep dark:text-slate-100 bg-none bg-clip-border mb-6 tracking-tight font-outfit uppercase">Allotment Pending</h2>
+            <h2 className="text-3xl sm:text-5xl font-black text-tharqiya-deep dark:text-slate-100 bg-none bg-clip-border mb-6 tracking-tight font-outfit uppercase">Allotment Pending</h2>
             <p className="text-slate-500 dark:text-slate-400 max-w-lg mx-auto mb-12 font-medium text-sm sm:text-base leading-relaxed">
                 Your application is currently under review by the Selection Board. Once finalized, your allotted campus and programme details will appear here.
             </p>
@@ -124,7 +124,7 @@ const StudentAllotment: React.FC = () => {
             >
                 {/* Header Title */}
                 <div className="text-center md:text-left mb-4">
-                    <h1 className="text-4xl sm:text-5xl font-black text-brand-deep dark:text-slate-100 bg-none bg-clip-border font-outfit tracking-tighter uppercase">Selection Board <span className="text-edu-teal">Decision</span></h1>
+                    <h1 className="text-4xl sm:text-5xl font-black text-tharqiya-deep dark:text-slate-100 bg-none bg-clip-border font-outfit tracking-tighter uppercase">Selection Board <span className="text-edu-teal">Decision</span></h1>
                     <p className="text-[10px] sm:text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em] mt-3">Authenticated Allotment Record for 2026 Batch</p>
                 </div>
 
@@ -134,10 +134,10 @@ const StudentAllotment: React.FC = () => {
                         <div className="w-10 h-10 rounded-2xl bg-edu-teal/10 flex items-center justify-center text-edu-teal shadow-sm">
                             <MapPin size={22} />
                         </div>
-                        <h3 className="text-2xl font-black text-brand-deep dark:text-slate-200 font-outfit uppercase tracking-tighter">Campus & Programme <span className="text-edu-teal">Allotment</span></h3>
+                        <h3 className="text-2xl font-black text-tharqiya-deep dark:text-slate-200 font-outfit uppercase tracking-tighter">Campus & Programme <span className="text-edu-teal">Allotment</span></h3>
                     </div>
 
-                    <div className="p-8 sm:p-12 lg:p-20 rounded-[3rem] bg-brand-deep bg-gradient-to-br from-edu-teal via-brand-deep to-slate-950 text-white shadow-2xl relative overflow-hidden group ring-[12px] ring-edu-teal/10">
+                    <div className="p-8 sm:p-12 lg:p-20 rounded-[3rem] bg-tharqiya-deep bg-gradient-to-br from-edu-teal via-tharqiya-deep to-slate-950 text-white shadow-2xl relative overflow-hidden group ring-[12px] ring-edu-teal/10">
                         {/* Subtle Overlay for Visibility */}
                         <div className="absolute inset-0 bg-slate-950/10 backdrop-blur-[1px] pointer-events-none" />
                         
@@ -185,7 +185,7 @@ const StudentAllotment: React.FC = () => {
                         <div className="w-10 h-10 rounded-2xl bg-edu-yellow/10 flex items-center justify-center text-edu-yellow shadow-sm">
                             <CheckSquare size={22} />
                         </div>
-                        <h3 className="text-2xl font-black text-brand-deep dark:text-slate-100 bg-none bg-clip-border font-outfit uppercase tracking-tighter">Onboarding & <span className="text-edu-yellow">Actions</span></h3>
+                        <h3 className="text-2xl font-black text-tharqiya-deep dark:text-slate-100 bg-none bg-clip-border font-outfit uppercase tracking-tighter">Onboarding & <span className="text-edu-yellow">Actions</span></h3>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -219,7 +219,7 @@ const StudentAllotment: React.FC = () => {
                                         </div>
                                         <div>
                                             <p className="text-xs font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">Enrolled Member</p>
-                                            <p className="text-lg font-black text-brand-deep dark:text-white font-outfit">Admission Successfully Confirmed</p>
+                                            <p className="text-lg font-black text-tharqiya-deep dark:text-white font-outfit">Admission Successfully Confirmed</p>
                                         </div>
                                     </div>
                                     <div className="hidden sm:block h-10 w-[1px] bg-emerald-500/20" />
@@ -235,7 +235,7 @@ const StudentAllotment: React.FC = () => {
                                     whileHover={{ y: -5, boxShadow: '0 20px 40px -10px rgba(245, 158, 11, 0.3)' }}
                                     whileTap={{ scale: 0.98 }}
                                     onClick={() => handleDownload('result')}
-                                    className="w-full h-20 bg-edu-yellow text-brand-deep rounded-[2rem] font-black text-sm shadow-lg shadow-edu-yellow/20 flex items-center justify-center gap-4 uppercase tracking-[0.2em] transition-all font-outfit"
+                                    className="w-full h-20 bg-edu-yellow text-tharqiya-deep rounded-[2rem] font-black text-sm shadow-lg shadow-edu-yellow/20 flex items-center justify-center gap-4 uppercase tracking-[0.2em] transition-all font-outfit"
                                 >
                                     <Download className="w-6 h-6" />
                                     Official Selection Letter
@@ -265,7 +265,7 @@ const StudentAllotment: React.FC = () => {
                         <div className="w-10 h-10 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500 shadow-sm">
                             <TrendingUp size={22} />
                         </div>
-                        <h3 className="text-2xl font-black text-brand-deep dark:text-slate-100 bg-none bg-clip-border font-outfit uppercase tracking-tighter">Admission <span className="text-blue-500">Journey</span></h3>
+                        <h3 className="text-2xl font-black text-tharqiya-deep dark:text-slate-100 bg-none bg-clip-border font-outfit uppercase tracking-tighter">Admission <span className="text-blue-500">Journey</span></h3>
                     </div>
 
                     <div className="p-10 sm:p-14 rounded-[3rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xl overflow-hidden relative">
@@ -281,11 +281,11 @@ const StudentAllotment: React.FC = () => {
                                 { label: 'Final Enrollment', desc: 'Admission Secured', icon: Trophy, active: appData.application.status === 'ACCEPTED' },
                             ].map((m, i) => (
                                 <div key={i} className="relative z-10 flex lg:flex-col items-center lg:text-center gap-6 lg:gap-5 flex-1 w-full lg:w-auto overflow-visible">
-                                    <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-3xl flex items-center justify-center transition-all duration-700 shadow-2xl ${m.active ? 'bg-gradient-to-br from-edu-teal to-brand-deep text-white scale-110' : 'bg-slate-50 dark:bg-slate-800 text-slate-300'}`}>
+                                    <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-3xl flex items-center justify-center transition-all duration-700 shadow-2xl ${m.active ? 'bg-gradient-to-br from-edu-teal to-tharqiya-deep text-white scale-110' : 'bg-slate-50 dark:bg-slate-800 text-slate-300'}`}>
                                         <m.icon size={28} />
                                     </div>
                                     <div className="flex-grow">
-                                        <p className={`text-xs sm:text-sm font-black uppercase tracking-widest leading-tight mb-1 ${m.active ? 'text-brand-deep dark:text-white' : 'text-slate-400'}`}>{m.label}</p>
+                                        <p className={`text-xs sm:text-sm font-black uppercase tracking-widest leading-tight mb-1 ${m.active ? 'text-tharqiya-deep dark:text-white' : 'text-slate-400'}`}>{m.label}</p>
                                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter opacity-60">{m.desc}</p>
                                     </div>
                                 </div>

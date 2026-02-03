@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { GraduationCap, Briefcase, Globe, Award, Quote, Search, Filter, ExternalLink, Star, Loader2, MapPin, School, Building2 } from 'lucide-react';
+import { GraduationCap, Briefcase, Globe, Award, Quote, Search, Filter, ExternalLink, Star, Loader2, MapPin, School, Building2, Users } from 'lucide-react';
+import { fadeInUp, staggerContainer, scaleIn } from '../utils/animations';
 import SEO from '../components/SEO';
 import api from '../api/axiosInstance';
 
@@ -23,17 +24,17 @@ const AlumniPage: React.FC = () => {
     }, []);
 
     const stats = [
-        { label: "Total Graduates", value: "250+", icon: GraduationCap },
-        { label: "Global Presence", value: "12+ Countries", icon: Globe },
+        { label: "Total Graduates", value: "50+", icon: GraduationCap },
+        { label: "Global Presence", value: "5+ Countries", icon: Globe },
         { label: "Higher Pursuits", value: "85%", icon: Award },
-        { label: "In Leadership Roles", value: "120+", icon: Briefcase }
+        { label: "In Leadership Roles", value: "30+", icon: Briefcase }
     ];
 
     return (
-        <div className="bg-brand-cream dark:bg-slate-950 transition-colors duration-500 min-h-screen">
+        <div className="bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500 min-h-screen">
             <SEO 
                 title="Global Alumni Network | Tharqiya Success Stories" 
-                description="Explore the global impact of Tharqiyathul Huffaz graduates. Our alumni are ethical leaders, renowned scholars, and successful professionals in over 12 countries." 
+                description="Explore the global impact of Tharqiyathul Huffaz graduates. Our alumni are ethical leaders, renowned scholars, and successful professionals in over 5 countries." 
                 jsonLd={{
                     "@context": "https://schema.org",
                     "@type": "BreadcrumbList",
@@ -54,20 +55,20 @@ const AlumniPage: React.FC = () => {
                 }}
             />
             {/* Hero Section */}
-            <section className="relative pt-24 pb-12 sm:pt-48 sm:pb-32 bg-brand-cream/50 dark:bg-slate-950 overflow-hidden">
+            <section className="relative pt-24 pb-12 sm:pt-48 sm:pb-32 bg-tharqiya-cream/50 dark:bg-slate-950 overflow-hidden">
                 <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
                     <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8 }}
+                        variants={fadeInUp}
+                        initial="initial"
+                        animate="animate"
                     >
                         <span className="inline-block py-1.5 px-4 rounded-full bg-edu-coral/10 text-edu-coral text-[10px] sm:text-xs font-black tracking-widest uppercase mb-6 border border-edu-coral/20">
                             Our Global Impact
                         </span>
-                        <h1 className="text-4xl sm:text-6xl md:text-8xl font-black text-brand-deep dark:text-white font-outfit mb-6 tracking-tighter uppercase leading-none">
-                            Tharqiya <span className="text-edu-coral">Alumni</span>
+                        <h1 className="text-4xl sm:text-6xl md:text-8xl font-black text-tharqiya-deep dark:text-white font-outfit mb-6 tracking-tighter uppercase leading-none">
+                            Tharqiya <span className="text-gold-orange">Alumni</span>
                         </h1>
-                        <p className="text-sm sm:text-lg md:text-xl text-brand-deep/80 dark:text-white/80 max-w-3xl mx-auto leading-relaxed font-bold uppercase tracking-tight">
+                        <p className="text-sm sm:text-lg md:text-xl text-academic-muted max-w-3xl mx-auto leading-relaxed font-bold uppercase tracking-tight">
                             A global network of scholars, leaders, and professionals bridging sacred tradition with modern innovation.
                         </p>
                     </motion.div>
@@ -81,19 +82,19 @@ const AlumniPage: React.FC = () => {
                         {stats.map((stat, idx) => (
                             <motion.div
                                 key={idx}
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                whileInView={{ opacity: 1, scale: 1 }}
+                                variants={fadeInUp}
+                                initial="initial"
+                                whileInView="animate"
                                 viewport={{ once: true }}
-                                transition={{ delay: idx * 0.1 }}
                                 className="bg-white/80 dark:bg-slate-900 border border-white/50 dark:border-white/10 p-6 sm:p-10 rounded-[2rem] sm:rounded-[3rem] shadow-2xl backdrop-blur-xl text-center hover:scale-105 transition-transform"
                             >
-                                <div className="w-10 h-10 sm:w-14 sm:h-14 bg-edu-teal/10 text-edu-teal rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                                <div className="icon-placard mx-auto mb-4 sm:mb-6">
                                     <stat.icon className="w-6 h-6 sm:w-8 sm:h-8" />
                                 </div>
-                                <h3 className="text-xl sm:text-3xl font-black text-brand-deep dark:text-white font-outfit mb-1 leading-none">
+                                <h3 className="text-xl sm:text-3xl font-black text-tharqiya-deep dark:text-slate-100 font-outfit mb-1 leading-none">
                                     {stat.value}
                                 </h3>
-                                <p className="text-[10px] sm:text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+                                <p className="text-[10px] sm:text-xs font-black text-professional-muted dark:text-slate-400 uppercase tracking-widest">
                                     {stat.label}
                                 </p>
                             </motion.div>
@@ -106,7 +107,7 @@ const AlumniPage: React.FC = () => {
             <section className="py-20 md:py-32">
                 <div className="max-w-7xl mx-auto px-6 lg:px-8">
                     <div className="text-center mb-16 md:mb-20">
-                        <h2 className="text-3xl md:text-6xl font-black text-brand-deep dark:text-white font-outfit tracking-tighter uppercase mb-6 leading-none">
+                        <h2 className="text-3xl md:text-6xl font-black text-tharqiya-deep dark:text-slate-100 font-outfit tracking-tighter uppercase mb-6 leading-none">
                             Scholarly <span className="text-edu-teal">&</span> Professional <span className="text-edu-coral">Success</span>
                         </h2>
                     </div>
@@ -121,10 +122,10 @@ const AlumniPage: React.FC = () => {
                             {alumnis.map((alumni, idx) => (
                                 <motion.div
                                     key={alumni.id}
-                                    initial={{ opacity: 0, y: 30 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
+                                    variants={fadeInUp}
+                                    initial="initial"
+                                    whileInView="animate"
                                     viewport={{ once: true }}
-                                    transition={{ duration: 0.6, delay: idx * 0.1 }}
                                     className="relative group p-8 rounded-[3rem] bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-white dark:border-white/5 shadow-2xl overflow-hidden flex flex-col h-full hover:scale-[1.02] transition-all"
                                 >
                                     <div className="flex items-center gap-6 mb-8">
@@ -138,7 +139,7 @@ const AlumniPage: React.FC = () => {
                                             )}
                                         </div>
                                         <div>
-                                            <h3 className="text-xl font-black text-brand-deep dark:text-white font-outfit uppercase tracking-tighter leading-tight">
+                                            <h3 className="text-xl font-black text-tharqiya-deep dark:text-slate-100 font-outfit uppercase tracking-tighter leading-tight">
                                                 {alumni.name}
                                             </h3>
                                             <div className="flex items-center gap-2 text-slate-500 mt-1">
@@ -149,7 +150,7 @@ const AlumniPage: React.FC = () => {
                                     </div>
 
                                     <div className="flex-grow space-y-4">
-                                        <div className="inline-block px-3 py-1 bg-brand-deep text-white rounded-lg text-[10px] font-black uppercase tracking-widest leading-none mb-2">
+                                        <div className="inline-block px-3 py-1 bg-tharqiya-deep text-white rounded-lg text-[10px] font-black uppercase tracking-widest leading-none mb-2">
                                             {alumni.status === 'WORKING' ? 'Professional' : 'Scholarly'}
                                         </div>
 
@@ -188,30 +189,70 @@ const AlumniPage: React.FC = () => {
                         </div>
                     ) : (
                         <div className="text-center py-20">
-                            <h3 className="text-xl font-black text-brand-deep dark:text-white font-outfit uppercase tracking-[0.2em]">Tracing Impact...</h3>
+                            <h3 className="text-xl font-black text-tharqiya-deep dark:text-slate-100 font-outfit uppercase tracking-[0.2em]">Tracing Impact...</h3>
                             <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mt-4">Registry will be available soon.</p>
                         </div>
                     )}
                 </div>
             </section>
 
-            {/* CTA Section */}
-            <section className="py-24 bg-brand-deep relative overflow-hidden">
-                <div className="max-w-7xl mx-auto px-6 relative z-10 text-center text-white">
-                    <h2 className="text-3xl md:text-5xl font-black font-outfit tracking-tighter mb-8 uppercase leading-tight">
-                        Are you a <span className="text-edu-teal">Tharqiya</span> Alumnus?
-                    </h2>
-                    <p className="text-sm sm:text-lg text-white/80 mb-12 max-w-2xl mx-auto font-bold uppercase tracking-wide">
-                        Join our global network to stay connected, mentor junior scholars, and access exclusive professional opportunities.
-                    </p>
-                    <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="px-10 py-5 bg-edu-teal text-white rounded-2xl font-black text-xs shadow-2xl transition-all tracking-widest uppercase hover:bg-edu-teal/80"
+            {/* Alumni CTA - Premium Academic Section */}
+            <section className="py-24 sm:py-32 relative overflow-hidden bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500">
+                <div className="max-w-7xl mx-auto px-6 relative z-10">
+                    <motion.div
+                        variants={fadeInUp}
+                        initial="initial"
+                        whileInView="animate"
+                        viewport={{ once: true }}
+                        className="relative"
                     >
-                        Join the Network
-                    </motion.button>
+                        {/* Glassmorphic CTA Card */}
+                        <div className="relative p-10 sm:p-20 rounded-[3rem] sm:rounded-[4rem] bg-white/40 dark:bg-slate-900/40 backdrop-blur-3xl border border-white dark:border-white/5 shadow-2xl overflow-hidden group">
+                            {/* Decorative Islamic Pattern Background */}
+                            <div className="absolute inset-0 islamic-pattern opacity-[0.03] dark:opacity-[0.07] pointer-events-none" />
+                            
+                            {/* Animated Background Glow */}
+                            <div className="absolute -top-24 -left-24 w-64 h-64 bg-edu-teal/10 rounded-full blur-[100px] animate-pulse" />
+                            <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-edu-coral/10 rounded-full blur-[100px] animate-pulse [animation-delay:1s]" />
+
+                            <div className="relative z-10 text-center space-y-8">
+                                <div className="relative inline-block">
+                                    <div className="absolute inset-0 bg-edu-teal/20 blur-xl rounded-full scale-150 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                                    <div className="icon-placard mx-auto relative z-10 group-hover:rotate-6">
+                                        <Users className="w-8 h-8 sm:w-10 sm:h-10 text-edu-teal" />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <h2 className="text-3xl sm:text-5xl md:text-6xl font-playfair font-black text-tharqiya-deep dark:text-white transition-colors duration-500 max-w-4xl mx-auto leading-tight uppercase tracking-tighter">
+                                        Are you a <span className="text-gold-orange font-outfit">Tharqiya Alumnus?</span>
+                                    </h2>
+                                    <p className="text-sm sm:text-lg text-academic-muted max-w-2xl mx-auto font-bold uppercase tracking-widest leading-relaxed">
+                                        Join our <span className="text-gold-orange">Global Network</span> to stay connected, mentor junior scholars, and access exclusive professional opportunities.
+                                    </p>
+                                </div>
+
+                                <div className="pt-6">
+                                    <motion.button
+                                        whileHover={{ scale: 1.05, y: -2 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        className="btn-primary"
+                                    >
+                                        Join the Network
+                                    </motion.button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Floating Accents */}
+                        <div className="absolute -top-10 -right-10 w-24 h-24 bg-white/50 dark:bg-white/5 backdrop-blur-xl border border-white dark:border-white/10 rounded-3xl -rotate-12 animate-float -z-10 hidden lg:block" />
+                        <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white/50 dark:bg-white/5 backdrop-blur-xl border border-white dark:border-white/10 rounded-[2rem] rotate-12 animate-float [animation-delay:2s] -z-10 hidden lg:block" />
+                    </motion.div>
                 </div>
+                
+                {/* Background Decorations */}
+                <div className="absolute top-1/2 left-0 w-64 h-64 bg-edu-teal/5 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2" />
+                <div className="absolute top-1/2 right-0 w-64 h-64 bg-edu-coral/5 rounded-full blur-[120px] translate-x-1/2 -translate-y-1/2" />
             </section>
         </div>
     );

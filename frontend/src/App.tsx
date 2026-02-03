@@ -46,7 +46,7 @@ import InterviewerInterviews from './pages/InterviewerInterviews';
 import InterviewerEvaluations from './pages/InterviewerEvaluations';
 import PerformanceInsights from './pages/PerformanceInsights';
 
-import { UserPlus, PhoneCall, GraduationCap, FileCheck, ArrowRight } from 'lucide-react';
+import { UserPlus, FileSearch, Ticket, GraduationCap, Building2, FileCheck, ArrowRight } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 
 const ScrollToTop: React.FC = () => {
@@ -65,31 +65,47 @@ const Home: React.FC = () => {
             icon: UserPlus, 
             step: '01', 
             title: 'Online Registration', 
-            desc: 'Fill out the application form with required details.',
+            desc: 'Complete the application and upload required documents.',
             color: 'from-blue-500/20 to-blue-600/20',
             iconColor: 'text-blue-500'
         },
         { 
-            icon: PhoneCall, 
+            icon: FileSearch, 
             step: '02', 
-            title: 'Interview Call', 
-            desc: 'Receive schedule for Hifz & Academic evaluation.',
+            title: 'Document Verification', 
+            desc: 'Admin review of eligibility and uploaded credentials.',
+            color: 'from-indigo-500/20 to-indigo-600/20',
+            iconColor: 'text-indigo-500'
+        },
+        { 
+            icon: Ticket, 
+            step: '03', 
+            title: 'Interview Scheduling', 
+            desc: 'Receive hall ticket and assigned evaluation slot.',
             color: 'from-tharqiya-orange/20 to-tharqiya-orange/40',
             iconColor: 'text-tharqiya-orange'
         },
         { 
             icon: GraduationCap, 
-            step: '03', 
-            title: 'Evaluation', 
-            desc: 'Face-to-face interview with our panel of scholars.',
+            step: '04', 
+            title: 'Integrated Evaluation', 
+            desc: 'Hifz and Academic assessment by scholarly panel.',
             color: 'from-tharqiya-gold/20 to-tharqiya-gold/40',
             iconColor: 'text-tharqiya-gold'
         },
         { 
+            icon: Building2, 
+            step: '05', 
+            title: 'Selection & Allotment', 
+            desc: 'Result publication and merit-based campus allotment.',
+            color: 'from-purple-500/20 to-purple-600/20',
+            iconColor: 'text-purple-500'
+        },
+        { 
             icon: FileCheck, 
-            step: '04', 
-            title: 'Final Result', 
-            desc: 'Check admission status and download enrollment PDF.',
+            step: '06', 
+            title: 'Final Enrollment', 
+            desc: 'Confirmation of admission and credential generation.',
             color: 'from-emerald-500/20 to-emerald-600/20',
             iconColor: 'text-emerald-500'
         },
@@ -158,7 +174,7 @@ const Home: React.FC = () => {
                         <div className="w-12 h-1.5 bg-tharqiya-gold mx-auto rounded-full" />
                     </motion.div>
                     
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mb-12 sm:mb-20 relative">
+                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8 mb-12 sm:mb-20 relative">
                         {/* Connecting Line (Desktop) */}
                         <div className="hidden lg:block absolute top-[40%] left-[10%] right-[10%] h-0.5 border-t-2 border-dashed border-slate-200 dark:border-slate-800 -z-10" />
 
@@ -173,19 +189,19 @@ const Home: React.FC = () => {
                             >
                                 <div className="absolute -inset-2 bg-gradient-to-br from-tharqiya-orange/20 to-tharqiya-gold/20 rounded-[1.5rem] sm:rounded-[2.5rem] blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                                 
-                                <div className="relative p-6 sm:p-10 rounded-[1.5rem] sm:rounded-[2.5rem] bg-tharqiya-cream dark:bg-slate-900 border border-slate-100 dark:border-slate-800/50 hover:border-tharqiya-gold/30 transition-all duration-500 h-full flex flex-col items-center text-center">
+                                <div className="relative p-4 sm:p-10 rounded-[1.5rem] sm:rounded-[2.5rem] bg-tharqiya-cream dark:bg-slate-900 border border-slate-100 dark:border-slate-800/50 hover:border-tharqiya-gold/30 transition-all duration-500 h-full flex flex-col items-center text-center">
                                     {/* Icon Container */}
-                                    <div className={`w-14 h-14 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl bg-gradient-to-br ${item.color} flex items-center justify-center mb-6 sm:mb-8 relative group-hover:rotate-6 transition-transform duration-500`}>
-                                        <item.icon className={`w-7 h-7 sm:w-10 sm:h-10 ${item.iconColor}`} />
-                                        <span className="absolute -top-2 -right-2 sm:-top-3 -right-3 w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-tharqiya-cream dark:bg-slate-800 shadow-xl border border-slate-100 dark:border-slate-700 flex items-center justify-center text-[10px] sm:text-xs font-black text-tharqiya-deep dark:text-white">
+                                    <div className={`w-12 h-12 sm:w-20 sm:h-20 rounded-xl sm:rounded-3xl bg-gradient-to-br ${item.color} flex items-center justify-center mb-4 sm:mb-8 relative group-hover:rotate-6 transition-transform duration-500`}>
+                                        <item.icon className={`w-6 h-6 sm:w-10 sm:h-10 ${item.iconColor}`} />
+                                        <span className="absolute -top-1 -right-1 sm:-top-3 sm:-right-3 w-5 h-5 sm:w-8 sm:h-8 rounded-full bg-tharqiya-cream dark:bg-slate-800 shadow-xl border border-slate-100 dark:border-slate-700 flex items-center justify-center text-[8px] sm:text-xs font-black text-tharqiya-deep dark:text-white">
                                             {item.step}
                                         </span>
                                     </div>
 
-                                    <h3 className="text-lg sm:text-xl font-black text-tharqiya-deep dark:text-white mb-2 sm:mb-4 font-outfit tracking-tight group-hover:text-tharqiya-orange dark:group-hover:text-tharqiya-gold transition-colors">
+                                    <h3 className="text-xs sm:text-xl font-black text-tharqiya-deep dark:text-white mb-1 sm:mb-4 font-outfit tracking-tight group-hover:text-tharqiya-orange dark:group-hover:text-tharqiya-gold transition-colors leading-tight">
                                         {item.title}
                                     </h3>
-                                    <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+                                    <p className="text-[10px] sm:text-sm text-slate-500 dark:text-slate-400 leading-tight sm:leading-relaxed font-medium">
                                         {item.desc}
                                     </p>
                                 </div>

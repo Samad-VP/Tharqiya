@@ -211,7 +211,7 @@ const AdminApplications: React.FC = () => {
                 {/* Header Actions */}
                 <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
                     <div className="w-full">
-                        <h2 className="text-2xl sm:text-3xl font-black text-brand-deep dark:text-white font-outfit tracking-tighter uppercase leading-tight">
+                        <h2 className="text-2xl sm:text-3xl font-black text-tharqiya-deep dark:text-white font-outfit tracking-tighter uppercase leading-tight">
                             Application <span className="text-edu-teal">Management</span>
                         </h2>
                         <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Manage and track candidate submissions</p>
@@ -225,7 +225,7 @@ const AdminApplications: React.FC = () => {
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                                 placeholder="Search candidates..."
-                                className="w-full pl-11 pr-6 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl sm:rounded-2xl focus:ring-4 focus:ring-edu-teal/10 focus:border-edu-teal transition-all outline-none font-bold text-xs sm:text-sm text-brand-deep dark:text-white shadow-sm"
+                                className="w-full pl-11 pr-6 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl sm:rounded-2xl focus:ring-4 focus:ring-edu-teal/10 focus:border-edu-teal transition-all outline-none font-bold text-xs sm:text-sm text-tharqiya-deep dark:text-white shadow-sm"
                             />
                         </div>
                         <div className="flex items-center gap-3 w-full sm:w-auto relative">
@@ -266,14 +266,14 @@ const AdminApplications: React.FC = () => {
                                                         type="number" placeholder="Min" 
                                                         value={filters.minAge} 
                                                         onChange={(e) => setFilters({...filters, minAge: e.target.value})}
-                                                        className="w-full px-4 py-2 bg-slate-50 dark:bg-white/5 border-none rounded-xl text-xs font-bold text-brand-deep dark:text-white"
+                                                        className="w-full px-4 py-2 bg-slate-50 dark:bg-white/5 border-none rounded-xl text-xs font-bold text-tharqiya-deep dark:text-white"
                                                     />
                                                     <span className="text-slate-300">-</span>
                                                     <input 
                                                         type="number" placeholder="Max" 
                                                         value={filters.maxAge} 
                                                         onChange={(e) => setFilters({...filters, maxAge: e.target.value})}
-                                                        className="w-full px-4 py-2 bg-slate-50 dark:bg-white/5 border-none rounded-xl text-xs font-bold text-brand-deep dark:text-white"
+                                                        className="w-full px-4 py-2 bg-slate-50 dark:bg-white/5 border-none rounded-xl text-xs font-bold text-tharqiya-deep dark:text-white"
                                                     />
                                                 </div>
                                             </div>
@@ -284,7 +284,7 @@ const AdminApplications: React.FC = () => {
                                                     type="text" placeholder="e.g. 10th" 
                                                     value={filters.schoolEducation} 
                                                     onChange={(e) => setFilters({...filters, schoolEducation: e.target.value})}
-                                                    className="w-full px-4 py-2 bg-slate-50 dark:bg-white/5 border-none rounded-xl text-xs font-bold text-brand-deep dark:text-white"
+                                                    className="w-full px-4 py-2 bg-slate-50 dark:bg-white/5 border-none rounded-xl text-xs font-bold text-tharqiya-deep dark:text-white"
                                                 />
                                             </div>
 
@@ -294,7 +294,7 @@ const AdminApplications: React.FC = () => {
                                                     type="text" placeholder="e.g. 3" 
                                                     value={filters.dawrasCount} 
                                                     onChange={(e) => setFilters({...filters, dawrasCount: e.target.value})}
-                                                    className="w-full px-4 py-2 bg-slate-50 dark:bg-white/5 border-none rounded-xl text-xs font-bold text-brand-deep dark:text-white"
+                                                    className="w-full px-4 py-2 bg-slate-50 dark:bg-white/5 border-none rounded-xl text-xs font-bold text-tharqiya-deep dark:text-white"
                                                 />
                                             </div>
 
@@ -303,7 +303,7 @@ const AdminApplications: React.FC = () => {
                                                 <select 
                                                     value={filters.status} 
                                                     onChange={(e) => setFilters({...filters, status: e.target.value})}
-                                                    className="w-full px-4 py-2 bg-slate-50 dark:bg-white/5 border-none rounded-xl text-xs font-bold outline-none text-brand-deep dark:text-white"
+                                                    className="w-full px-4 py-2 bg-slate-50 dark:bg-white/5 border-none rounded-xl text-xs font-bold outline-none text-tharqiya-deep dark:text-white"
                                                 >
                                                     <option value="" className="bg-white dark:bg-slate-900">All Statuses</option>
                                                     {statusOptions.map(option => (
@@ -319,7 +319,7 @@ const AdminApplications: React.FC = () => {
                                                 <select 
                                                     value={filters.state} 
                                                     onChange={(e) => setFilters({...filters, state: e.target.value})}
-                                                    className="w-full px-4 py-2 bg-slate-50 dark:bg-white/5 border-none rounded-xl text-xs font-bold outline-none text-brand-deep dark:text-white"
+                                                    className="w-full px-4 py-2 bg-slate-50 dark:bg-white/5 border-none rounded-xl text-xs font-bold outline-none text-tharqiya-deep dark:text-white"
                                                 >
                                                     <option value="" className="bg-white dark:bg-slate-900">All States/UTs</option>
                                                     {INDIAN_STATES.map(state => (
@@ -399,7 +399,7 @@ const AdminApplications: React.FC = () => {
                                         {(app.student?.user?.name || app.student?.name)?.[0] || 'S'}
                                     </div>
                                     <div>
-                                        <h4 className="font-black text-brand-deep dark:text-white font-outfit text-sm">{app.student?.user?.name || app.student?.name}</h4>
+                                        <h4 className="font-black text-tharqiya-deep dark:text-white font-outfit text-sm">{app.student?.user?.name || app.student?.name}</h4>
                                         <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">{app.student?.applicationNo}</p>
                                     </div>
                                 </div>
@@ -411,11 +411,11 @@ const AdminApplications: React.FC = () => {
                             <div className="grid grid-cols-2 gap-4 py-4 border-y border-slate-50 dark:border-slate-800/50 mb-4">
                                 <div>
                                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Applied Date</p>
-                                    <p className="text-xs font-black text-brand-deep dark:text-white">{new Date(app.appliedAt).toLocaleDateString()}</p>
+                                    <p className="text-xs font-black text-tharqiya-deep dark:text-white">{new Date(app.appliedAt).toLocaleDateString()}</p>
                                 </div>
                                 <div>
                                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Status</p>
-                                    <span className={`text-[10px] font-black text-brand-deep dark:text-white`}>{app.status}</span>
+                                    <span className={`text-[10px] font-black text-tharqiya-deep dark:text-white`}>{app.status}</span>
                                 </div>
                             </div>
 
@@ -434,7 +434,7 @@ const AdminApplications: React.FC = () => {
                                 >
                                     {app.interview ? <CheckCircle2 size={18} /> : <Calendar size={18} />}
                                 </button>
-                                <button className="p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 text-slate-600 dark:text-slate-400 hover:text-brand-deep dark:hover:text-white transition-all">
+                                <button className="p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 text-slate-600 dark:text-slate-400 hover:text-tharqiya-deep dark:hover:text-white transition-all">
                                     <MoreHorizontal size={18} />
                                 </button>
                             </div>
@@ -476,7 +476,7 @@ const AdminApplications: React.FC = () => {
                                         animate={{ opacity: 1 }}
                                         className="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors group"
                                     >
-                                        <td className="px-8 py-6 font-bold text-brand-deep dark:text-white tracking-widest text-[11px]">{app.student?.applicationNo}</td>
+                                        <td className="px-8 py-6 font-bold text-tharqiya-deep dark:text-white tracking-widest text-[11px]">{app.student?.applicationNo}</td>
                                         <td className="px-8 py-6">
                                             <div className="flex items-center gap-3">
                                                 <div 
@@ -487,7 +487,7 @@ const AdminApplications: React.FC = () => {
                                                 </div>
                                                 <button 
                                                     onClick={() => { setSelectedApplication(app); setShowDetailsModal(true); }}
-                                                    className="font-black text-brand-deep dark:text-white font-outfit hover:text-edu-teal transition-colors"
+                                                    className="font-black text-tharqiya-deep dark:text-white font-outfit hover:text-edu-teal transition-colors"
                                                 >
                                                     {app.student?.user?.name || app.student?.name}
                                                 </button>
@@ -503,7 +503,7 @@ const AdminApplications: React.FC = () => {
                                                             style={{ width: `${(app.interview.evaluations.reduce((acc: number, curr: any) => acc + curr.marks, 0) / (app.interview.evaluations.length * 100)) * 100}%` }} 
                                                         />
                                                     </div>
-                                                    <span className="font-black text-brand-deep dark:text-white text-[11px]">
+                                                    <span className="font-black text-tharqiya-deep dark:text-white text-[11px]">
                                                         {(app.interview.evaluations.reduce((acc: number, curr: any) => acc + curr.marks, 0) / app.interview.evaluations.length).toFixed(1)}
                                                     </span>
                                                 </div>
@@ -545,7 +545,7 @@ const AdminApplications: React.FC = () => {
                                                     {app.interview ? <CheckCircle2 size={18} /> : <Calendar size={18} />}
                                                 </button>
                                                 )}
-                                                <button className="p-2 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-400 hover:text-brand-deep dark:hover:text-white transition-all">
+                                                <button className="p-2 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-400 hover:text-tharqiya-deep dark:hover:text-white transition-all">
                                                     <MoreHorizontal size={18} />
                                                 </button>
                                             </div>
@@ -577,7 +577,7 @@ const AdminApplications: React.FC = () => {
 
                 {/* Mobile Pagination Placeholder */}
                 <div className="lg:hidden flex justify-center pt-4">
-                    <button className="w-full py-4 rounded-xl bg-brand-deep text-white font-black text-xs uppercase tracking-[0.2em] shadow-xl">Load More Applications</button>
+                    <button className="w-full py-4 rounded-xl bg-tharqiya-deep text-white font-black text-xs uppercase tracking-[0.2em] shadow-xl">Load More Applications</button>
                 </div>
             </div>
 
@@ -588,7 +588,7 @@ const AdminApplications: React.FC = () => {
                         <motion.div 
                             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                             onClick={() => { setShowDetailsModal(false); setSelectedStudentNotifications([]); }}
-                            className="absolute inset-0 bg-brand-deep/60 backdrop-blur-sm"
+                            className="absolute inset-0 bg-tharqiya-deep/60 backdrop-blur-sm"
                         />
                         <motion.div 
                             initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
@@ -601,7 +601,7 @@ const AdminApplications: React.FC = () => {
                                             {(selectedApplication.student?.user?.name || selectedApplication.student?.name)?.[0] || 'S'}
                                         </div>
                                         <div>
-                                            <h3 className="text-2xl font-black font-outfit text-brand-deep dark:text-white">{selectedApplication.student?.user?.name || selectedApplication.student?.name}</h3>
+                                            <h3 className="text-2xl font-black font-outfit text-tharqiya-deep dark:text-white">{selectedApplication.student?.user?.name || selectedApplication.student?.name}</h3>
                                             <p className="text-xs font-black text-slate-400 uppercase tracking-widest">{selectedApplication.student?.applicationNo}</p>
                                         </div>
                                     </div>
@@ -673,7 +673,7 @@ const AdminApplications: React.FC = () => {
                                                 <div className="p-4 rounded-2xl bg-edu-teal/5 border border-edu-teal/20">
                                                     <div className="flex justify-between items-center mb-2">
                                                         <span className="text-[10px] font-bold text-slate-500 uppercase">Selected Campus</span>
-                                                        <span className="text-sm font-black text-brand-deep dark:text-white uppercase font-outfit">{selectedApplication.allotment.campus}</span>
+                                                        <span className="text-sm font-black text-tharqiya-deep dark:text-white uppercase font-outfit">{selectedApplication.allotment.campus}</span>
                                                     </div>
                                                     <div className="flex justify-between items-center">
                                                         <span className="text-[10px] font-bold text-slate-500 uppercase">Finalized Status</span>
@@ -697,7 +697,7 @@ const AdminApplications: React.FC = () => {
                                                     {selectedApplication.interview.evaluations.map((evalItem: any, i: number) => (
                                                         <div key={i} className="p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-100/50 dark:border-slate-800/50">
                                                             <div className="flex justify-between items-center mb-1">
-                                                                <span className="text-[10px] font-black text-brand-deep dark:text-white uppercase truncate max-w-[120px]">{evalItem.subject}</span>
+                                                                <span className="text-[10px] font-black text-tharqiya-deep dark:text-white uppercase truncate max-w-[120px]">{evalItem.subject}</span>
                                                                 <span className="text-[10px] font-black text-edu-coral">{evalItem.marks}/100</span>
                                                             </div>
                                                             {evalItem.remarks && (
@@ -759,7 +759,7 @@ const AdminApplications: React.FC = () => {
                                                             alt="Applicant" 
                                                             className="w-full h-24 object-cover"
                                                         />
-                                                        <div className="absolute inset-x-0 bottom-0 bg-brand-deep/80 backdrop-blur-sm p-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <div className="absolute inset-x-0 bottom-0 bg-tharqiya-deep/80 backdrop-blur-sm p-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                                                             <a href={selectedApplication.student.documents.photo} target="_blank" rel="noreferrer" className="text-[8px] font-black text-white uppercase tracking-widest block text-center">View Photo</a>
                                                         </div>
                                                     </div>
@@ -819,7 +819,7 @@ const AdminApplications: React.FC = () => {
                                                             </div>
                                                             <div className="flex-grow min-w-0">
                                                                 <div className="flex items-center gap-2 mb-1">
-                                                                    <p className="text-[10px] font-black text-brand-deep dark:text-white uppercase tracking-tight leading-none">{notif.event.replace(/_/g, ' ')}</p>
+                                                                    <p className="text-[10px] font-black text-tharqiya-deep dark:text-white uppercase tracking-tight leading-none">{notif.event.replace(/_/g, ' ')}</p>
                                                                     <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest px-1.5 py-0.5 bg-slate-100 dark:bg-white/10 rounded">{notif.type}</span>
                                                                 </div>
                                                                 <p className="text-[9px] font-bold text-slate-400 truncate max-w-[200px]" title={notif.message.replace(/<[^>]*>/g, '')}>{formatLogMessage(notif.message)}</p>
@@ -936,14 +936,14 @@ const AdminApplications: React.FC = () => {
                         <motion.div 
                             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                             onClick={() => setShowScheduleModal(false)}
-                            className="absolute inset-0 bg-brand-deep/60 backdrop-blur-sm"
+                            className="absolute inset-0 bg-tharqiya-deep/60 backdrop-blur-sm"
                         />
                         <motion.div 
                             initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
                             className="relative bg-white dark:bg-slate-900 w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden"
                         >
                             <form onSubmit={handleScheduleInterview} className="p-8 sm:p-10">
-                                <h3 className="text-2xl font-black font-outfit text-brand-deep dark:text-white mb-2 uppercase tracking-tight">Schedule <span className="text-edu-teal">Interview</span></h3>
+                                <h3 className="text-2xl font-black font-outfit text-tharqiya-deep dark:text-white mb-2 uppercase tracking-tight">Schedule <span className="text-edu-teal">Interview</span></h3>
                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-8">Scheduling interview for {selectedApplication.student?.user?.name || selectedApplication.student?.name}</p>
 
                                 <div className="space-y-6">
@@ -953,7 +953,7 @@ const AdminApplications: React.FC = () => {
                                             required
                                             value={schedulingData.interviewerId}
                                             onChange={e => setSchedulingData({...schedulingData, interviewerId: e.target.value})}
-                                            className="w-full px-6 py-4 bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-teal rounded-2xl outline-none font-bold text-sm text-brand-deep dark:text-white"
+                                            className="w-full px-6 py-4 bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-teal rounded-2xl outline-none font-bold text-sm text-tharqiya-deep dark:text-white"
                                         >
                                             <option value="" className="bg-white dark:bg-slate-900">Select an interviewer</option>
                                             {interviewers.filter(int => int.interviewer).map(int => (
@@ -968,7 +968,7 @@ const AdminApplications: React.FC = () => {
                                             required
                                             value={schedulingData.scheduledAt}
                                             onChange={e => setSchedulingData({...schedulingData, scheduledAt: e.target.value})}
-                                            className="w-full px-6 py-4 bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-teal rounded-2xl outline-none font-bold text-sm text-brand-deep dark:text-white"
+                                            className="w-full px-6 py-4 bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-teal rounded-2xl outline-none font-bold text-sm text-tharqiya-deep dark:text-white"
                                         />
                                     </div>
                                     <div>
@@ -978,7 +978,7 @@ const AdminApplications: React.FC = () => {
                                             required
                                             value={schedulingData.location}
                                             onChange={e => setSchedulingData({...schedulingData, location: e.target.value})}
-                                            className="w-full px-6 py-4 bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-teal rounded-2xl outline-none font-bold text-sm text-brand-deep dark:text-white"
+                                            className="w-full px-6 py-4 bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-teal rounded-2xl outline-none font-bold text-sm text-tharqiya-deep dark:text-white"
                                             placeholder="Location"
                                         />
                                     </div>

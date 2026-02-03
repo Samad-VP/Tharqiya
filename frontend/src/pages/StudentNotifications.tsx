@@ -48,7 +48,7 @@ const StudentNotifications: React.FC = () => {
                     <ArrowLeft size={22} className="group-hover:-translate-x-1 transition-transform duration-300" />
                 </Link>
                 <div>
-                    <h2 className="text-3xl sm:text-5xl font-black font-outfit tracking-tighter text-brand-deep dark:text-white uppercase leading-none">
+                    <h2 className="text-3xl sm:text-5xl font-black font-outfit tracking-tighter text-tharqiya-deep dark:text-white uppercase leading-none">
                         <span className="text-edu-coral">Notifications</span>
                     </h2>
                     <p className="text-slate-500 dark:text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em] mt-2">Official Transmission History</p>
@@ -96,7 +96,7 @@ const StudentNotifications: React.FC = () => {
                                     
                                     <div className="flex-grow space-y-3">
                                         <div className="flex flex-wrap items-center gap-3">
-                                            <h3 className="text-xl sm:text-2xl font-black font-outfit text-brand-deep dark:text-white uppercase tracking-tighter leading-none">
+                                            <h3 className="text-xl sm:text-2xl font-black font-outfit text-tharqiya-deep dark:text-white uppercase tracking-tighter leading-none">
                                                 {notif.event.replace(/_/g, ' ')}
                                             </h3>
                                             <div className="flex gap-2">
@@ -135,7 +135,7 @@ const StudentNotifications: React.FC = () => {
                                 <div className="flex items-center gap-6 self-end md:self-center">
                                     <div className="text-right hidden md:block">
                                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 opacity-60">Transmission Channel</p>
-                                        <p className="text-sm font-black text-brand-deep dark:text-white uppercase tracking-tighter">{notif.type}</p>
+                                        <p className="text-sm font-black text-tharqiya-deep dark:text-white uppercase tracking-tighter">{notif.type}</p>
                                     </div>
                                     <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 ${
                                         notif.status === 'SENT' 
@@ -158,7 +158,7 @@ const StudentNotifications: React.FC = () => {
                             <Mail size={40} className="opacity-20" />
                         </div>
                         <div>
-                            <p className="text-xl font-black text-brand-deep dark:text-white font-outfit uppercase tracking-tighter mb-2">Silence in the Inbox</p>
+                            <p className="text-xl font-black text-tharqiya-deep dark:text-white font-outfit uppercase tracking-tighter mb-2">Silence in the Inbox</p>
                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">No transmissions have been broadcast to your profile yet.</p>
                         </div>
                     </motion.div>

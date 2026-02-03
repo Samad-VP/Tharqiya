@@ -52,7 +52,7 @@ const AdminDashboard: React.FC = () => {
                 {/* Hero / Welcome */}
                 <div className="relative p-6 sm:p-10 rounded-[2rem] sm:rounded-[2.5rem] bg-white dark:bg-slate-900 overflow-hidden shadow-2xl border border-slate-100 dark:border-slate-800 transition-colors duration-500">
                     <div className="relative z-10">
-                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-brand-deep dark:text-white font-outfit tracking-tighter mb-3 sm:mb-4">
+                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-tharqiya-deep dark:text-white font-outfit tracking-tighter mb-3 sm:mb-4">
                             Welcome Back, Admin
                         </h2>
                         <div className="flex flex-col sm:flex-row gap-4 mt-6">
@@ -107,7 +107,7 @@ const AdminDashboard: React.FC = () => {
                                     {stat.trend} <TrendingUp size={14} className={stat.trend.startsWith('-') ? 'rotate-180' : ''} />
                                 </div>
                             </div>
-                            <h3 className="text-xl sm:text-2xl md:text-3xl font-black text-brand-deep dark:text-white font-outfit mb-1">{stat.value}</h3>
+                            <h3 className="text-xl sm:text-2xl md:text-3xl font-black text-tharqiya-deep dark:text-white font-outfit mb-1">{stat.value}</h3>
                             <p className="text-premium-xs text-slate-500">{stat.label}</p>
                         </motion.div>
                     ))}
@@ -118,7 +118,7 @@ const AdminDashboard: React.FC = () => {
                     <div className="lg:col-span-2 p-6 sm:p-10 rounded-[2rem] sm:rounded-[2.5rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xl min-h-[300px] sm:min-h-[400px]">
                         <div className="flex justify-between items-center mb-6 sm:mb-10">
                             <div>
-                                <h4 className="h-premium-md text-brand-deep dark:text-white">Application Trends</h4>
+                                <h4 className="h-premium-md text-tharqiya-deep dark:text-white">Application Trends</h4>
                                 <p className="text-premium-xs text-slate-500 leading-tight">Growth over the last 30 days</p>
                             </div>
                             <button className="p-2 sm:p-3 rounded-xl bg-slate-50 dark:bg-white/5 text-slate-500 hover:text-edu-coral transition-all">
@@ -131,7 +131,7 @@ const AdminDashboard: React.FC = () => {
                     </div>
 
                     <div className="p-6 sm:p-10 rounded-[2rem] sm:rounded-[2.5rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xl">
-                        <h4 className="text-xl sm:text-2xl font-black text-brand-deep dark:text-white font-outfit tracking-tight mb-6 sm:mb-8">Recent Activities</h4>
+                        <h4 className="text-xl sm:text-2xl font-black text-tharqiya-deep dark:text-white font-outfit tracking-tight mb-6 sm:mb-8">Recent Activities</h4>
                         <div className="space-y-4 sm:space-y-6">
                              {loading ? (
                                  <div className="flex justify-center py-10">
@@ -144,7 +144,7 @@ const AdminDashboard: React.FC = () => {
                                               <Users className="w-4 h-4 text-edu-teal" />
                                          </div>
                                          <div className="space-y-1 overflow-hidden">
-                                             <p className="text-xs sm:text-sm font-bold text-brand-deep dark:text-white truncate">{activity.title}</p>
+                                             <p className="text-xs sm:text-sm font-bold text-tharqiya-deep dark:text-white truncate">{activity.title}</p>
                                              <p className="text-[10px] sm:text-xs text-slate-500 truncate">{activity.subtitle} • {new Date(activity.timestamp).toLocaleTimeString()}</p>
                                          </div>
                                      </div>

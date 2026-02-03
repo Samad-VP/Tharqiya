@@ -201,7 +201,7 @@ const SettingsPage: React.FC = () => {
                         <MapPin size={24} />
                     </div>
                     <div>
-                        <h3 className="text-xl font-black text-brand-deep dark:text-white font-outfit uppercase tracking-tight">Campus <span className="text-edu-teal">Capacities</span></h3>
+                        <h3 className="text-xl font-black text-tharqiya-deep dark:text-white font-outfit uppercase tracking-tight">Campus <span className="text-edu-teal">Capacities</span></h3>
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Manage seat availability per campus</p>
                     </div>
                 </div>
@@ -228,15 +228,15 @@ const SettingsPage: React.FC = () => {
 
                             <button 
                                 onClick={() => updateCapacity(campus.id, campus.maxSeats.toString())}
-                                className="w-full py-3 bg-brand-deep dark:bg-edu-teal text-white rounded-xl font-black text-[10px] uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-brand-deep/10 flex items-center justify-center gap-2 mb-4"
+                                className="w-full py-3 bg-tharqiya-deep dark:bg-edu-teal text-white rounded-xl font-black text-[10px] uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-tharqiya-deep/10 flex items-center justify-center gap-2 mb-4"
                             >
                                 <CheckCircle2 size={14} />
                                 Set Availability
                             </button>
                             
                             <div className="flex justify-between items-center px-1">
-                                <span className="text-[9px] font-bold text-slate-400">Occupied: <span className="text-brand-deep dark:text-white">{campus.occupied}</span></span>
-                                <span className="text-[9px] font-bold text-slate-400">Vacant: <span className="text-brand-deep dark:text-white">{Math.max(0, parseInt(campus.maxSeats) - campus.occupied)}</span></span>
+                                <span className="text-[9px] font-bold text-slate-400">Occupied: <span className="text-tharqiya-deep dark:text-white">{campus.occupied}</span></span>
+                                <span className="text-[9px] font-bold text-slate-400">Vacant: <span className="text-tharqiya-deep dark:text-white">{Math.max(0, parseInt(campus.maxSeats) - campus.occupied)}</span></span>
                             </div>
                         </div>
                     ))}
@@ -249,7 +249,7 @@ const SettingsPage: React.FC = () => {
 
         <div className="max-w-4xl mx-auto space-y-8 sm:space-y-12">
             <div className="mb-8 sm:mb-12">
-                <h2 className="text-2xl sm:text-3xl font-black text-brand-deep dark:text-white font-outfit tracking-tighter uppercase leading-tight">
+                <h2 className="text-2xl sm:text-3xl font-black text-tharqiya-deep dark:text-white font-outfit tracking-tighter uppercase leading-tight">
                     Account <span className="text-edu-teal">Settings</span>
                 </h2>
                 <p className="text-[10px] sm:text-sm font-bold text-slate-500 uppercase tracking-widest mt-1">Manage your institutional credentials and profile.</p>
@@ -266,7 +266,7 @@ const SettingsPage: React.FC = () => {
                         <div className="p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-edu-teal/10 text-edu-teal">
                             <User size={20} className="sm:w-6 sm:h-6" />
                         </div>
-                        <h3 className="text-lg sm:text-xl font-black text-brand-deep dark:text-white font-outfit">Personal Details</h3>
+                        <h3 className="text-lg sm:text-xl font-black text-tharqiya-deep dark:text-white font-outfit">Personal Details</h3>
                     </div>
 
                     <form onSubmit={handleProfileUpdate} className="space-y-4 sm:space-y-6">
@@ -285,7 +285,7 @@ const SettingsPage: React.FC = () => {
                                     type="text"
                                     value={profileData.name}
                                     onChange={e => setProfileData({...profileData, name: e.target.value})}
-                                    className="w-full pl-11 pr-6 py-3.5 sm:py-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-teal focus:ring-4 focus:ring-edu-teal/10 transition-all font-bold text-xs sm:text-sm text-brand-deep dark:text-white"
+                                    className="w-full pl-11 pr-6 py-3.5 sm:py-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-teal focus:ring-4 focus:ring-edu-teal/10 transition-all font-bold text-xs sm:text-sm text-tharqiya-deep dark:text-white"
                                 />
                             </div>
                         </div>
@@ -298,14 +298,14 @@ const SettingsPage: React.FC = () => {
                                     type="email"
                                     value={profileData.email}
                                     onChange={e => setProfileData({...profileData, email: e.target.value})}
-                                    className="w-full pl-11 pr-6 py-3.5 sm:py-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-teal focus:ring-4 focus:ring-edu-teal/10 transition-all font-bold text-xs sm:text-sm text-brand-deep dark:text-white"
+                                    className="w-full pl-11 pr-6 py-3.5 sm:py-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-teal focus:ring-4 focus:ring-edu-teal/10 transition-all font-bold text-xs sm:text-sm text-tharqiya-deep dark:text-white"
                                 />
                             </div>
                         </div>
 
                         <button 
                             disabled={profileLoading}
-                            className="w-full py-4 sm:py-5 rounded-xl sm:rounded-2xl bg-brand-deep dark:bg-edu-teal text-white font-black text-xs uppercase tracking-widest shadow-xl shadow-brand-deep/20 hover:scale-[1.02] transition-all disabled:opacity-50"
+                            className="w-full py-4 sm:py-5 rounded-xl sm:rounded-2xl bg-tharqiya-deep dark:bg-edu-teal text-white font-black text-xs uppercase tracking-widest shadow-xl shadow-tharqiya-deep/20 hover:scale-[1.02] transition-all disabled:opacity-50"
                         >
                             {profileLoading ? 'Updating...' : 'Save Changes'}
                         </button>
@@ -323,7 +323,7 @@ const SettingsPage: React.FC = () => {
                         <div className="p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-edu-coral/10 text-edu-coral">
                             <Lock size={20} className="sm:w-6 sm:h-6" />
                         </div>
-                        <h3 className="text-lg sm:text-xl font-black text-brand-deep dark:text-white font-outfit">Security</h3>
+                        <h3 className="text-lg sm:text-xl font-black text-tharqiya-deep dark:text-white font-outfit">Security</h3>
                     </div>
 
                     <form onSubmit={handlePasswordUpdate} className="space-y-4 sm:space-y-6">
@@ -342,13 +342,13 @@ const SettingsPage: React.FC = () => {
                                     required
                                     value={passwords.currentPassword}
                                     onChange={e => setPasswords({...passwords, currentPassword: e.target.value})}
-                                    className="w-full px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-coral focus:ring-4 focus:ring-edu-coral/10 transition-all font-bold text-xs sm:text-sm text-brand-deep dark:text-white"
+                                    className="w-full px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-coral focus:ring-4 focus:ring-edu-coral/10 transition-all font-bold text-xs sm:text-sm text-tharqiya-deep dark:text-white"
                                     placeholder="••••••••"
                                 />
                                 <button 
                                     type="button"
                                     onClick={() => setShowCurrentPass(!showCurrentPass)}
-                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand-deep dark:hover:text-white"
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-tharqiya-deep dark:hover:text-white"
                                 >
                                     {showCurrentPass ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </button>
@@ -363,13 +363,13 @@ const SettingsPage: React.FC = () => {
                                     required
                                     value={passwords.newPassword}
                                     onChange={e => setPasswords({...passwords, newPassword: e.target.value})}
-                                    className="w-full px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-coral focus:ring-4 focus:ring-edu-coral/10 transition-all font-bold text-xs sm:text-sm text-brand-deep dark:text-white"
+                                    className="w-full px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-coral focus:ring-4 focus:ring-edu-coral/10 transition-all font-bold text-xs sm:text-sm text-tharqiya-deep dark:text-white"
                                     placeholder="Min. 8 chars"
                                 />
                                 <button 
                                     type="button"
                                     onClick={() => setShowPass(!showPass)}
-                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand-deep dark:hover:text-white"
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-tharqiya-deep dark:hover:text-white"
                                 >
                                     {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </button>
@@ -384,13 +384,13 @@ const SettingsPage: React.FC = () => {
                                     required
                                     value={passwords.confirmPassword}
                                     onChange={e => setPasswords({...passwords, confirmPassword: e.target.value})}
-                                    className="w-full px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-coral focus:ring-4 focus:ring-edu-coral/10 transition-all font-bold text-xs sm:text-sm text-brand-deep dark:text-white"
+                                    className="w-full px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-transparent focus:border-edu-coral focus:ring-4 focus:ring-edu-coral/10 transition-all font-bold text-xs sm:text-sm text-tharqiya-deep dark:text-white"
                                     placeholder="Repeat password"
                                 />
                                 <button 
                                     type="button"
                                     onClick={() => setShowConfirmPass(!showConfirmPass)}
-                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand-deep dark:hover:text-white"
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-tharqiya-deep dark:hover:text-white"
                                 >
                                     {showConfirmPass ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </button>
@@ -419,7 +419,7 @@ const SettingsPage: React.FC = () => {
                         <Mail size={24} />
                     </div>
                     <div>
-                        <h3 className="text-xl font-black text-brand-deep dark:text-white font-outfit uppercase tracking-tight">Notification <span className="text-amber-500">Preferences</span></h3>
+                        <h3 className="text-xl font-black text-tharqiya-deep dark:text-white font-outfit uppercase tracking-tight">Notification <span className="text-amber-500">Preferences</span></h3>
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Control how you receive institutional updates</p>
                     </div>
                 </div>
@@ -431,7 +431,7 @@ const SettingsPage: React.FC = () => {
                                 <Mail size={20} />
                             </div>
                             <div>
-                                <p className="text-sm font-bold text-brand-deep dark:text-white">Email Notifications</p>
+                                <p className="text-sm font-bold text-tharqiya-deep dark:text-white">Email Notifications</p>
                                 <p className="text-[10px] text-slate-500 font-medium">Critical alerts and updates</p>
                             </div>
                         </div>
@@ -449,7 +449,7 @@ const SettingsPage: React.FC = () => {
                                 <ShieldCheck size={20} />
                             </div>
                             <div>
-                                <p className="text-sm font-bold text-brand-deep dark:text-white">WhatsApp Notifications</p>
+                                <p className="text-sm font-bold text-tharqiya-deep dark:text-white">WhatsApp Notifications</p>
                                 <p className="text-[10px] text-slate-500 font-medium">Instant mobile alerts</p>
                             </div>
                         </div>
@@ -476,7 +476,7 @@ const SettingsPage: React.FC = () => {
                             <ShieldCheck size={24} />
                         </div>
                         <div>
-                            <h3 className="text-xl font-black text-brand-deep dark:text-white font-outfit uppercase tracking-tight">Academic <span className="text-edu-teal">Standards</span></h3>
+                            <h3 className="text-xl font-black text-tharqiya-deep dark:text-white font-outfit uppercase tracking-tight">Academic <span className="text-edu-teal">Standards</span></h3>
                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Set passing thresholds for evaluation subjects</p>
                         </div>
                     </div>
@@ -516,14 +516,14 @@ const SettingsPage: React.FC = () => {
                                 </div>
                             </div>
 
-                            <div className="p-6 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-slate-800 flex flex-col items-center text-center group hover:border-brand-deep transition-all">
+                            <div className="p-6 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-slate-800 flex flex-col items-center text-center group hover:border-tharqiya-deep transition-all">
                                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">General Standard</span>
                                 <div className="relative w-full">
                                     <input 
                                         type="number"
                                         value={standards.PASS_MARK_GENERAL}
                                         onChange={e => setStandards({...standards, PASS_MARK_GENERAL: e.target.value})}
-                                        className="w-full text-center py-4 bg-white dark:bg-slate-900 rounded-xl font-black text-2xl text-brand-deep dark:text-white outline-none border-2 border-transparent focus:border-brand-deep shadow-inner"
+                                        className="w-full text-center py-4 bg-white dark:bg-slate-900 rounded-xl font-black text-2xl text-tharqiya-deep dark:text-white outline-none border-2 border-transparent focus:border-tharqiya-deep shadow-inner"
                                     />
                                     <span className="absolute right-4 top-1/2 -translate-y-1/2 font-black text-slate-300">%</span>
                                 </div>

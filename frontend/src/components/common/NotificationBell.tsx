@@ -87,7 +87,7 @@ const NotificationBell: React.FC = () => {
                         className="absolute right-0 mt-3 w-80 sm:w-96 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl shadow-2xl z-[100] overflow-hidden"
                     >
                         <div className="p-5 border-b border-slate-50 dark:border-slate-800 flex justify-between items-center">
-                            <h3 className="font-black font-outfit text-brand-deep dark:text-white uppercase tracking-tight">Recent Commmunications</h3>
+                            <h3 className="font-black font-outfit text-tharqiya-deep dark:text-white uppercase tracking-tight">Recent Commmunications</h3>
                             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-lg">Official Updates</span>
                         </div>
 
@@ -104,7 +104,7 @@ const NotificationBell: React.FC = () => {
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex justify-between items-start mb-1">
-                                                    <h4 className="text-xs font-black font-outfit text-brand-deep dark:text-white uppercase truncate pr-2">
+                                                    <h4 className="text-xs font-black font-outfit text-tharqiya-deep dark:text-white uppercase truncate pr-2">
                                                         {notif.event.replace(/_/g, ' ')}
                                                     </h4>
                                                     <span className="text-[9px] font-bold text-slate-400 whitespace-nowrap">

@@ -63,7 +63,7 @@ const ChangePasswordPage: React.FC = () => {
                     <div className="h-16 w-auto mb-6">
                         <img src={logo} alt="Logo" className="h-full w-auto object-contain" />
                     </div>
-                    <h2 className="text-3xl font-black text-brand-deep dark:text-white font-outfit tracking-tighter mb-2">Security Update</h2>
+                    <h2 className="text-3xl font-black text-tharqiya-deep dark:text-white font-outfit tracking-tighter mb-2">Security Update</h2>
                     <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Please change your temporary password to continue to your portal.</p>
                 </div>
 

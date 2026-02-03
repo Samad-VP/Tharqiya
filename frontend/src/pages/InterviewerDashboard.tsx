@@ -98,7 +98,7 @@ const InterviewerDashboard: React.FC = () => {
                 {/* Hero / Welcome */}
                 <div className="relative p-6 sm:p-10 rounded-[2rem] sm:rounded-[2.5rem] bg-white dark:bg-slate-900 overflow-hidden shadow-2xl border border-slate-100 dark:border-slate-800 transition-colors duration-500">
                     <div className="relative z-10">
-                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-brand-deep dark:text-white font-outfit tracking-tighter mb-3 sm:mb-4">
+                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-tharqiya-deep dark:text-white font-outfit tracking-tighter mb-3 sm:mb-4">
                             Welcome Back, <span className="text-tharqiya-deep dark:text-tharqiya-gold">Interviewer</span>
                         </h2>
                         <p className="text-slate-500 dark:text-slate-400 max-w-xl text-sm sm:text-base md:text-lg font-medium leading-relaxed opacity-90">
@@ -124,7 +124,7 @@ const InterviewerDashboard: React.FC = () => {
                                     <stat.icon className={`w-5 h-5 sm:w-6 sm:h-6 ${stat.color}`} />
                                 </div>
                             </div>
-                            <h3 className="text-2xl sm:text-3xl font-black text-brand-deep dark:text-white font-outfit mb-1">{stat.value}</h3>
+                            <h3 className="text-2xl sm:text-3xl font-black text-tharqiya-deep dark:text-white font-outfit mb-1">{stat.value}</h3>
                             <p className="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">{stat.label}</p>
                         </motion.div>
                     ))}
@@ -142,7 +142,7 @@ const InterviewerDashboard: React.FC = () => {
                         
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
                             <div>
-                                <h4 className="text-xl font-black text-brand-deep dark:text-white font-outfit uppercase tracking-tighter">Academic <span className="text-tharqiya-gold">Benchmarks</span></h4>
+                                <h4 className="text-xl font-black text-tharqiya-deep dark:text-white font-outfit uppercase tracking-tighter">Academic <span className="text-tharqiya-gold">Benchmarks</span></h4>
                                 <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mt-1">Institutional passing standards for session 2026</p>
                             </div>
 
@@ -165,7 +165,7 @@ const InterviewerDashboard: React.FC = () => {
                 {/* Recent Assignments Area */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
                     <div className="lg:col-span-2 p-6 sm:p-10 rounded-[2rem] sm:rounded-[2.5rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xl min-h-[300px] sm:min-h-[400px]">
-                        <h4 className="text-xl sm:text-2xl font-black text-brand-deep dark:text-white font-outfit tracking-tight mb-6 sm:mb-8">Pending Evaluations</h4>
+                        <h4 className="text-xl sm:text-2xl font-black text-tharqiya-deep dark:text-white font-outfit tracking-tight mb-6 sm:mb-8">Pending Evaluations</h4>
                         <div className="space-y-4">
                              {loading ? (
                                  <div className="flex flex-col items-center justify-center py-10 opacity-50">
@@ -187,7 +187,7 @@ const InterviewerDashboard: React.FC = () => {
                                             )}
                                         </div>
                                          <div className="overflow-hidden">
-                                             <p className="font-black text-brand-deep dark:text-white text-sm sm:text-base truncate">
+                                             <p className="font-black text-tharqiya-deep dark:text-white text-sm sm:text-base truncate">
                                                  {interview.application?.student?.user?.name || interview.application?.student?.name}
                                              </p>
                                              <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider truncate">
@@ -213,7 +213,7 @@ const InterviewerDashboard: React.FC = () => {
                     </div>
 
                     <div className="p-6 sm:p-10 rounded-[2rem] sm:rounded-[2.5rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xl">
-                        <h4 className="text-xl sm:text-2xl font-black text-brand-deep dark:text-white font-outfit tracking-tight mb-6 sm:mb-8">Today's Schedule</h4>
+                        <h4 className="text-xl sm:text-2xl font-black text-tharqiya-deep dark:text-white font-outfit tracking-tight mb-6 sm:mb-8">Today's Schedule</h4>
                         <div className="space-y-4 sm:space-y-6">
                              {loading ? (
                                  <div className="py-4 opacity-50 text-center">
@@ -225,7 +225,7 @@ const InterviewerDashboard: React.FC = () => {
                                          <Clock size={16} className="text-slate-400" />
                                      </div>
                                       <div className="space-y-1">
-                                          <p className="text-xs sm:text-sm font-bold text-brand-deep dark:text-white">
+                                          <p className="text-xs sm:text-sm font-bold text-tharqiya-deep dark:text-white">
                                              {new Date(interview.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                          </p>
                                          <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 truncate max-w-[150px]">
@@ -256,7 +256,7 @@ const InterviewerDashboard: React.FC = () => {
                             <div className="p-3 bg-tharqiya-orange/10 text-tharqiya-orange rounded-2xl">
                                 <Zap size={24} />
                             </div>
-                            <h4 className="text-xl sm:text-2xl font-black text-brand-deep dark:text-white font-outfit uppercase tracking-tighter">Fast <span className="text-tharqiya-orange">Actions</span></h4>
+                            <h4 className="text-xl sm:text-2xl font-black text-tharqiya-deep dark:text-white font-outfit uppercase tracking-tighter">Fast <span className="text-tharqiya-orange">Actions</span></h4>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {[
@@ -271,7 +271,7 @@ const InterviewerDashboard: React.FC = () => {
                                     className="p-6 rounded-2xl bg-slate-50 dark:bg-white/5 border border-transparent hover:border-tharqiya-orange/20 hover:bg-white dark:hover:bg-slate-800 transition-all group relative overflow-hidden"
                                 >
                                     <item.icon size={20} className="text-slate-400 dark:text-slate-500 group-hover:text-tharqiya-orange transition-colors mb-4" />
-                                    <p className="text-xs font-black text-brand-deep dark:text-white uppercase tracking-widest mb-1">{item.label}</p>
+                                    <p className="text-xs font-black text-tharqiya-deep dark:text-white uppercase tracking-widest mb-1">{item.label}</p>
                                     <p className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tighter">{item.desc}</p>
                                 </Link>
                             ))}

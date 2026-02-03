@@ -143,15 +143,15 @@ const AdminAlumni: React.FC = () => {
             <div className="space-y-6 sm:space-y-8">
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                     <div>
-                        <h2 className="text-2xl sm:text-3xl font-black text-brand-deep dark:text-white font-outfit tracking-tighter uppercase leading-tight">
+                        <h2 className="text-2xl sm:text-3xl font-black text-tharqiya-deep dark:text-slate-100 font-outfit tracking-tighter uppercase leading-tight">
                             Alumni <span className="text-edu-coral">Registry</span>
                         </h2>
-                        <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Tracing scholarly contributions & success</p>
+                        <p className="text-[10px] sm:text-xs font-bold text-academic-muted uppercase tracking-widest mt-1">Tracing scholarly contributions & success</p>
                     </div>
 
                     <button 
                         onClick={handleOpenCreate}
-                        className="flex items-center justify-center gap-3 px-8 py-4 bg-brand-deep dark:bg-edu-teal text-white rounded-xl sm:rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-brand-deep/20 hover:scale-[1.02] transition-all"
+                        className="flex items-center justify-center gap-3 px-8 py-4 bg-tharqiya-deep dark:bg-edu-teal text-white rounded-xl sm:rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-tharqiya-deep/20 hover:scale-[1.02] transition-all"
                     >
                         <UserPlus size={18} /> Add Alumni
                     </button>
@@ -174,7 +174,7 @@ const AdminAlumni: React.FC = () => {
                             >
                                 <div className="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2 z-10">
                                     <div className="mr-2 px-3 py-1 bg-edu-coral text-white rounded-lg text-[10px] font-black uppercase flex items-center h-fit">Pos: {a.order || 0}</div>
-                                    <button onClick={() => handleOpenEdit(a)} className="p-2 rounded-xl bg-slate-100 text-brand-deep hover:bg-edu-coral hover:text-white transition-all"><Edit size={16} /></button>
+                                    <button onClick={() => handleOpenEdit(a)} className="p-2 rounded-xl bg-slate-100 text-tharqiya-deep hover:bg-edu-coral hover:text-white transition-all"><Edit size={16} /></button>
                                     <button onClick={() => setShowDeleteConfirm(a.id)} className="p-2 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white transition-all"><Trash2 size={16} /></button>
                                 </div>
 
@@ -187,7 +187,7 @@ const AdminAlumni: React.FC = () => {
                                         )}
                                     </div>
 
-                                    <h3 className="text-xl font-black text-brand-deep dark:text-white font-outfit uppercase tracking-tighter mb-1">{a.name}</h3>
+                                    <h3 className="text-xl font-black text-tharqiya-deep dark:text-slate-100 font-outfit uppercase tracking-tighter mb-1">{a.name}</h3>
                                     <div className="flex items-center gap-2 justify-center text-slate-400 mb-6">
                                         <MapPin size={10} className="text-edu-coral" />
                                         <p className="text-[10px] font-black uppercase tracking-widest">{a.place}</p>
@@ -247,13 +247,13 @@ const AdminAlumni: React.FC = () => {
             <AnimatePresence>
                 {showModal && (
                     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModal(false)} className="fixed inset-0 bg-brand-deep/60 backdrop-blur-md" />
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModal(false)} className="fixed inset-0 bg-tharqiya-deep/60 backdrop-blur-md" />
                         <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="relative w-full max-w-3xl bg-white dark:bg-slate-900 rounded-[3rem] shadow-2xl overflow-hidden">
                             <div className="p-8 sm:p-12 max-h-[90vh] overflow-y-auto">
-                                <h3 className="text-2xl font-black text-brand-deep dark:text-white font-outfit uppercase tracking-tighter mb-4">
+                                <h3 className="text-2xl font-black text-tharqiya-deep dark:text-white font-outfit uppercase tracking-tighter mb-4">
                                     {modalMode === 'create' ? 'Register' : 'Edit'} <span className="text-edu-coral">Alumni</span>
                                 </h3>
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-10">Add professional or academic records for graduates.</p>
+                                <p className="text-[10px] font-black text-academic-muted uppercase tracking-widest mb-10">Add professional or academic records for graduates.</p>
 
                                 <form onSubmit={handleSubmit} className="space-y-6">
                                     {/* Photo Upload */}
@@ -271,7 +271,7 @@ const AdminAlumni: React.FC = () => {
                                                     </div>
                                                 )}
                                             </div>
-                                            <label className="absolute bottom-0 right-0 p-3 bg-brand-deep text-white rounded-2xl shadow-lg cursor-pointer hover:scale-110 transition-transform">
+                                            <label className="absolute bottom-0 right-0 p-3 bg-tharqiya-deep text-white rounded-2xl shadow-lg cursor-pointer hover:scale-110 transition-transform">
                                                 <Camera size={16} />
                                                 <input type="file" className="hidden" accept="image/*" onChange={handleFileUpload} />
                                             </label>
@@ -281,15 +281,15 @@ const AdminAlumni: React.FC = () => {
                                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                                         <div className="md:col-span-2">
                                             <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Full Name</label>
-                                            <input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-none focus:ring-4 focus:ring-edu-teal/10 font-bold text-sm text-brand-deep dark:text-white" placeholder="Full Name" />
+                                            <input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-none focus:ring-4 focus:ring-edu-teal/10 font-bold text-sm text-tharqiya-deep dark:text-white" placeholder="Full Name" />
                                         </div>
                                         <div className="md:col-span-1">
                                             <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Order</label>
-                                            <input required type="number" min="0" value={formData.order} onChange={e => setFormData({...formData, order: parseInt(e.target.value)})} className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-none focus:ring-4 focus:ring-edu-teal/10 font-bold text-sm text-center text-brand-deep dark:text-white" />
+                                            <input required type="number" min="0" value={formData.order} onChange={e => setFormData({...formData, order: parseInt(e.target.value)})} className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-none focus:ring-4 focus:ring-edu-teal/10 font-bold text-sm text-center text-tharqiya-deep dark:text-white" />
                                         </div>
                                         <div className="md:col-span-1">
                                             <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Residence</label>
-                                            <input required type="text" value={formData.place} onChange={e => setFormData({...formData, place: e.target.value})} className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-none focus:ring-4 focus:ring-edu-teal/10 font-bold text-sm text-brand-deep dark:text-white" placeholder="City / Country" />
+                                            <input required type="text" value={formData.place} onChange={e => setFormData({...formData, place: e.target.value})} className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-none focus:ring-4 focus:ring-edu-teal/10 font-bold text-sm text-tharqiya-deep dark:text-white" placeholder="City / Country" />
                                         </div>
                                     </div>
 
@@ -310,22 +310,22 @@ const AdminAlumni: React.FC = () => {
                                             <motion.div key="working" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                 <div>
                                                     <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Position</label>
-                                                    <input required type="text" value={formData.position} onChange={e => setFormData({...formData, position: e.target.value})} className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-none focus:ring-4 focus:ring-edu-teal/10 font-bold text-sm text-brand-deep dark:text-white" placeholder="e.g., Imam, Manager" />
+                                                    <input required type="text" value={formData.position} onChange={e => setFormData({...formData, position: e.target.value})} className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-none focus:ring-4 focus:ring-edu-teal/10 font-bold text-sm text-tharqiya-deep dark:text-white" placeholder="e.g., Imam, Manager" />
                                                 </div>
                                                 <div>
                                                     <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Organization</label>
-                                                    <input required type="text" value={formData.organization} onChange={e => setFormData({...formData, organization: e.target.value})} className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-none focus:ring-4 focus:ring-edu-teal/10 font-bold text-sm text-brand-deep dark:text-white" placeholder="Masjid, Company, etc." />
+                                                    <input required type="text" value={formData.organization} onChange={e => setFormData({...formData, organization: e.target.value})} className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-none focus:ring-4 focus:ring-edu-teal/10 font-bold text-sm text-tharqiya-deep dark:text-white" placeholder="Masjid, Company, etc." />
                                                 </div>
                                             </motion.div>
                                         ) : (
                                             <motion.div key="studying" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                 <div>
                                                     <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Institution</label>
-                                                    <input required type="text" value={formData.institution} onChange={e => setFormData({...formData, institution: e.target.value})} className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-none focus:ring-4 focus:ring-edu-coral/10 font-bold text-sm text-brand-deep dark:text-white" placeholder="Current School/College" />
+                                                    <input required type="text" value={formData.institution} onChange={e => setFormData({...formData, institution: e.target.value})} className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-none focus:ring-4 focus:ring-edu-coral/10 font-bold text-sm text-tharqiya-deep dark:text-white" placeholder="Current School/College" />
                                                 </div>
                                                 <div>
                                                     <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">University (Optional)</label>
-                                                    <input type="text" value={formData.university} onChange={e => setFormData({...formData, university: e.target.value})} className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-none focus:ring-4 focus:ring-edu-coral/10 font-bold text-sm text-brand-deep dark:text-white" placeholder="University affiliation" />
+                                                    <input type="text" value={formData.university} onChange={e => setFormData({...formData, university: e.target.value})} className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-none focus:ring-4 focus:ring-edu-coral/10 font-bold text-sm text-tharqiya-deep dark:text-white" placeholder="University affiliation" />
                                                 </div>
                                             </motion.div>
                                         )}
@@ -333,7 +333,7 @@ const AdminAlumni: React.FC = () => {
 
                                     <div className="flex flex-col sm:flex-row gap-4 pt-8">
                                         <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-5 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-500 font-black text-[10px] uppercase tracking-widest">Discard</button>
-                                        <button type="submit" className="flex-1 py-5 rounded-2xl bg-brand-deep text-white font-black text-[10px] uppercase tracking-widest shadow-xl shadow-brand-deep/20 hover:scale-[1.02] transition-all">Finish Registration</button>
+                                        <button type="submit" className="flex-1 py-5 rounded-2xl bg-tharqiya-deep text-white font-black text-[10px] uppercase tracking-widest shadow-xl shadow-tharqiya-deep/20 hover:scale-[1.02] transition-all">Finish Registration</button>
                                     </div>
                                 </form>
                             </div>
@@ -346,10 +346,10 @@ const AdminAlumni: React.FC = () => {
             <AnimatePresence>
                 {showDeleteConfirm && (
                     <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowDeleteConfirm(null)} className="fixed inset-0 bg-brand-deep/90 backdrop-blur-sm" />
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowDeleteConfirm(null)} className="fixed inset-0 bg-tharqiya-deep/90 backdrop-blur-sm" />
                         <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative w-full max-w-sm bg-white dark:bg-slate-900 rounded-[2.5rem] p-10 text-center">
                             <div className="w-16 h-16 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mx-auto mb-6"><AlertTriangle size={32} /></div>
-                            <h3 className="text-xl font-black text-brand-deep dark:text-white font-outfit mb-2 uppercase tracking-tighter">Are you sure?</h3>
+                            <h3 className="text-xl font-black text-tharqiya-deep dark:text-white font-outfit mb-2 uppercase tracking-tighter">Are you sure?</h3>
                             <p className="text-xs text-slate-500 font-bold mb-8">This will delete the alumni record forever.</p>
                             <div className="space-y-3">
                                 <button onClick={() => handleDelete(showDeleteConfirm)} className="w-full py-4 bg-rose-600 text-white rounded-xl font-black text-[10px] uppercase tracking-widest">Delete Registry Entry</button>

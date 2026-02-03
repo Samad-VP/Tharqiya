@@ -8,7 +8,7 @@
   --color-edu-teal: #5FB2C0;
   --color-edu-coral: #EE6D52;
   --color-edu-yellow: #F9C067;
-  --color-brand-deep: #4A4A4A;
+  --color-tharqiya-deep: #4A4A4A;
   --color-brand-cream: #FDF5E6;
 
   --color-tharqiya-deep: #1F2937;
@@ -32,7 +32,7 @@
   --edu-teal: #5FB2C0;
   --edu-coral: #EE6D52;
   --edu-yellow: #F9C067;
-  --brand-deep: #2D241E;
+  --tharqiya-deep: #2D241E;
   --brand-cream: #FDF5E6;
   color-scheme: light;
 }
@@ -40,17 +40,17 @@
 .dark {
   --edu-coral: #F17A63;
   --edu-teal: #75C6D3;
-  --brand-deep: #000000;
+  --tharqiya-deep: #000000;
   color-scheme: dark;
 }
 
 body {
-  font-family: 'Outfit', sans-serif;
-  @apply bg-brand-cream text-brand-deep transition-colors duration-500;
+  font-family: 'Inter', sans-serif;
+  @apply bg-brand-cream text-tharqiya-deep transition-colors duration-500;
 }
 
 .dark body {
-  @apply bg-slate-950 text-edu-teal;
+  @apply bg-slate-950 text-slate-300;
 }
 
 h1,
@@ -61,7 +61,7 @@ h5,
 h6 {
   font-family: 'Outfit', sans-serif;
   text-transform: capitalize;
-  @apply text-gold-orange;
+  @apply text-tharqiya-deep dark:text-white transition-colors duration-500;
 }
 
 .font-amiri {
@@ -91,6 +91,10 @@ h6 {
 
 @utility text-premium-xs {
   @apply text-[9px] sm:text-[10px] md:text-xs font-black uppercase tracking-[0.2em];
+}
+
+@utility text-academic-muted {
+  @apply text-tharqiya-deep/60 dark:text-slate-400 font-medium;
 }
 
 /* Stunning Glassmorphic Effects */
@@ -123,9 +127,9 @@ h6 {
   text-transform: uppercase;
 }
 
-/* Gradient Utility */
+/* Gradient Utility - Optimized for Visibility */
 @utility text-gold-orange {
-  @apply bg-gradient-to-r from-edu-teal via-edu-coral to-edu-yellow bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-shift;
+  @apply bg-gradient-to-r from-edu-teal via-tharqiya-orange to-tharqiya-gold bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-shift font-black;
 }
 
 @keyframes gradient-shift {
@@ -149,12 +153,25 @@ h6 {
 
 /* Micro-animations */
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(-15px) rotate(2deg); }
 }
 
 .animate-float {
-  animation: float 6s ease-in-out infinite;
+  animation: float 8s ease-in-out infinite;
+}
+
+/* Professional Academic Icon Placard */
+@utility icon-placard {
+  @apply w-12 h-12 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center transition-all duration-500 bg-edu-teal/10 text-edu-teal border border-edu-teal/20 hover:scale-110 hover:bg-edu-teal hover:text-white shrink-0;
+}
+
+@utility icon-placard-coral {
+  @apply w-12 h-12 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center transition-all duration-500 bg-edu-coral/10 text-edu-coral border border-edu-coral/20 hover:scale-110 hover:bg-edu-coral hover:text-white shrink-0;
+}
+
+@utility icon-placard-sm {
+  @apply w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center transition-all duration-500 bg-edu-teal/10 text-edu-teal border border-edu-teal/20 hover:scale-110 shrink-0;
 }
 
 /* Scrollbar Styling */

@@ -13,11 +13,15 @@ export const submitPublicApplication = asyncHandler(async (req: Request, res: Re
 
     const result = await createPendingApplication(req.body);
     
-    const { student } = result;
-
+    const { student, username, tempPassword } = result;
+    
     res.status(201).json({
         status: 'success',
         message: 'Application submitted successfully. Your login credentials have been sent to your registered email.',
-        applicationNo: student.applicationNo
+        applicationNo: student.applicationNo,
+        credentials: {
+            username,
+            tempPassword
+        }
     });
 });

@@ -143,15 +143,15 @@ const AdminFaculty: React.FC = () => {
             <div className="space-y-6 sm:space-y-8">
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                     <div>
-                        <h2 className="text-2xl sm:text-3xl font-black text-brand-deep dark:text-white font-outfit tracking-tighter uppercase leading-tight">
+                        <h2 className="text-2xl sm:text-3xl font-black text-tharqiya-deep dark:text-slate-100 font-outfit tracking-tighter uppercase leading-tight">
                             Faculty <span className="text-edu-teal">Management</span>
                         </h2>
-                        <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Maintain institutional academic excellence</p>
+                        <p className="text-[10px] sm:text-xs font-bold text-academic-muted uppercase tracking-widest mt-1">Maintain institutional academic excellence</p>
                     </div>
 
                     <button 
                         onClick={handleOpenCreate}
-                        className="flex items-center justify-center gap-3 px-8 py-4 bg-brand-deep dark:bg-edu-coral text-white rounded-xl sm:rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-brand-deep/20 hover:scale-[1.02] transition-all"
+                        className="flex items-center justify-center gap-3 px-8 py-4 bg-tharqiya-deep dark:bg-edu-coral text-white rounded-xl sm:rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-tharqiya-deep/20 hover:scale-[1.02] transition-all"
                     >
                         <UserPlus size={18} /> Add Faculty
                     </button>
@@ -174,7 +174,7 @@ const AdminFaculty: React.FC = () => {
                             >
                                 <div className="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2 z-10">
                                     <div className="mr-2 px-3 py-1 bg-edu-teal text-white rounded-lg text-[10px] font-black uppercase flex items-center h-fit">Pos: {f.order || 0}</div>
-                                    <button onClick={() => handleOpenEdit(f)} className="p-2 rounded-xl bg-slate-100 text-brand-deep hover:bg-edu-teal hover:text-white transition-all"><Edit size={16} /></button>
+                                    <button onClick={() => handleOpenEdit(f)} className="p-2 rounded-xl bg-slate-100 text-tharqiya-deep hover:bg-edu-teal hover:text-white transition-all"><Edit size={16} /></button>
                                     <button onClick={() => setShowDeleteConfirm(f.id)} className="p-2 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white transition-all"><Trash2 size={16} /></button>
                                 </div>
 
@@ -187,7 +187,7 @@ const AdminFaculty: React.FC = () => {
                                         )}
                                     </div>
 
-                                    <h3 className="text-xl font-black text-brand-deep dark:text-white font-outfit uppercase tracking-tighter mb-1">{f.name}</h3>
+                                    <h3 className="text-xl font-black text-tharqiya-deep dark:text-slate-100 font-outfit uppercase tracking-tighter mb-1">{f.name}</h3>
                                     <p className="text-[10px] font-black text-edu-teal uppercase tracking-widest mb-4">{f.position}</p>
 
                                     <div className="w-full pt-6 border-t border-slate-50 dark:border-slate-800 space-y-3 text-left">
@@ -221,9 +221,9 @@ const AdminFaculty: React.FC = () => {
             <AnimatePresence>
                 {showModal && (
                     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModal(false)} className="fixed inset-0 bg-brand-deep/80 backdrop-blur-sm" />
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModal(false)} className="fixed inset-0 bg-tharqiya-deep/80 backdrop-blur-sm" />
                         <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-[3rem] shadow-2xl overflow-hidden p-8 sm:p-12">
-                            <h3 className="text-2xl font-black text-brand-deep dark:text-white font-outfit uppercase tracking-tighter mb-8">
+                            <h3 className="text-2xl font-black text-tharqiya-deep dark:text-white font-outfit uppercase tracking-tighter mb-8">
                                 {modalMode === 'create' ? 'Add New' : 'Edit'} <span className="text-edu-teal">Faculty</span>
                             </h3>
 
@@ -253,11 +253,11 @@ const AdminFaculty: React.FC = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                                     <div className="md:col-span-3">
                                         <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Member Name</label>
-                                        <input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/30 border-none focus:ring-4 focus:ring-edu-teal/10 font-bold text-sm text-brand-deep dark:text-white" placeholder="Full Name" />
+                                        <input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/30 border-none focus:ring-4 focus:ring-edu-teal/10 font-bold text-sm text-tharqiya-deep dark:text-white" placeholder="Full Name" />
                                     </div>
                                     <div className="md:col-span-1">
                                         <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Order</label>
-                                        <input required type="number" min="0" value={formData.order} onChange={e => setFormData({...formData, order: parseInt(e.target.value)})} className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/30 border-none focus:ring-4 focus:ring-edu-teal/10 font-bold text-sm text-center text-brand-deep dark:text-white" />
+                                        <input required type="number" min="0" value={formData.order} onChange={e => setFormData({...formData, order: parseInt(e.target.value)})} className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/30 border-none focus:ring-4 focus:ring-edu-teal/10 font-bold text-sm text-center text-tharqiya-deep dark:text-white" />
                                     </div>
                                 </div>
 
@@ -267,13 +267,13 @@ const AdminFaculty: React.FC = () => {
                                         <select value={formData.category} onChange={e => {
                                             const cat = e.target.value;
                                             setFormData({...formData, category: cat, department: (departmentsByType[cat] && departmentsByType[cat][0]) || ''});
-                                        }} className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/30 border-none focus:ring-4 focus:ring-edu-teal/10 font-bold text-xs uppercase tracking-widest leading-tight text-brand-deep dark:text-white">
+                                        }} className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/30 border-none focus:ring-4 focus:ring-edu-teal/10 font-bold text-xs uppercase tracking-widest leading-tight text-tharqiya-deep dark:text-white">
                                             {categories.map(c => <option key={c} value={c} className="bg-white dark:bg-slate-900">{c}</option>)}
                                         </select>
                                     </div>
                                     <div>
                                         <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Department</label>
-                                        <select value={formData.department} onChange={e => setFormData({...formData, department: e.target.value})} className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/30 border-none focus:ring-4 focus:ring-edu-teal/10 font-bold text-xs uppercase tracking-widest leading-tight text-brand-deep dark:text-white">
+                                        <select value={formData.department} onChange={e => setFormData({...formData, department: e.target.value})} className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/30 border-none focus:ring-4 focus:ring-edu-teal/10 font-bold text-xs uppercase tracking-widest leading-tight text-tharqiya-deep dark:text-white">
                                             {(departmentsByType[formData.category] || []).map(d => <option key={d} value={d} className="bg-white dark:bg-slate-900">{d}</option>)}
                                             <option value="Other" className="bg-white dark:bg-slate-900">Other</option>
                                         </select>
@@ -283,13 +283,13 @@ const AdminFaculty: React.FC = () => {
                                 {formData.department === 'Other' && (
                                     <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
                                         <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Type Custom Department</label>
-                                        <input required type="text" onChange={e => setFormData({...formData, department: e.target.value})} className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/30 border-none focus:ring-4 focus:ring-edu-teal/10 font-bold text-sm text-brand-deep dark:text-white" placeholder="e.g., Philosophy" />
+                                        <input required type="text" onChange={e => setFormData({...formData, department: e.target.value})} className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/30 border-none focus:ring-4 focus:ring-edu-teal/10 font-bold text-sm text-tharqiya-deep dark:text-white" placeholder="e.g., Philosophy" />
                                     </motion.div>
                                 )}
 
                                 <div>
                                     <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Position</label>
-                                    <select value={formData.position} onChange={e => setFormData({...formData, position: e.target.value})} className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/30 border-none focus:ring-4 focus:ring-edu-teal/10 font-bold text-xs uppercase tracking-widest leading-tight text-brand-deep dark:text-white">
+                                    <select value={formData.position} onChange={e => setFormData({...formData, position: e.target.value})} className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/30 border-none focus:ring-4 focus:ring-edu-teal/10 font-bold text-xs uppercase tracking-widest leading-tight text-tharqiya-deep dark:text-white">
                                         <option value="" className="bg-white dark:bg-slate-900">Select Position</option>
                                         {positions.map(p => <option key={p} value={p} className="bg-white dark:bg-slate-900">{p}</option>)}
                                         <option value="Other" className="bg-white dark:bg-slate-900">Other</option>
@@ -299,13 +299,13 @@ const AdminFaculty: React.FC = () => {
                                 {formData.position === 'Other' && (
                                     <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
                                         <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Type Custom Position</label>
-                                        <input required type="text" onChange={e => setFormData({...formData, position: e.target.value})} className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/30 border-none focus:ring-4 focus:ring-edu-teal/10 font-bold text-sm text-brand-deep dark:text-white" placeholder="e.g., Coordinator" />
+                                        <input required type="text" onChange={e => setFormData({...formData, position: e.target.value})} className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/30 border-none focus:ring-4 focus:ring-edu-teal/10 font-bold text-sm text-tharqiya-deep dark:text-white" placeholder="e.g., Coordinator" />
                                     </motion.div>
                                 )}
 
                                 <div className="flex flex-col sm:flex-row gap-4 pt-4">
                                     <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-5 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-500 font-black text-[10px] uppercase tracking-widest hover:bg-slate-200 transition-colors">Discard</button>
-                                    <button type="submit" disabled={uploading} className="flex-1 py-5 rounded-2xl bg-brand-deep text-white font-black text-[10px] uppercase tracking-widest shadow-xl shadow-brand-deep/20 hover:scale-[1.02] transition-all disabled:opacity-50">
+                                    <button type="submit" disabled={uploading} className="flex-1 py-5 rounded-2xl bg-tharqiya-deep text-white font-black text-[10px] uppercase tracking-widest shadow-xl shadow-tharqiya-deep/20 hover:scale-[1.02] transition-all disabled:opacity-50">
                                         {modalMode === 'create' ? 'Add Member' : 'Update Member'}
                                     </button>
                                 </div>
@@ -319,10 +319,10 @@ const AdminFaculty: React.FC = () => {
             <AnimatePresence>
                 {showDeleteConfirm && (
                     <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowDeleteConfirm(null)} className="fixed inset-0 bg-brand-deep/90 backdrop-blur-sm" />
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowDeleteConfirm(null)} className="fixed inset-0 bg-tharqiya-deep/90 backdrop-blur-sm" />
                         <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative w-full max-w-sm bg-white dark:bg-slate-900 rounded-[2.5rem] p-10 text-center">
                             <div className="w-16 h-16 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mx-auto mb-6"><AlertTriangle size={32} /></div>
-                            <h3 className="text-xl font-black text-brand-deep dark:text-white font-outfit mb-2 uppercase tracking-tighter">Are you sure?</h3>
+                            <h3 className="text-xl font-black text-tharqiya-deep dark:text-white font-outfit mb-2 uppercase tracking-tighter">Are you sure?</h3>
                             <p className="text-xs text-slate-500 font-bold mb-8">This will permanently remove the faculty member from the registry.</p>
                             <div className="space-y-3">
                                 <button onClick={() => handleDelete(showDeleteConfirm)} className="w-full py-4 bg-rose-600 text-white rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg shadow-rose-600/20">Remove Permanently</button>

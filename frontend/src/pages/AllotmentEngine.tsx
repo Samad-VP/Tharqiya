@@ -129,7 +129,7 @@ const AllotmentEngine: React.FC = () => {
                 {/* Header */}
                 <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                     <div>
-                        <h2 className="text-4xl font-black font-outfit tracking-tighter text-brand-deep dark:text-white uppercase leading-none">
+                        <h2 className="text-4xl font-black font-outfit tracking-tighter text-tharqiya-deep dark:text-white uppercase leading-none">
                             Allotment <span className="text-edu-teal">Engine</span>
                         </h2>
                         <p className="text-slate-500 dark:text-slate-400 font-bold text-[10px] uppercase tracking-widest mt-3 ml-1">
@@ -163,7 +163,7 @@ const AllotmentEngine: React.FC = () => {
                                 <Info size={14} className="text-slate-200" />
                             </div>
                             <div className="flex items-end gap-2 mb-4">
-                                <span className="text-3xl font-black text-brand-deep dark:text-white font-outfit">{campus.occupied}</span>
+                                <span className="text-3xl font-black text-tharqiya-deep dark:text-white font-outfit">{campus.occupied}</span>
                                 <span className="text-[10px] font-bold text-slate-400 mb-2 uppercase">/ {campus.maxSeats} Seats</span>
                             </div>
                             <div className="h-2 bg-slate-50 dark:bg-white/5 rounded-full overflow-hidden">
@@ -184,7 +184,7 @@ const AllotmentEngine: React.FC = () => {
                 {/* Candidate Table */}
                 <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[2.5rem] shadow-xl overflow-hidden">
                     <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                        <h3 className="text-lg font-black text-brand-deep dark:text-white font-outfit uppercase tracking-tighter flex items-center gap-2">
+                        <h3 className="text-lg font-black text-tharqiya-deep dark:text-white font-outfit uppercase tracking-tighter flex items-center gap-2">
                             <LayoutDashboard size={20} className="text-edu-teal" />
                             Candidate Roster
                         </h3>
@@ -228,7 +228,7 @@ const AllotmentEngine: React.FC = () => {
                                                     ) : can.student?.user?.name?.[0]}
                                                 </div>
                                                 <div>
-                                                    <p className="font-black text-brand-deep dark:text-white font-outfit uppercase tracking-tight">{can.student?.user?.name}</p>
+                                                    <p className="font-black text-tharqiya-deep dark:text-white font-outfit uppercase tracking-tight">{can.student?.user?.name}</p>
                                                     <div className="flex items-center gap-2">
                                                         <p className="text-[10px] text-slate-400 uppercase font-black tracking-widest">{can.student?.applicationNo}</p>
                                                         <span className={`text-[9px] font-black px-1.5 py-0.5 rounded ${
@@ -245,7 +245,7 @@ const AllotmentEngine: React.FC = () => {
                                         <td className="px-8 py-6">
                                             <div className="flex items-center gap-2">
                                                 <TrendingUp size={14} className="text-edu-teal" />
-                                                <span className="font-black text-brand-deep dark:text-white">{calculateAvgScore(can.interview?.evaluations)}</span>
+                                                <span className="font-black text-tharqiya-deep dark:text-white">{calculateAvgScore(can.interview?.evaluations)}</span>
                                             </div>
                                         </td>
                                         <td className="px-8 py-6">
@@ -254,7 +254,7 @@ const AllotmentEngine: React.FC = () => {
                                                     disabled={can.allotment?.isFinalized}
                                                     value={selectedLevels[can.id] || COURSE_LEVELS[0]?.name || ''}
                                                     onChange={(e) => setSelectedLevels(prev => ({ ...prev, [can.id]: e.target.value }))}
-                                                    className="bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-lg px-3 py-1.5 text-[10px] font-black uppercase text-brand-deep dark:text-white outline-none focus:border-edu-teal transition-all min-w-[140px] appearance-none cursor-pointer"
+                                                    className="bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-lg px-3 py-1.5 text-[10px] font-black uppercase text-tharqiya-deep dark:text-white outline-none focus:border-edu-teal transition-all min-w-[140px] appearance-none cursor-pointer"
                                                 >
                                                     {COURSE_LEVELS.map(level => (
                                                         <option key={level.name} value={level.name} className="dark:bg-slate-800 dark:text-white">
@@ -346,7 +346,7 @@ const AllotmentEngine: React.FC = () => {
                                     </div>
                                     <div className="flex-grow">
                                         <div className="flex items-center justify-between">
-                                            <p className="font-black text-brand-deep dark:text-white font-outfit uppercase tracking-tight text-lg leading-none">{can.student?.user?.name}</p>
+                                            <p className="font-black text-tharqiya-deep dark:text-white font-outfit uppercase tracking-tight text-lg leading-none">{can.student?.user?.name}</p>
                                             <div className="flex items-center gap-1.5 text-edu-teal">
                                                 <TrendingUp size={14} />
                                                 <span className="font-black">{calculateAvgScore(can.interview?.evaluations)}</span>
@@ -393,7 +393,7 @@ const AllotmentEngine: React.FC = () => {
                                         disabled={can.allotment?.isFinalized}
                                         value={selectedLevels[can.id] || COURSE_LEVELS[0]?.name || ''}
                                         onChange={(e) => setSelectedLevels(prev => ({ ...prev, [can.id]: e.target.value }))}
-                                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-black uppercase text-brand-deep dark:text-white outline-none focus:border-edu-teal transition-all appearance-none cursor-pointer"
+                                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-black uppercase text-tharqiya-deep dark:text-white outline-none focus:border-edu-teal transition-all appearance-none cursor-pointer"
                                     >
                                         {COURSE_LEVELS.map(level => (
                                             <option key={level.name} value={level.name}>

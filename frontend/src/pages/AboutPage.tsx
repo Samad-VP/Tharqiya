@@ -1,7 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Library, UsersRound, Languages, Trophy, Eye, Target, Sparkles, Building2, Heart } from 'lucide-react';
+import { Library, UsersRound, Languages, Trophy, Eye, Target, Sparkles, Building2, Heart, MessageCircle } from 'lucide-react';
+import { fadeInUp, staggerContainer, scaleIn } from '../utils/animations';
 import SEO from '../components/SEO';
+import academicBg from '../assets/campus-view-academic.jpg';
+import campusMonument from '../assets/campus-monument.jpg';
+import viceChancellorImg from '../assets/leadership/vice_chancellor_clean.png';
 
 const AboutPage: React.FC = () => {
     return (
@@ -34,17 +38,105 @@ const AboutPage: React.FC = () => {
 
                 <div className="relative z-10 text-center px-4 max-w-4xl">
                     <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8 }}
+                        variants={fadeInUp}
+                        initial="initial"
+                        animate="animate"
                     >
                         <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-7xl font-black text-tharqiya-deep dark:text-white mb-4 sm:mb-6 font-outfit tracking-tighter">
-                            About <span className="text-tharqiya-gold">Tharqiya</span>
+                            About <span className="text-gold-orange">Tharqiya</span>
                         </h1>
-                        <p className="text-sm sm:text-lg md:text-2xl text-tharqiya-deep/80 dark:text-white/90 max-w-2xl mx-auto font-medium leading-relaxed">
+                        <p className="text-sm sm:text-lg md:text-2xl text-academic-muted max-w-2xl mx-auto font-medium leading-relaxed">
                             Nurturing excellence in Quranic memory and modern academic scholarship at Darussalam Edu Village.
                         </p>
                     </motion.div>
+                </div>
+            </section>
+
+            {/* Vice Chancellor's Message */}
+            <section className="py-24 sm:py-32 relative overflow-hidden bg-white/50 dark:bg-slate-900/20 backdrop-blur-sm border-b border-white/20 dark:border-slate-800/50">
+                {/* Highlight Glows */}
+                <div className="absolute top-0 left-1/4 w-96 h-96 bg-edu-teal/5 rounded-full blur-[120px] pointer-events-none" />
+                <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-edu-coral/5 rounded-full blur-[120px] pointer-events-none" />
+
+                <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+                    <div className="flex flex-col items-center">
+                        {/* Content Side - Top */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 50 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.8 }}
+                            className="max-w-4xl mx-auto text-center"
+                        >
+                            <div className="flex items-center justify-center gap-3 mb-6">
+                                <div className="h-px w-10 bg-tharqiya-gold" />
+                                <span className="text-tharqiya-gold font-black tracking-[0.3em] uppercase text-xs">Visions & Values</span>
+                                <div className="h-px w-10 bg-tharqiya-gold" />
+                            </div>
+
+                            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-tharqiya-deep dark:text-white mb-10 font-outfit leading-tight tracking-tighter">
+                                A Message from the <br />
+                                <span className="text-gold-orange">Vice Chancellor</span>
+                            </h2>
+
+                            <motion.div 
+                                whileHover={{ y: -8, scale: 1.01 }}
+                                transition={{ duration: 0.4, ease: "easeOut" }}
+                                className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl p-8 sm:p-12 rounded-[2.5rem] border border-white dark:border-white/5 shadow-2xl relative group mb-12 text-left max-w-3xl mx-auto"
+                            >
+                                <MessageCircle className="absolute -top-6 -right-6 w-16 h-16 text-edu-teal/20 group-hover:rotate-12 transition-transform duration-500" />
+                                <p className="text-lg sm:text-xl text-academic-muted leading-relaxed italic mb-8 relative z-10">
+                                    "Our vision for Darussalam Edu Village is to provide a sanctuary where the sacred memory of the Quran meets the highest standards of modern academic scholarship. Every facility on this campus is designed to nurture the intellect and the soul equally."
+                                </p>
+                                
+                                <div className="flex items-center gap-5">
+                                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white dark:bg-slate-950 overflow-hidden border-2 border-tharqiya-gold/30 shadow-lg shrink-0">
+                                        <img src={viceChancellorImg} alt="AV Abdurahman Musliyar" className="w-full h-full object-cover" />
+                                    </div>
+                                    <div>
+                                        <h4 className="text-xl sm:text-2xl font-black text-tharqiya-deep dark:text-slate-100 font-outfit uppercase tracking-tighter">
+                                            AV Abdurahman Musliyar
+                                        </h4>
+                                        <p className="text-xs sm:text-sm font-black text-edu-teal uppercase tracking-widest mt-1">
+                                            Vice Chancellor, DIU
+                                        </p>
+                                    </div>
+                                </div>
+                            </motion.div>
+
+                            <p className="text-academic-muted font-medium mb-12 max-w-2xl mx-auto">
+                                Experience the serenity of our campus, our state-of-the-art library, and the creative spaces that define the Tharqiya experience through this special institutional feature.
+                            </p>
+                        </motion.div>
+
+                        {/* Video Side - Bottom */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 50 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.8, delay: 0.2 }}
+                            className="relative w-full max-w-5xl mx-auto"
+                        >
+                            {/* Premium Video Frame with Hover */}
+                            <motion.div 
+                                whileHover={{ scale: 1.01 }}
+                                transition={{ duration: 0.5, ease: "easeOut" }}
+                                className="relative group cursor-pointer"
+                            >
+                                <div className="absolute -inset-4 sm:-inset-6 bg-edu-teal/10 rounded-[2.5rem] blur-3xl group-hover:bg-edu-teal/20 transition-all duration-700" />
+                                <div className="relative aspect-video rounded-[2rem] sm:rounded-[3rem] overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] border-4 sm:border-8 border-white dark:border-slate-800 bg-slate-900">
+                                    <iframe 
+                                        className="absolute inset-0 w-full h-full"
+                                        src="https://www.youtube.com/embed/C3IeDIE3OT4" 
+                                        title="Vice Chancellor's Message & Campus Tour"
+                                        frameBorder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                        allowFullScreen
+                                    ></iframe>
+                                </div>
+                            </motion.div>
+                        </motion.div>
+                    </div>
                 </div>
             </section>
 
@@ -53,21 +145,21 @@ const AboutPage: React.FC = () => {
                 <div className="max-w-7xl mx-auto px-6 lg:px-8">
                     <div className="grid lg:grid-cols-2 gap-12 md:gap-24 items-center">
                         <motion.div
-                            initial={{ opacity: 0, x: -50 }}
-                            whileInView={{ opacity: 1, x: 0 }}
+                            variants={fadeInUp}
+                            initial="initial"
+                            whileInView="animate"
                             viewport={{ once: true }}
-                            transition={{ duration: 0.8 }}
                         >
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="h-px w-10 bg-tharqiya-orange dark:bg-tharqiya-gold" />
                                 <span className="text-tharqiya-orange dark:text-tharqiya-gold font-black tracking-[0.3em] uppercase text-xs">Our Heritage</span>
                             </div>
-                            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-tharqiya-deep dark:text-white mb-6 md:mb-8 font-outfit leading-[1.1] tracking-tighter">
+                            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-tharqiya-deep dark:text-slate-100 mb-6 md:mb-8 font-outfit leading-[1.1] tracking-tighter">
                                 A Legacy of Faith & <span className="text-tharqiya-gold">Scholarly Brilliance</span>
                             </h2>
-                            <div className="space-y-6 text-lg text-tharqiya-deep/80 dark:text-slate-400 leading-relaxed font-medium">
+                            <div className="space-y-6 text-lg text-academic-muted leading-relaxed font-medium">
                                 <p>
-                                    Darussalam Tharqiyathul Huffaz is a flagship institution under the prestigious Darussalam Islamic University. Nestled in the serene Darussalam Edu Village, our campus provides a unique sanctuary where spiritual depth meets intellectual vigor.
+                                    Darussalam Tharqiyathul Huffaz is a flagship institution under the prestigious Darussalam Islamic University (DIU). Nestled in the serene Darussalam Edu Village, our campus provides a unique sanctuary where spiritual depth meets intellectual vigor.
                                 </p>
                                 <p>
                                     As Kerala's premier Post-Hifz destination, Tharqiya empowers Huffaz to pursue world-class education without compromising their sacred identity.
@@ -85,10 +177,10 @@ const AboutPage: React.FC = () => {
                             transition={{ duration: 0.8 }}
                             className="relative"
                         >
-                            <div className="rounded-[2rem] sm:rounded-[3rem] overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.3)] dark:shadow-[0_50px_100px_-20_rgba(0,0,0,0.6)] border-4 sm:border-[10px] border-tharqiya-cream dark:border-slate-900 group">
+                            <div className="rounded-[2rem] sm:rounded-[3rem] overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.3)] dark:shadow-[0_50px_100px_-20_rgba(0,0,0,0.6)] border-4 sm:border-[10px] border-tharqiya-cream dark:border-slate-900 group relative">
                                 <img
-                                    src="https://images.unsplash.com/photo-1541339907198-e08759dfc3ef?auto=format&fit=crop&q=80&w=1000"
-                                    alt="Academic Excellence"
+                                    src={campusMonument}
+                                    alt="Darussalam Campus Monument"
                                     className="w-full h-[400px] sm:h-[600px] object-cover transition-transform duration-1000 group-hover:scale-105"
                                 />
                             </div>
@@ -111,28 +203,49 @@ const AboutPage: React.FC = () => {
                                 title: "Our Mission",
                                 desc: "To empower Huffaz with a 10-year integrated curriculum that blends Quranic sciences with university-level academic excellence.",
                                 color: "bg-tharqiya-orange",
-                                tone: "text-tharqiya-orange"
+                                tone: "text-tharqiya-orange",
+                                gradient: "from-tharqiya-orange/5 to-transparent"
                             },
                             {
                                 icon: Eye,
                                 title: "Our Vision",
                                 desc: "To be the global benchmark for modern Post-Hifz education, serving as a beacon of spiritually-anchored leadership.",
                                 color: "bg-tharqiya-gold",
-                                tone: "text-tharqiya-gold"
+                                tone: "text-tharqiya-gold",
+                                gradient: "from-tharqiya-gold/5 to-transparent"
                             }
                         ].map((item, idx) => (
                             <motion.div
                                 key={idx}
-                                whileHover={{ y: -15 }}
-                                className="bg-tharqiya-cream dark:bg-slate-900 p-6 sm:p-12 rounded-[1.5rem] sm:rounded-[2.5rem] shadow-xl dark:shadow-2xl border border-slate-100 dark:border-slate-800 transition-all duration-500"
+                                variants={fadeInUp}
+                                initial="initial"
+                                whileInView="animate"
+                                viewport={{ once: true }}
+                                whileHover={{ y: -15, transition: { duration: 0.4 } }}
+                                className="group relative bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl p-8 sm:p-14 rounded-[2.5rem] sm:rounded-[4rem] shadow-2xl dark:shadow-[0_0_50px_rgba(0,0,0,0.3)] border border-white/20 dark:border-slate-800/50 transition-all duration-500 overflow-hidden"
                             >
-                                <div className={`w-14 h-14 sm:w-20 sm:h-20 ${item.color}/10 rounded-2xl sm:rounded-3xl flex items-center justify-center mb-6 sm:mb-8 ${item.tone}`}>
-                                    <item.icon className="w-6 h-6 sm:w-10 sm:h-10" />
+                                {/* Decorative Gradient Background */}
+                                <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-700`} />
+                                
+                                <div className="relative z-10">
+                                    <motion.div 
+                                        variants={scaleIn}
+                                        className={`icon-placard ${item.color.includes('orange') ? 'icon-placard-sm' : 'icon-placard-sm'} !border-current/20 mb-8 sm:mb-12`}
+                                    >
+                                        <item.icon className="w-8 h-8 sm:w-12 sm:h-12" strokeWidth={1.5} />
+                                    </motion.div>
+                                    
+                                    <h3 className="text-2xl sm:text-4xl font-black text-tharqiya-deep dark:text-slate-100 mb-4 sm:mb-8 font-outfit tracking-tighter leading-none">
+                                        {item.title}
+                                    </h3>
+                                    
+                                    <p className="text-base sm:text-xl text-academic-muted leading-relaxed font-medium">
+                                        {item.desc}
+                                    </p>
+                                    
+                                    {/* Action Indicator */}
+                                    <div className={`mt-8 sm:mt-12 h-1 w-12 sm:w-20 rounded-full ${item.color} transform origin-left scale-x-50 group-hover:scale-x-100 transition-transform duration-500`} />
                                 </div>
-                                <h3 className="text-xl sm:text-3xl font-black text-tharqiya-deep dark:text-white mb-3 sm:mb-6 font-outfit tracking-tight">{item.title}</h3>
-                                <p className="text-sm sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-                                    {item.desc}
-                                </p>
                             </motion.div>
                         ))}
                     </div>
@@ -144,7 +257,7 @@ const AboutPage: React.FC = () => {
                 <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
                     <div className="text-center mb-12 sm:mb-20">
                         <span className="text-tharqiya-gold font-black tracking-widest uppercase text-xs">Unmatched Potential</span>
-                        <h2 className="text-4xl md:text-6xl font-black text-tharqiya-deep dark:text-white font-outfit tracking-tighter mt-4">The Tharqiya Advantage</h2>
+                        <h2 className="text-4xl md:text-6xl font-black text-tharqiya-deep dark:text-slate-100 font-outfit tracking-tighter mt-4">The Tharqiya Advantage</h2>
                         <div className="w-20 h-1 bg-tharqiya-orange dark:bg-tharqiya-gold mx-auto mt-6 rounded-full" />
                     </div>
 
@@ -162,11 +275,11 @@ const AboutPage: React.FC = () => {
                                 whileHover={{ scale: 1.02 }}
                                 className="p-6 sm:p-10 rounded-[1.5rem] sm:rounded-3xl bg-slate-50 dark:bg-slate-900/50 border border-transparent hover:border-tharqiya-orange/20 dark:hover:border-tharqiya-gold/20 transition-all group"
                             >
-                                <div className="text-tharqiya-orange dark:text-tharqiya-gold mb-4 sm:mb-8 group-hover:scale-110 transition-transform duration-500">
+                                <div className="icon-placard mb-4 sm:mb-8">
                                     <feature.icon className="w-7 h-7 sm:w-10 sm:h-10" strokeWidth={1.5} />
                                 </div>
-                                <h4 className="text-lg sm:text-2xl font-bold text-tharqiya-deep dark:text-white mb-2 sm:mb-4 font-outfit tracking-tight">{feature.title}</h4>
-                                <p className="text-xs sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed font-medium">{feature.desc}</p>
+                                <h4 className="text-lg sm:text-2xl font-bold text-tharqiya-deep dark:text-slate-100 mb-2 sm:mb-4 font-outfit tracking-tight">{feature.title}</h4>
+                                <p className="text-xs sm:text-base text-academic-muted leading-relaxed font-medium">{feature.desc}</p>
                             </motion.div>
                         ))}
                     </div>
@@ -174,22 +287,64 @@ const AboutPage: React.FC = () => {
             </section>
 
              {/* CTA / Village Section */}
-            <section className="py-16 sm:py-24 md:py-32 bg-tharqiya-orange dark:bg-tharqiya-deep relative overflow-hidden">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                    <div className="max-w-4xl mx-auto text-center">
-                        <h2 className="text-3xl md:text-6xl font-black text-slate-950 dark:text-white mb-6 sm:mb-8 font-outfit tracking-tighter">Darussalam Edu Village</h2>
-                        <p className="text-lg md:text-2xl text-slate-900 dark:text-white/80 leading-relaxed mb-8 sm:mb-12 font-medium">
-                            Located in a tranquil sanctuary, Darussalam Edu Village allows students to escape urban static and focus entirely on their spiritual and academic evolution.
-                        </p>
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="btn-secondary px-8 sm:px-12 py-4 sm:py-5 text-base sm:text-xl font-black tracking-widest"
-                        >
-                            Plan a Visit
-                        </motion.button>
-                    </div>
+             {/* CTA / Village Section - Premium Academic Look */}
+            <section className="py-24 sm:py-32 relative overflow-hidden bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500">
+                <div className="max-w-7xl mx-auto px-6 relative z-10">
+                    <motion.div
+                        variants={fadeInUp}
+                        initial="initial"
+                        whileInView="animate"
+                        viewport={{ once: true }}
+                        className="relative"
+                    >
+                        {/* Glassmorphic Village Card */}
+                        <div className="relative p-10 sm:p-20 rounded-[3rem] sm:rounded-[4rem] bg-white/40 dark:bg-slate-900/40 backdrop-blur-3xl border border-white dark:border-white/5 shadow-2xl overflow-hidden group text-center">
+                            {/* Decorative Islamic Pattern Background */}
+                            <div className="absolute inset-0 islamic-pattern opacity-[0.03] dark:opacity-[0.07] pointer-events-none" />
+                            
+                            {/* Animated Background Glow */}
+                            <div className="absolute -top-24 -left-24 w-64 h-64 bg-edu-teal/10 rounded-full blur-[100px] animate-pulse" />
+                            <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-edu-coral/10 rounded-full blur-[100px] animate-pulse [animation-delay:1s]" />
+
+                            <div className="relative z-10 space-y-10">
+                                <div className="space-y-6">
+                                    <h2 className="text-3xl sm:text-5xl md:text-7xl font-playfair font-black italic leading-[1.2] text-tharqiya-deep dark:text-white transition-colors duration-500 max-w-5xl mx-auto tracking-tight uppercase">
+                                        Darussalam <span className="text-gold-orange font-outfit not-italic">Edu Village</span>
+                                    </h2>
+                                    <p className="text-sm sm:text-xl text-academic-muted max-w-3xl mx-auto font-bold uppercase tracking-[0.2em] leading-relaxed">
+                                        Located in a tranquil sanctuary, Darussalam Edu Village allows students to escape urban static and focus entirely on their <span className="text-gold-orange">spiritual and academic evolution</span>.
+                                    </p>
+                                </div>
+
+                                <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-6">
+                                    <motion.button
+                                        whileHover={{ scale: 1.05, y: -5 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        className="btn-primary"
+                                    >
+                                        Plan a Visit
+                                    </motion.button>
+                                    
+                                    <motion.button
+                                        whileHover={{ scale: 1.05, y: -5 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        className="px-10 py-4 text-tharqiya-deep dark:text-white font-black tracking-widest border-2 border-tharqiya-deep/10 dark:border-white/10 rounded-full hover:bg-tharqiya-deep hover:text-white dark:hover:bg-white dark:hover:text-slate-950 transition-all duration-300"
+                                    >
+                                        Contact Us
+                                    </motion.button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Floating Accents */}
+                        <div className="absolute -top-10 -right-10 w-24 h-24 bg-white/50 dark:bg-white/5 backdrop-blur-xl border border-white dark:border-white/10 rounded-3xl -rotate-12 animate-float -z-10 hidden lg:block" />
+                        <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white/50 dark:bg-white/5 backdrop-blur-xl border border-white dark:border-white/10 rounded-[2rem] rotate-12 animate-float [animation-delay:2s] -z-10 hidden lg:block" />
+                    </motion.div>
                 </div>
+
+                {/* Background Decorations */}
+                <div className="absolute top-1/2 left-0 w-64 h-64 bg-edu-teal/5 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2" />
+                <div className="absolute top-1/2 right-0 w-64 h-64 bg-edu-coral/5 rounded-full blur-[120px] translate-x-1/2 -translate-y-1/2" />
             </section>
         </div>
     );

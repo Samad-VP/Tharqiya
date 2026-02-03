@@ -90,13 +90,17 @@ const Footer: React.FC = () => {
                                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-slate-800/30 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0">
                                     <Phone className="text-edu-teal" size={16} />
                                 </div>
-                                <span className="text-slate-400 font-bold text-xs sm:text-sm">+91 496 2673322</span>
+                                <a href="tel:+919847642004" className="text-slate-400 font-bold text-xs sm:text-sm hover:text-edu-teal transition-colors cursor-pointer">
+                                    +91 98476 42004
+                                </a>
                             </li>
                             <li className="flex flex-col items-center gap-3 sm:gap-4">
                                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-slate-800/30 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0">
                                     <Mail className="text-edu-teal" size={16} />
                                 </div>
-                                <span className="text-slate-400 font-bold text-xs sm:text-sm">info@tharqiya.com</span>
+                                <a href="mailto:info@darussalameduvillage.com" className="text-slate-400 font-bold text-xs sm:text-sm hover:text-edu-teal transition-colors cursor-pointer">
+                                    info@darussalameduvillage.com
+                                </a>
                             </li>
                         </ul>
                     </div>

@@ -80,7 +80,7 @@ const PerformanceInsights: React.FC = () => {
                         <Link to="/principal" className="flex items-center gap-2 text-edu-teal text-[10px] font-black uppercase tracking-widest mb-4 hover:gap-4 transition-all">
                             <ArrowLeft size={14} /> Back to Dashboard
                         </Link>
-                        <h2 className="text-4xl lg:text-5xl font-black font-outfit tracking-tighter text-brand-deep dark:text-white uppercase leading-none">
+                        <h2 className="text-4xl lg:text-5xl font-black font-outfit tracking-tighter text-tharqiya-deep dark:text-white uppercase leading-none">
                             Institutional <span className="text-edu-coral">Insights</span>
                         </h2>
                         <p className="text-slate-500 dark:text-slate-400 font-bold text-[10px] uppercase tracking-widest mt-3 ml-1">
@@ -111,7 +111,7 @@ const PerformanceInsights: React.FC = () => {
                             <div className="flex-1">
                                 <div className="flex items-center justify-between mb-10">
                                     <div>
-                                        <h3 className="text-xl font-black text-brand-deep dark:text-white font-outfit uppercase tracking-tighter flex items-center gap-3">
+                                        <h3 className="text-xl font-black text-tharqiya-deep dark:text-white font-outfit uppercase tracking-tighter flex items-center gap-3">
                                             <Target className="text-edu-teal" size={24} />
                                             Overall Score Spectrum
                                         </h3>
@@ -129,7 +129,7 @@ const PerformanceInsights: React.FC = () => {
                                             <div key={range} className="space-y-2">
                                                 <div className="flex justify-between items-end">
                                                     <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{range} Marks</span>
-                                                    <span className="text-xs font-black text-brand-deep dark:text-white">{count} Students <span className="text-edu-teal ml-2">{percentage.toFixed(0)}%</span></span>
+                                                    <span className="text-xs font-black text-tharqiya-deep dark:text-white">{count} Students <span className="text-edu-teal ml-2">{percentage.toFixed(0)}%</span></span>
                                                 </div>
                                                 <div className="h-4 bg-slate-50 dark:bg-white/5 rounded-full overflow-hidden border border-slate-100 dark:border-slate-800 shadow-inner">
                                                     <motion.div 
@@ -149,7 +149,7 @@ const PerformanceInsights: React.FC = () => {
                             <div className="flex-1 lg:border-l border-slate-50 dark:border-slate-800 lg:pl-12">
                                 <div className="flex items-center justify-between mb-10">
                                     <div>
-                                        <h3 className="text-xl font-black text-brand-deep dark:text-white font-outfit uppercase tracking-tighter flex items-center gap-3">
+                                        <h3 className="text-xl font-black text-tharqiya-deep dark:text-white font-outfit uppercase tracking-tighter flex items-center gap-3">
                                             <Award className="text-edu-coral" size={24} />
                                             Subject Competency
                                         </h3>
@@ -165,7 +165,7 @@ const PerformanceInsights: React.FC = () => {
                                                     {subject.subject === 'Hifz' ? <Users size={20} /> : subject.subject === 'English' ? <Target size={20} /> : <ClipboardList size={20} />}
                                                 </div>
                                                 <div className="text-right">
-                                                    <p className="text-2xl font-black text-brand-deep dark:text-white font-outfit">{subject.average}</p>
+                                                    <p className="text-2xl font-black text-tharqiya-deep dark:text-white font-outfit">{subject.average}</p>
                                                     <p className="text-[9px] font-black text-edu-teal uppercase tracking-widest">Avg Score</p>
                                                 </div>
                                             </div>
@@ -187,7 +187,7 @@ const PerformanceInsights: React.FC = () => {
                     {/* Left: Campus Distribution */}
                     <motion.div 
                         variants={cardVariants}
-                        className="lg:col-span-5 p-10 rounded-[2.5rem] bg-brand-deep text-white shadow-2xl relative overflow-hidden flex flex-col"
+                        className="lg:col-span-5 p-10 rounded-[2.5rem] bg-tharqiya-deep text-white shadow-2xl relative overflow-hidden flex flex-col"
                     >
                         <div className="relative z-10 flex-grow">
                             <div 
@@ -267,7 +267,7 @@ const PerformanceInsights: React.FC = () => {
                         variants={cardVariants}
                         className="lg:col-span-7 p-10 rounded-[2.5rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xl"
                     >
-                        <h3 className="text-2xl font-black text-brand-deep dark:text-white font-outfit uppercase tracking-tighter mb-10">Admission <span className="text-edu-coral">Funnel Flow</span></h3>
+                        <h3 className="text-2xl font-black text-tharqiya-deep dark:text-white font-outfit uppercase tracking-tighter mb-10">Admission <span className="text-edu-coral">Funnel Flow</span></h3>
                         
                         <div className="relative">
                             <div className="absolute left-[39px] top-4 bottom-4 w-1 bg-slate-50 dark:bg-white/5 rounded-full" />
@@ -289,12 +289,12 @@ const PerformanceInsights: React.FC = () => {
                                         <div key={i} className="flex items-center gap-8 group">
                                             <div className={`w-20 h-20 rounded-2xl ${step.color} shadow-lg flex items-center justify-center text-white shrink-0 group-hover:scale-105 transition-transform z-10 relative`}>
                                                 <step.icon size={32} />
-                                                <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-white dark:bg-slate-800 shadow-xl border border-slate-100 dark:border-slate-700 flex items-center justify-center text-[10px] font-black text-brand-deep dark:text-white">
+                                                <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-white dark:bg-slate-800 shadow-xl border border-slate-100 dark:border-slate-700 flex items-center justify-center text-[10px] font-black text-tharqiya-deep dark:text-white">
                                                     {count}
                                                 </div>
                                             </div>
                                             <div className="flex-grow pb-4 border-b border-slate-50 dark:border-slate-800 last:border-0">
-                                                <h4 className="font-black text-brand-deep dark:text-white uppercase tracking-tighter text-lg">{label}</h4>
+                                                <h4 className="font-black text-tharqiya-deep dark:text-white uppercase tracking-tighter text-lg">{label}</h4>
                                                 <div className="flex items-center justify-between">
                                                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{step.status.replace('_', ' ')}</p>
                                                     <ChevronRight size={14} className="text-slate-200 group-hover:text-edu-teal transition-transform group-hover:translate-x-2" />
@@ -316,7 +316,7 @@ const PerformanceInsights: React.FC = () => {
                 >
                     <div className="relative z-10">
                         <ShieldCheck className="mx-auto mb-6 text-edu-teal" size={48} />
-                        <h3 className="text-3xl font-black font-outfit text-brand-deep dark:text-white tracking-tighter uppercase mb-4">Institutional Quality Assurance</h3>
+                        <h3 className="text-3xl font-black font-outfit text-tharqiya-deep dark:text-white tracking-tighter uppercase mb-4">Institutional Quality Assurance</h3>
                         <p className="text-slate-500 dark:text-slate-400 font-medium max-w-2xl mx-auto leading-relaxed text-sm lg:text-base">
                             The metrics above reflect our commitment to scholarly excellence. All data is synchronized across the Darussalam Edu Village node network in real-time.
                         </p>

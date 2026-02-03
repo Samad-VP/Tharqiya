@@ -131,7 +131,7 @@ const InterviewerEvaluations: React.FC = () => {
                                             </td>
                                             <td className="px-10 py-8">
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-10 h-10 rounded-xl bg-tharqiya-orange/10 flex items-center justify-center font-black text-tharqiya-orange text-xs text-brand-deep overflow-hidden shrink-0">
+                                                    <div className="w-10 h-10 rounded-xl bg-tharqiya-orange/10 flex items-center justify-center font-black text-tharqiya-orange text-xs text-tharqiya-deep overflow-hidden shrink-0">
                                                         {item.application?.student?.user?.profileImageUrl ? (
                                                             <img 
                                                                 src={item.application.student.user.profileImageUrl} 

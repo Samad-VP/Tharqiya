@@ -143,7 +143,7 @@ const StudentPortal: React.FC = () => {
             <div className="w-16 h-16 bg-rose-500/10 text-rose-500 rounded-3xl flex items-center justify-center mb-6">
                 <AlertCircle size={32} />
             </div>
-            <h2 className="text-xl font-black font-outfit text-brand-deep dark:text-white mb-2 tracking-tight uppercase">Retrieval Failed</h2>
+            <h2 className="text-xl font-black font-outfit text-tharqiya-deep dark:text-white mb-2 tracking-tight uppercase">Retrieval Failed</h2>
             <p className="text-slate-500 dark:text-slate-400 font-medium mb-8 text-center max-w-sm text-sm">{error}</p>
             <button onClick={fetchStatus} className="btn-primary px-8">Try Again</button>
         </div>
@@ -187,9 +187,9 @@ const StudentPortal: React.FC = () => {
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.2 }}
                         >
-                            <h1 className="h-premium-lg text-brand-deep dark:text-white mt-4">
+                            <h1 className="h-premium-lg text-tharqiya-deep dark:text-white mt-4">
                                 <span className="font-amiri text-lg sm:text-3xl lg:text-4xl mb-1 block">السَّلَامُ عَلَيْكُمْ<span className="text-edu-coral ml-1">،</span></span>
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-edu-teal via-edu-coral to-edu-yellow">{user?.name}</span>
+                                <span className="text-gold-orange">{user?.name}</span>
                             </h1>
                         </motion.div>
 
@@ -222,7 +222,7 @@ const StudentPortal: React.FC = () => {
                     >
                         <FolderOpen className="w-12 h-12 sm:w-16 sm:h-16 text-slate-300 dark:text-slate-600" />
                     </motion.div>
-                    <h2 className="text-3xl sm:text-5xl font-black text-brand-deep dark:text-white mb-6 tracking-tight font-outfit uppercase">Begin Your Scholarly Path</h2>
+                    <h2 className="text-3xl sm:text-5xl font-black text-tharqiya-deep dark:text-white mb-6 tracking-tight font-outfit uppercase">Begin Your Scholarly Path</h2>
                     <p className="text-slate-500 dark:text-slate-400 max-w-lg mx-auto mb-12 font-medium text-sm sm:text-base leading-relaxed">
                         Join the Tharqiya Course at Darussalam Edu Village. Initiate your application now for the 2026 academic batch.
                     </p>
@@ -310,14 +310,14 @@ const StudentPortal: React.FC = () => {
                                 <div className="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-edu-teal via-edu-coral to-edu-yellow" />
                                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-10 lg:mb-12">
                                     <div>
-                                        <h3 className="h-premium-md text-brand-deep dark:text-slate-100 bg-none bg-clip-border leading-none">Application Dossier</h3>
+                                        <h3 className="h-premium-md text-tharqiya-deep dark:text-slate-100 bg-none bg-clip-border leading-none">Application Dossier</h3>
                                         <p className="text-premium-xs text-slate-400 mt-3">Comprehensive Candidate Verification</p>
                                     </div>
                                     <motion.button 
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
                                         onClick={() => handleDownload('application')} 
-                                        className="w-full sm:w-auto h-12 sm:h-14 px-8 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-slate-800 rounded-2xl flex items-center justify-center gap-3 text-[11px] font-black uppercase tracking-widest text-brand-deep dark:text-white hover:bg-edu-teal hover:text-white hover:border-edu-teal transition-all shadow-sm"
+                                        className="w-full sm:w-auto h-12 sm:h-14 px-8 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-slate-800 rounded-2xl flex items-center justify-center gap-3 text-[11px] font-black uppercase tracking-widest text-tharqiya-deep dark:text-white hover:bg-edu-teal hover:text-white hover:border-edu-teal transition-all shadow-sm"
                                     >
                                         <Download size={18} /> Download Dossier
                                     </motion.button>
@@ -336,7 +336,7 @@ const StudentPortal: React.FC = () => {
                                                 <row.icon size={14} className="text-edu-teal opacity-50" />
                                                 <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{row.label}</span>
                                             </div>
-                                            <span className="font-bold text-base sm:text-xl text-brand-deep dark:text-slate-200 block sm:pl-7 leading-snug">{row.value}</span>
+                                            <span className="font-bold text-base sm:text-xl text-tharqiya-deep dark:text-slate-200 block sm:pl-7 leading-snug">{row.value}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -355,20 +355,20 @@ const StudentPortal: React.FC = () => {
                                         <div className="p-4 bg-blue-500 text-white rounded-2xl shadow-lg shadow-blue-500/20">
                                             <CalendarCheck size={28} />
                                         </div>
-                                        <h3 className="text-2xl sm:text-4xl font-black text-brand-deep dark:text-slate-100 bg-none bg-clip-border font-outfit tracking-tighter uppercase leading-none">Evaluation Center</h3>
+                                        <h3 className="text-2xl sm:text-4xl font-black text-tharqiya-deep dark:text-slate-100 bg-none bg-clip-border font-outfit tracking-tighter uppercase leading-none">Evaluation Center</h3>
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10">
                                         <div className="space-y-4 sm:space-y-6">
                                             <div className="p-6 sm:p-8 rounded-3xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 hover:border-blue-500/30 transition-all group">
                                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Scheduled Date & Time</p>
-                                                <p className="text-xl sm:text-2xl font-black text-brand-deep dark:text-slate-200 group-hover:text-blue-500 transition-colors">
+                                                <p className="text-xl sm:text-2xl font-black text-tharqiya-deep dark:text-slate-200 group-hover:text-blue-500 transition-colors">
                                                     {new Date(appData.application.interview.scheduledAt).toLocaleString('en-GB', { dateStyle: 'long', timeStyle: 'short' })}
                                                 </p>
                                             </div>
                                             <div className="p-6 sm:p-8 rounded-3xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 hover:border-blue-500/30 transition-all group">
                                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Assigned Venue</p>
-                                                <p className="text-xl sm:text-2xl font-black text-brand-deep dark:text-slate-200 group-hover:text-blue-500 transition-colors">{appData.application.interview.location}</p>
+                                                <p className="text-xl sm:text-2xl font-black text-tharqiya-deep dark:text-slate-200 group-hover:text-blue-500 transition-colors">{appData.application.interview.location}</p>
                                             </div>
                                         </div>
                                         {appData.application.interview.interviewer && (
@@ -388,7 +388,7 @@ const StudentPortal: React.FC = () => {
                                                     )}
                                                 </motion.div>
                                                 <p className="text-[10px] font-black text-blue-500 uppercase tracking-[0.2em] mb-3">Assigned Evaluator</p>
-                                                <h4 className="text-2xl sm:text-3xl font-black text-brand-deep dark:text-slate-100 bg-none bg-clip-border font-outfit mb-3 leading-tight uppercase">{appData.application.interview.interviewer.user.name}</h4>
+                                                <h4 className="text-2xl sm:text-3xl font-black text-tharqiya-deep dark:text-slate-100 bg-none bg-clip-border font-outfit mb-3 leading-tight uppercase">{appData.application.interview.interviewer.user.name}</h4>
                                                 <p className="text-sm sm:text-base font-bold text-slate-500 dark:text-slate-400 italic opacity-80">{appData.application.interview.interviewer.user.email}</p>
                                                 
                                                 <div className="absolute -bottom-8 -right-8 w-24 h-24 bg-blue-500/10 blur-2xl rounded-full group-hover:scale-150 transition-transform duration-700" />
@@ -412,9 +412,9 @@ const StudentPortal: React.FC = () => {
                                             </div>
                                             <div>
                                                 <span className="px-3 py-1 bg-edu-teal/10 text-edu-teal rounded-full text-[9px] font-black uppercase tracking-widest border border-edu-teal/20">Allotment Decision Released</span>
-                                                <h3 className="text-2xl sm:text-3xl font-black text-brand-deep dark:text-white bg-none bg-clip-border font-outfit tracking-tighter mt-2 leading-none uppercase">Your Campus <span className="text-edu-teal">Selection</span></h3>
+                                                <h3 className="text-2xl sm:text-3xl font-black text-tharqiya-deep dark:text-white bg-none bg-clip-border font-outfit tracking-tighter mt-2 leading-none uppercase">Your Campus <span className="text-edu-teal">Selection</span></h3>
                                                 <p className="text-xs sm:text-sm font-bold text-slate-500 dark:text-slate-400 mt-3 max-w-xl leading-relaxed">
-                                                    You have been allotted to <span className="text-brand-deep dark:text-white font-black decoration-edu-teal underline decoration-2 underline-offset-4">{appData.application.allotment.campus}</span> campus.
+                                                    You have been allotted to <span className="text-tharqiya-deep dark:text-white font-black decoration-edu-teal underline decoration-2 underline-offset-4">{appData.application.allotment.campus}</span> campus.
                                                 </p>
                                             </div>
                                         </div>
@@ -423,7 +423,7 @@ const StudentPortal: React.FC = () => {
                                             <motion.button 
                                                 whileHover={{ scale: 1.05 }}
                                                 whileTap={{ scale: 0.95 }}
-                                                className="w-full sm:w-auto px-8 h-14 bg-brand-deep dark:bg-edu-teal text-white rounded-xl font-black text-xs uppercase tracking-[0.2em] shadow-xl transition-all font-outfit flex items-center justify-center gap-3"
+                                                className="w-full sm:w-auto px-8 h-14 bg-tharqiya-deep dark:bg-edu-teal text-white rounded-xl font-black text-xs uppercase tracking-[0.2em] shadow-xl transition-all font-outfit flex items-center justify-center gap-3"
                                             >
                                                 Manage Allotment <ArrowRight size={18} />
                                             </motion.button>
@@ -445,7 +445,7 @@ const StudentPortal: React.FC = () => {
                                     className="p-8 sm:p-10 rounded-[2.5rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xl overflow-hidden relative group"
                                 >
                                     <div className="flex items-center justify-between mb-8 sm:mb-10">
-                                        <h4 className="text-xl font-black text-brand-deep dark:text-slate-100 bg-none bg-clip-border font-outfit tracking-tighter uppercase whitespace-nowrap">Academic <span className="text-edu-yellow">Standards</span></h4>
+                                        <h4 className="text-xl font-black text-tharqiya-deep dark:text-slate-100 bg-none bg-clip-border font-outfit tracking-tighter uppercase whitespace-nowrap">Academic <span className="text-edu-yellow">Standards</span></h4>
                                         <TrendingUp size={24} className="text-edu-yellow group-hover:scale-125 transition-transform" />
                                     </div>
                                     <div className="space-y-5">
@@ -483,7 +483,7 @@ const StudentPortal: React.FC = () => {
                                 transition={{ delay: 0.1 }}
                                 className="p-8 sm:p-10 rounded-[2.5rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xl relative group"
                             >
-                                <h4 className="text-xl font-black text-brand-deep dark:text-slate-100 bg-none bg-clip-border font-outfit tracking-tighter uppercase mb-10">Vanguard Resources</h4>
+                                <h4 className="text-xl font-black text-tharqiya-deep dark:text-slate-100 bg-none bg-clip-border font-outfit tracking-tighter uppercase mb-10">Vanguard Resources</h4>
                                 <div className="space-y-4">
                                     {[
                                         { label: 'Scholars Guide', icon: BookOpen, color: 'text-edu-coral', bg: 'bg-edu-coral/10' },
@@ -500,7 +500,7 @@ const StudentPortal: React.FC = () => {
                                                     <res.icon size={22} />
                                                 </div>
                                                 <div className="overflow-hidden">
-                                                    <span className="text-xs font-black uppercase text-brand-deep dark:text-slate-200 tracking-widest block truncate">{res.label}</span>
+                                                    <span className="text-xs font-black uppercase text-tharqiya-deep dark:text-slate-200 tracking-widest block truncate">{res.label}</span>
                                                     <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Available to view</span>
                                                 </div>
                                             </motion.div>

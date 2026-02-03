@@ -126,7 +126,7 @@ const AdminNotificationLogs: React.FC = () => {
             <div className="space-y-8 pb-20">
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                     <div>
-                        <h2 className="text-4xl font-black font-outfit tracking-tighter text-brand-deep dark:text-white uppercase">
+                        <h2 className="text-4xl font-black font-outfit tracking-tighter text-tharqiya-deep dark:text-white uppercase">
                             Notification <span className="text-edu-teal">Audit</span>
                         </h2>
                         <p className="text-slate-500 dark:text-slate-400 font-bold text-[10px] uppercase tracking-widest mt-2 ml-1">
@@ -142,7 +142,7 @@ const AdminNotificationLogs: React.FC = () => {
                                 placeholder="Search logs..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl py-3 pl-11 pr-4 text-xs font-bold text-brand-deep dark:text-white placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-edu-teal/20 transition-all shadow-sm"
+                                className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl py-3 pl-11 pr-4 text-xs font-bold text-tharqiya-deep dark:text-white placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-edu-teal/20 transition-all shadow-sm"
                             />
                         </div>
 
@@ -187,7 +187,7 @@ const AdminNotificationLogs: React.FC = () => {
                                                 {isExpanded ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
                                             </div>
                                             <div className="text-left">
-                                                <h3 className="text-lg font-black font-outfit text-brand-deep dark:text-white tracking-tight uppercase">
+                                                <h3 className="text-lg font-black font-outfit text-tharqiya-deep dark:text-white tracking-tight uppercase">
                                                     {event.replace(/_/g, ' ')}
                                                 </h3>
                                                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
@@ -241,7 +241,7 @@ const AdminNotificationLogs: React.FC = () => {
                                                                                 {log.user?.name?.[0]?.toUpperCase() || 'S'}
                                                                             </div>
                                                                             <div className="flex flex-col">
-                                                                                <span className="font-bold text-brand-deep dark:text-white">{log.user?.name || 'System'}</span>
+                                                                                <span className="font-bold text-tharqiya-deep dark:text-white">{log.user?.name || 'System'}</span>
                                                                                 <span className="text-[10px] text-slate-400">{log.user?.email || 'N/A'}</span>
                                                                             </div>
                                                                         </div>
@@ -309,7 +309,7 @@ const AdminNotificationLogs: React.FC = () => {
                         <div className="w-16 h-16 rounded-[2rem] bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-300 mb-4">
                             <Bell size={32} />
                         </div>
-                        <h3 className="text-xl font-black font-outfit text-brand-deep dark:text-white tracking-tight uppercase">Audit Stream Clear</h3>
+                        <h3 className="text-xl font-black font-outfit text-tharqiya-deep dark:text-white tracking-tight uppercase">Audit Stream Clear</h3>
                         <p className="text-slate-400 font-bold text-xs uppercase tracking-widest mt-1">No notification events recorded / matching your search</p>
                     </div>
                 )}

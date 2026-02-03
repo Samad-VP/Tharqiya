@@ -46,11 +46,11 @@ const FacilityCard = ({ title, subtitle, description, features, image, reverse =
                 </span>
             </div>
             
-            <h3 className="text-3xl md:text-5xl font-black text-brand-deep dark:text-white leading-tight">
+            <h3 className="text-3xl md:text-5xl font-black text-tharqiya-deep dark:text-white leading-tight">
                 <span className="text-gold-orange">{title}</span>
             </h3>
 
-            <p className="text-lg text-brand-deep/80 dark:text-slate-400 leading-relaxed font-medium">
+            <p className="text-lg text-tharqiya-deep/80 dark:text-slate-400 leading-relaxed font-medium">
                 {description}
             </p>
 
@@ -220,7 +220,7 @@ const FacilitiesPage: React.FC = () => {
                         animate={{ opacity: 1, y: 0 }}
                         className="text-center max-w-3xl mx-auto mb-16 md:mb-20"
                     >
-                        <h1 className="text-4xl md:text-7xl font-black text-brand-deep dark:text-white mb-6 tracking-tighter uppercase">
+                        <h1 className="text-4xl md:text-7xl font-black text-tharqiya-deep dark:text-white mb-6 tracking-tighter uppercase">
                             Premium <span className="text-gold-orange">Campus</span> Facilities
                         </h1>
                         <p className="text-base sm:text-xl text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
@@ -245,7 +245,7 @@ const FacilitiesPage: React.FC = () => {
                                 className="glass-card p-6 rounded-3xl text-center group hover:-translate-y-2 transition-transform duration-500"
                             >
                                 <stat.icon className="w-8 h-8 mx-auto mb-4 text-edu-coral dark:text-edu-teal" />
-                                <div className="text-3xl font-black text-brand-deep dark:text-white mb-1">{stat.value}</div>
+                                <div className="text-3xl font-black text-tharqiya-deep dark:text-white mb-1">{stat.value}</div>
                                 <div className="text-xs font-bold text-slate-500 uppercase tracking-widest">{stat.label}</div>
                             </motion.div>
                         ))}
@@ -264,7 +264,7 @@ const FacilitiesPage: React.FC = () => {
             <section className="py-24 bg-slate-50 dark:bg-slate-900/40 relative overflow-hidden">
                 <div className="max-w-7xl mx-auto px-4 relative">
                     <div className="text-center mb-16">
-                        <h2 className="text-3xl md:text-5xl font-black text-brand-deep dark:text-white tracking-tighter">
+                        <h2 className="text-3xl md:text-5xl font-black text-tharqiya-deep dark:text-white tracking-tighter">
                             Campus <span className="text-gold-orange">Gallery</span>
                         </h2>
                         <div className="w-24 h-1.5 bg-edu-coral dark:bg-edu-teal mx-auto mt-4 rounded-full" />

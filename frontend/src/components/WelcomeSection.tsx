@@ -1,81 +1,106 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import campusBg from '../assets/campus-view.jpg';
+import { fadeInUp, staggerContainer } from '../utils/animations';
 import logo from '../assets/logo.png';
 
 const WelcomeSection: React.FC = () => {
     return (
         <section className="py-12 sm:py-24 bg-brand-cream dark:bg-slate-950 transition-colors duration-500 overflow-hidden relative">
-            <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 relative z-10">
-                <div className="flex flex-col lg:flex-row items-center gap-12 sm:gap-24">
-                    {/* Content Area */}
-                    <motion.div 
-                        initial={{ opacity: 0, x: -30 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.8 }}
-                        className="lg:w-3/5"
-                    >
-                        <div className="flex items-start gap-3 sm:gap-4 mb-6 md:mb-8">
-                            <div className="w-2.5 sm:w-4 h-8 sm:h-20 bg-edu-coral dark:bg-edu-teal rounded-sm shrink-0 mt-1 sm:mt-2" />
-                            <h2 className="text-2xl sm:text-4xl md:text-6xl font-black text-edu-teal font-outfit tracking-tighter uppercase leading-[0.95]">
-                                Welcome to <br /> Darussalam <span className="text-edu-coral">Edu Village</span>
-                            </h2>
-                        </div>
+            <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 relative z-10 text-center flex flex-col items-center">
+                {/* Content Area */}
+                <motion.div 
+                    variants={fadeInUp}
+                    initial="initial"
+                    whileInView="animate"
+                    viewport={{ once: true }}
+                    className="max-w-4xl"
+                >
+                    <div className="flex flex-col items-center gap-3 sm:gap-4 mb-8 md:mb-12">
+                        <div className="w-12 h-2 sm:w-20 sm:h-3 bg-edu-coral dark:bg-edu-teal rounded-full mb-4" />
+                        <h2 className="text-3xl sm:text-5xl md:text-7xl font-black text-tharqiya-deep dark:text-white font-outfit tracking-tighter uppercase leading-[0.95]">
+                            Welcome to <br /> Darussalam <span className="text-gold-orange">Edu Village</span>
+                        </h2>
+                    </div>
 
-                        <div className="space-y-4 sm:space-y-6 text-edu-coral/80 dark:text-edu-teal/80 font-medium leading-relaxed text-sm sm:text-base md:text-lg">
-                            <p>
-                                Darussalam Edu Village stands as the central campus for the esteemed Tharqiya course offered by Darussalam Islamic University, catering to individuals who have committed the entire Quran to memory.
-                            </p>
-                            
-                            <p>
-                                Our goal extends beyond mere academic achievement; we aim to cultivate individuals who serve as role models for their communities and society at large. 
-                            </p>
+                    <div className="space-y-6 sm:space-y-8 text-academic-muted leading-relaxed text-base sm:text-xl">
+                        <p>
+                            Darussalam Edu Village stands as the central campus for the esteemed Tharqiya course offered by Darussalam Islamic University (DIU), catering to individuals who have committed the entire Quran to memory.
+                        </p>
+                        
+                        <p>
+                            Our goal extends beyond mere academic achievement; we aim to cultivate individuals who serve as role models for their communities and society at large. 
+                        </p>
 
-                            <p className="font-bold text-edu-teal border-l-4 border-edu-teal pl-4 sm:pl-6 py-2 bg-edu-teal/5 rounded-r-xl italic text-xs sm:text-base">
+                        <div className="flex justify-center py-4">
+                            <p className="font-bold text-tharqiya-deep dark:text-edu-teal border-l-4 border-edu-teal pl-6 py-3 bg-edu-teal/5 rounded-r-2xl italic text-sm sm:text-lg max-w-2xl">
                                 We adhere to the ideology of Samastha Kerala Jamiyyathul Ulama and actively promote student involvement in its organizations.
                             </p>
-
-                            <p className="hidden sm:block">
-                                Darussalam Edu Village is more than just an educational institution; it is a beacon of enlightenment, a sanctuary for intellectual growth, and a bastion of spiritual development.
-                            </p>
-
-                            <p className="text-edu-coral dark:text-white font-black">
-                                Join us at Darussalam Edu Village, where knowledge meets devotion, and excellence is the norm. Together, let us embark on a journey of discovery, enlightenment, and transformation, as we strive to build a brighter future guided by the timeless teachings of the Quran.
-                            </p>
                         </div>
-                        
-                        <div className="flex gap-3 mt-12">
-                            <div className="w-3 h-3 rounded-full bg-edu-coral" />
-                            <div className="w-3 h-3 rounded-full bg-edu-teal" />
-                            <div className="w-3 h-3 rounded-full bg-edu-coral/50" />
-                            <div className="w-3 h-3 rounded-full bg-edu-teal/50" />
-                        </div>
-                    </motion.div>
 
-                    {/* Image/Visual Area */}
+                        <p className="hidden sm:block">
+                            Darussalam Edu Village is more than just an educational institution; it is a beacon of enlightenment, a sanctuary for intellectual growth, and a bastion of spiritual development.
+                        </p>
+
+                        <p className="text-tharqiya-deep dark:text-white font-black text-lg sm:text-2xl mt-8">
+                            Join us at Darussalam Edu Village, where knowledge meets devotion, and excellence is the norm.
+                        </p>
+                    </div>
+
+                    {/* YouTube Video Section */}
                     <motion.div 
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
+                        variants={fadeInUp}
+                        initial="initial"
+                        whileInView="animate"
                         viewport={{ once: true }}
-                        transition={{ duration: 1 }}
-                        className="lg:w-2/5 relative w-full mt-8 lg:mt-0"
+                        className="mt-16 sm:mt-24 w-full relative group"
                     >
-                        <div className="relative rounded-[1.5rem] sm:rounded-[3rem] overflow-hidden shadow-xl border-4 sm:border-8 border-white dark:border-slate-800 rotate-0 sm:rotate-2 group cursor-pointer lg:cursor-none">
-                                <img 
-                                    src={campusBg} 
-                                    alt="Tharqiya Campus View - Darussalam Edu Village" 
-                                    className="w-full h-[300px] sm:h-[400px] md:h-[600px] object-cover group-hover:scale-110 transition-transform duration-1000"
-                                />
-                            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/20 to-transparent" />
+                        {/* Atmospheric Decorations */}
+                        <div className="absolute -top-12 -left-12 w-32 h-32 bg-edu-teal/10 rounded-full blur-3xl animate-pulse" />
+                        <div className="absolute -bottom-12 -right-12 w-48 h-48 bg-edu-coral/10 rounded-full blur-3xl animate-pulse [animation-delay:1s]" />
+                        
+                        {/* Premium Video Container */}
+                        <div className="relative mx-auto max-w-5xl">
+                            {/* Glassmorphism Outer Frame */}
+                            <div className="absolute -inset-1 sm:-inset-4 bg-gradient-to-br from-white/20 to-transparent dark:from-white/5 backdrop-blur-3xl rounded-[2.5rem] sm:rounded-[4rem] border border-white/40 dark:border-white/10 shadow-2xl -z-10" />
                             
-                            {/* Logo Overlay */}
-                            <div className="absolute top-4 right-4 sm:top-8 sm:right-8 p-0 h-12 sm:h-20 w-auto flex items-center justify-center">
-                                <img src={logo} alt="Darussalam Edu Village Logo" className="h-full w-auto object-contain drop-shadow-2xl" />
+                            {/* Inner Video Box */}
+                            <div className="relative aspect-video w-full rounded-[2rem] sm:rounded-[3.5rem] overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] border-4 border-white dark:border-slate-800 bg-slate-900 group-hover:scale-[1.01] transition-transform duration-700">
+                                <iframe 
+                                    className="absolute inset-0 w-full h-full"
+                                    src="https://www.youtube.com/embed/7nmcvYZNpG0" 
+                                    title="Darussalam Edu Village Campus Tour"
+                                    frameBorder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    allowFullScreen
+                                ></iframe>
+                                
+                                {/* Overlay Gradient for better integration */}
+                                <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-slate-950/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                             </div>
                         </div>
+
+                        {/* Premium Badge Caption */}
+                        <div className="mt-12 flex flex-col items-center">
+                            <motion.div 
+                                whileHover={{ y: -2 }}
+                                className="px-6 py-2 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-lg flex items-center gap-3"
+                            >
+                                <span className="w-2 h-2 rounded-full bg-edu-teal animate-ping" />
+                                <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-tharqiya-deep dark:text-white">
+                                    Experience Our <span className="text-edu-teal">Flagship Campus</span>
+                                </span >
+                            </motion.div>
+                            <div className="mt-6 w-24 h-1 bg-gradient-to-r from-transparent via-edu-teal/30 to-transparent rounded-full" />
+                        </div>
                     </motion.div>
-                </div>
+                    
+                    <div className="flex justify-center gap-4 mt-16">
+                        <div className="w-4 h-4 rounded-full bg-edu-coral animate-pulse" />
+                        <div className="w-4 h-4 rounded-full bg-edu-teal animate-pulse [animation-delay:200ms]" />
+                        <div className="w-4 h-4 rounded-full bg-edu-coral/50 animate-pulse [animation-delay:400ms]" />
+                        <div className="w-4 h-4 rounded-full bg-edu-teal/50 animate-pulse [animation-delay:600ms]" />
+                    </div>
+                </motion.div>
             </div>
         </section>
     );

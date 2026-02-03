@@ -74,11 +74,22 @@ const AdminInterviews: React.FC = () => {
                 await api.patch(`/interviews/${editingId}`, schedulingData);
                 toast.success(`Interview rescheduled successfully${schedulingData.sendNotifications ? ' with apology notification!' : '.'}`);
             } else {
-                await api.post('/interviews/batch-schedule', {
+                const response = await api.post('/interviews/batch-schedule', {
                     applicationIds: selectedApps,
                     ...schedulingData
                 });
-                toast.success(`${selectedApps.length} Interview boards setup successfully${schedulingData.sendNotifications ? ' with notifications!' : '.'}`);
+                
+                const results = response.data.data;
+                const successCount = results.filter((r: any) => r.status === 'success').length;
+                const failureCount = results.filter((r: any) => r.status === 'error').length;
+
+                if (failureCount === 0) {
+                    toast.success(`${successCount} Interview boards setup successfully${schedulingData.sendNotifications ? ' with notifications!' : '.'}`);
+                } else if (successCount > 0) {
+                    toast.success(`${successCount} scheduled, ${failureCount} failed. Check for duplicate schedules.`);
+                } else {
+                    toast.error(`Batch scheduling failed. ${results[0]?.message || ''}`);
+                }
             }
             setShowScheduleModal(false);
             fetchData();
@@ -131,17 +142,17 @@ const AdminInterviews: React.FC = () => {
         }
     };
 
-    const pendingAssignment = applications.filter(app => app.status === 'ACCEPTED' && !app.interview);
+    const pendingAssignment = applications.filter(app => (app.status === 'ACCEPTED' || app.status === 'DOCS_VERIFIED') && !app.interview);
 
     return (
         <AdminLayout>
              <div className="space-y-6 sm:space-y-8">
                 <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
                     <div>
-                        <h2 className="text-2xl sm:text-3xl font-black text-brand-deep dark:text-white font-outfit tracking-tighter uppercase leading-tight">
+                        <h2 className="text-2xl sm:text-3xl font-black text-tharqiya-deep dark:text-white font-outfit tracking-tighter uppercase leading-tight">
                             Mass <span className="text-edu-teal">Interview</span> Setup
                         </h2>
-                        <p className="text-[10px] sm:text-xs font-bold text-brand-deep/60 dark:text-slate-500 uppercase tracking-widest mt-1">Batch assign evaluation panels & trigger notifications</p>
+                        <p className="text-[10px] sm:text-xs font-bold text-tharqiya-deep/60 dark:text-slate-500 uppercase tracking-widest mt-1">Batch assign evaluation panels & trigger notifications</p>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-4">
@@ -150,7 +161,7 @@ const AdminInterviews: React.FC = () => {
                                 initial={{ scale: 0.9, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
                                 onClick={openCreateModal}
-                                className="px-8 py-3 bg-brand-deep dark:bg-edu-coral text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-edu-coral/20 flex items-center gap-2 hover:-translate-y-1 transition-all"
+                                className="px-8 py-3 bg-tharqiya-deep dark:bg-edu-coral text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-edu-coral/20 flex items-center gap-2 hover:-translate-y-1 transition-all"
                             >
                                 <CalendarPlus size={18} /> Schedule {selectedApps.length} Candidates
                             </motion.button>
@@ -159,13 +170,13 @@ const AdminInterviews: React.FC = () => {
                         <div className="flex bg-white dark:bg-slate-900 p-1.5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
                             <button 
                                 onClick={() => setActiveTab('pending')}
-                                className={`px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${activeTab === 'pending' ? 'bg-edu-teal text-white shadow-lg' : 'text-brand-deep/60 dark:text-slate-500 hover:text-edu-teal'}`}
+                                className={`px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${activeTab === 'pending' ? 'bg-edu-teal text-white shadow-lg' : 'text-tharqiya-deep/60 dark:text-slate-500 hover:text-edu-teal'}`}
                             >
                                 Pending Assignment ({pendingAssignment.length})
                             </button>
                             <button 
                                 onClick={() => setActiveTab('scheduled')}
-                                className={`px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${activeTab === 'scheduled' ? 'bg-edu-coral text-white shadow-lg' : 'text-brand-deep/60 dark:text-slate-500 hover:text-edu-coral'}`}
+                                className={`px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${activeTab === 'scheduled' ? 'bg-edu-coral text-white shadow-lg' : 'text-tharqiya-deep/60 dark:text-slate-500 hover:text-edu-coral'}`}
                             >
                                 Scheduled Boards ({interviews.length})
                             </button>
@@ -184,7 +195,7 @@ const AdminInterviews: React.FC = () => {
                             <div className="flex items-center gap-4 px-6 py-3 bg-white/50 dark:bg-slate-900/50 rounded-2xl border border-slate-100 dark:border-slate-800 backdrop-blur-md">
                                 <button 
                                     onClick={toggleAllPending}
-                                    className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-brand-deep/60 dark:text-slate-500 hover:text-edu-teal transition-colors"
+                                    className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-tharqiya-deep/60 dark:text-slate-500 hover:text-edu-teal transition-colors"
                                 >
                                     <div className={`w-5 h-5 rounded-md border-2 transition-all flex items-center justify-center ${selectedApps.length === pendingAssignment.length ? 'bg-edu-teal border-edu-teal text-white' : 'border-slate-300 dark:border-slate-700'}`}>
                                         {selectedApps.length === pendingAssignment.length && <Check size={12} />}
@@ -192,7 +203,7 @@ const AdminInterviews: React.FC = () => {
                                     {selectedApps.length === pendingAssignment.length ? 'Deselect All' : 'Select All Candidates'}
                                 </button>
                                 <div className="h-4 w-px bg-slate-200 dark:bg-slate-800 mx-2" />
-                                <span className="text-[10px] font-bold text-brand-deep/40 dark:text-slate-400 uppercase tracking-widest">{selectedApps.length} Selected for board assignment</span>
+                                <span className="text-[10px] font-bold text-tharqiya-deep/40 dark:text-slate-400 uppercase tracking-widest">{selectedApps.length} Selected for board assignment</span>
                             </div>
                         )}
 
@@ -217,18 +228,18 @@ const AdminInterviews: React.FC = () => {
                                                 {(app.student?.user?.name || app.student?.name)?.[0] || 'S'}
                                             </div>
                                             <div>
-                                                <h4 className="font-black text-brand-deep dark:text-white font-outfit text-base">{app.student?.user?.name || app.student?.name}</h4>
-                                                <p className="text-[10px] font-black text-brand-deep/40 dark:text-slate-400 uppercase tracking-widest">{app.student?.applicationNo}</p>
+                                                <h4 className="font-black text-tharqiya-deep dark:text-white font-outfit text-base">{app.student?.user?.name || app.student?.name}</h4>
+                                                <p className="text-[10px] font-black text-tharqiya-deep/40 dark:text-slate-400 uppercase tracking-widest">{app.student?.applicationNo}</p>
                                             </div>
                                         </div>
                                         <div className="p-4 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-slate-800/50 space-y-2">
                                             <div className="flex justify-between items-center text-[10px] font-bold">
-                                                <span className="text-brand-deep/50 dark:text-slate-500 uppercase tracking-widest">Hifz Center</span>
-                                                <span className="text-brand-deep dark:text-white">{app.student?.hifzCenter}</span>
+                                                <span className="text-tharqiya-deep/50 dark:text-slate-500 uppercase tracking-widest">Hifz Center</span>
+                                                <span className="text-tharqiya-deep dark:text-white">{app.student?.hifzCenter}</span>
                                             </div>
                                             <div className="flex justify-between items-center text-[10px] font-bold">
-                                                <span className="text-brand-deep/50 dark:text-slate-500 uppercase tracking-widest">District</span>
-                                                <span className="text-brand-deep dark:text-white uppercase">{app.student?.district}</span>
+                                                <span className="text-tharqiya-deep/50 dark:text-slate-500 uppercase tracking-widest">District</span>
+                                                <span className="text-tharqiya-deep dark:text-white uppercase">{app.student?.district}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -240,7 +251,7 @@ const AdminInterviews: React.FC = () => {
                             )) : (
                                 <div className="lg:col-span-2 xl:col-span-3 py-20 text-center">
                                     <UserCheck className="w-16 h-16 text-slate-200 dark:text-slate-800 mx-auto mb-4" />
-                                    <h3 className="text-xl font-black text-brand-deep dark:text-white font-outfit uppercase tracking-tighter">Everything Sorted!</h3>
+                                    <h3 className="text-xl font-black text-tharqiya-deep dark:text-white font-outfit uppercase tracking-tighter">Everything Sorted!</h3>
                                     <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mt-2">No candidates are currently waiting for board assignment.</p>
                                 </div>
                             )}
@@ -252,12 +263,12 @@ const AdminInterviews: React.FC = () => {
                             <table className="w-full text-left">
                                 <thead>
                                     <tr className="bg-slate-50/50 dark:bg-white/5 border-b border-slate-100 dark:border-slate-800">
-                                        <th className="px-8 py-6 font-black text-brand-deep/60 dark:text-slate-500 uppercase tracking-widest text-[10px]">Candidate</th>
-                                        <th className="px-8 py-6 font-black text-brand-deep/60 dark:text-slate-500 uppercase tracking-widest text-[10px]">Assigned Board</th>
-                                        <th className="px-8 py-6 font-black text-brand-deep/60 dark:text-slate-500 uppercase tracking-widest text-[10px]">Date & Time</th>
-                                        <th className="px-8 py-6 font-black text-brand-deep/60 dark:text-slate-500 uppercase tracking-widest text-[10px]">Location</th>
-                                        <th className="px-8 py-6 font-black text-brand-deep/60 dark:text-slate-500 uppercase tracking-widest text-[10px] text-center">Status</th>
-                                        <th className="px-8 py-6 font-black text-brand-deep/60 dark:text-slate-500 uppercase tracking-widest text-[10px] text-right">Actions</th>
+                                        <th className="px-8 py-6 font-black text-tharqiya-deep/60 dark:text-slate-500 uppercase tracking-widest text-[10px]">Candidate</th>
+                                        <th className="px-8 py-6 font-black text-tharqiya-deep/60 dark:text-slate-500 uppercase tracking-widest text-[10px]">Assigned Board</th>
+                                        <th className="px-8 py-6 font-black text-tharqiya-deep/60 dark:text-slate-500 uppercase tracking-widest text-[10px]">Date & Time</th>
+                                        <th className="px-8 py-6 font-black text-tharqiya-deep/60 dark:text-slate-500 uppercase tracking-widest text-[10px]">Location</th>
+                                        <th className="px-8 py-6 font-black text-tharqiya-deep/60 dark:text-slate-500 uppercase tracking-widest text-[10px] text-center">Status</th>
+                                        <th className="px-8 py-6 font-black text-tharqiya-deep/60 dark:text-slate-500 uppercase tracking-widest text-[10px] text-right">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-50 dark:divide-slate-800 text-sm">
@@ -269,7 +280,7 @@ const AdminInterviews: React.FC = () => {
                                                         {(item.application?.student?.user?.name || item.application?.student?.name)?.[0] || 'S'}
                                                     </div>
                                                     <div>
-                                                        <p className="font-black text-brand-deep dark:text-white font-outfit">{item.application?.student?.user?.name || item.application?.student?.name}</p>
+                                                        <p className="font-black text-tharqiya-deep dark:text-white font-outfit">{item.application?.student?.user?.name || item.application?.student?.name}</p>
                                                         <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{item.application?.student?.applicationNo}</p>
                                                     </div>
                                                 </div>
@@ -279,16 +290,16 @@ const AdminInterviews: React.FC = () => {
                                                     <div className="w-8 h-8 rounded-lg bg-edu-coral/10 flex items-center justify-center text-edu-coral">
                                                         <UserCheck size={14} />
                                                     </div>
-                                                    <span className="font-black text-brand-deep dark:text-white text-xs">{item.interviewer?.user?.name}</span>
+                                                    <span className="font-black text-tharqiya-deep dark:text-white text-xs">{item.interviewer?.user?.name}</span>
                                                 </div>
                                             </td>
                                             <td className="px-8 py-6">
                                                 <div className="flex flex-col">
-                                                    <span className="font-black text-brand-deep dark:text-white text-xs">{new Date(item.scheduledAt).toLocaleDateString()}</span>
-                                                    <span className="text-[10px] font-bold text-brand-deep/60 dark:text-slate-400">{new Date(item.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                                    <span className="font-black text-tharqiya-deep dark:text-white text-xs">{new Date(item.scheduledAt).toLocaleDateString()}</span>
+                                                    <span className="text-[10px] font-bold text-tharqiya-deep/60 dark:text-slate-400">{new Date(item.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                                                 </div>
                                             </td>
-                                            <td className="px-8 py-6 text-brand-deep/60 dark:text-slate-500 font-bold text-xs">{item.location}</td>
+                                            <td className="px-8 py-6 text-tharqiya-deep/60 dark:text-slate-500 font-bold text-xs">{item.location}</td>
                                             <td className="px-8 py-6 text-center">
                                                 <span className="px-3 py-1.5 rounded-full bg-edu-teal/10 text-edu-teal text-[9px] font-black uppercase tracking-widest">Confirmed</span>
                                             </td>
@@ -322,14 +333,14 @@ const AdminInterviews: React.FC = () => {
                         <motion.div 
                             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                             onClick={() => setShowScheduleModal(false)}
-                            className="absolute inset-0 bg-brand-deep/60 backdrop-blur-sm"
+                            className="absolute inset-0 bg-tharqiya-deep/60 backdrop-blur-sm"
                         />
                         <motion.div 
                             initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
                             className="relative bg-white dark:bg-slate-900 w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden"
                         >
                             <form onSubmit={handleSchedule} className="p-8 sm:p-10">
-                                <h3 className="text-2xl font-black font-outfit text-brand-deep dark:text-white mb-2 uppercase tracking-tight">
+                                <h3 className="text-2xl font-black font-outfit text-tharqiya-deep dark:text-white mb-2 uppercase tracking-tight">
                                     {isEditMode ? 'Reschedule' : 'Setup Bulk'} <span className="text-edu-teal">Board</span>
                                 </h3>
                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-8">
@@ -384,7 +395,7 @@ const AdminInterviews: React.FC = () => {
                                                 <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-edu-teal"></div>
                                             </div>
                                             <div>
-                                                <span className="block text-[10px] font-black text-brand-deep dark:text-white uppercase tracking-widest">Send {isEditMode ? 'Apology' : ''} Notifications</span>
+                                                <span className="block text-[10px] font-black text-tharqiya-deep dark:text-white uppercase tracking-widest">Send {isEditMode ? 'Apology' : ''} Notifications</span>
                                                 <span className="block text-[8px] font-bold text-slate-500 uppercase tracking-tighter">Trigger immediate WhatsApp & Email alerts</span>
                                             </div>
                                         </label>

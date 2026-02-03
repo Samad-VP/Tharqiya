@@ -1,19 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import {
-    Hourglass,
-    BookOpenCheck,
-    Map,
-    Diamond,
-    BookMarked,
-    Mic2,
-    Cpu,
-    Lightbulb,
-    CheckCircle2,
-    Sparkles,
-    Trophy,
-    GraduationCap
-} from 'lucide-react';
+import { Hourglass, BookOpenCheck, Map, Diamond, BookMarked, Mic2, Cpu, Lightbulb, CheckCircle2, Sparkles, Trophy, GraduationCap, Quote } from 'lucide-react';
+import { fadeInUp, staggerContainer, scaleIn } from '../utils/animations';
 import SEO from '../components/SEO';
 
 const PostHifzPage: React.FC = () => {
@@ -140,17 +128,17 @@ const PostHifzPage: React.FC = () => {
             <section className="relative pt-24 pb-12 sm:pt-48 sm:pb-40 bg-brand-cream/50 dark:bg-slate-950 overflow-hidden">
                 <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
                     <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8 }}
+                        variants={fadeInUp}
+                        initial="initial"
+                        animate="animate"
                     >
-                        <span className="inline-block py-1 px-3 rounded-full bg-brand-deep/10 dark:bg-white/10 text-edu-teal text-[8px] sm:text-xs font-black tracking-widest uppercase mb-4 sm:mb-6 border border-brand-deep/20 dark:border-white/20">
+                        <span className="inline-block py-1 px-3 rounded-full bg-tharqiya-deep/10 dark:bg-white/10 text-edu-teal text-[8px] sm:text-xs font-black tracking-widest uppercase mb-4 sm:mb-6 border border-tharqiya-deep/20 dark:border-white/20">
                             Integrated Residency
                         </span>
-                        <h1 className="text-3xl sm:text-5xl md:text-7xl font-black text-brand-deep dark:text-white font-outfit mb-4 sm:mb-6 tracking-tighter">
-                            <span className="text-edu-teal">Tharqiya</span> Course
+                        <h1 className="text-3xl sm:text-5xl md:text-7xl font-black text-tharqiya-deep dark:text-white font-outfit mb-4 sm:mb-6 tracking-tighter">
+                            <span className="text-gold-orange">Tharqiya</span> Course
                         </h1>
-                        <p className="text-sm sm:text-xl md:text-2xl text-brand-deep/80 dark:text-white/80 max-w-3xl mx-auto leading-relaxed font-medium">
+                        <p className="text-sm sm:text-xl md:text-2xl text-academic-muted max-w-3xl mx-auto leading-relaxed font-medium">
                             A revolutionary 10-year integrated journey transforming memorizers of the Quran into multifaceted global leaders.
                         </p>
                     </motion.div>
@@ -172,31 +160,34 @@ const PostHifzPage: React.FC = () => {
                                 The Roadmap
                             </span>
                         </motion.div>
-                        <h2 className="text-3xl md:text-7xl font-black text-brand-deep dark:text-white font-outfit tracking-tighter uppercase mb-6">
+                        <h2 className="text-3xl md:text-7xl font-black text-tharqiya-deep dark:text-slate-100 font-outfit tracking-tighter uppercase mb-6">
                             Course <span className="text-edu-coral">Structure</span>
                         </h2>
-                        <p className="text-slate-500 dark:text-slate-400 text-sm sm:text-lg max-w-2xl mx-auto font-medium leading-relaxed">
+                        <p className="text-academic-muted text-sm sm:text-lg max-w-2xl mx-auto font-medium leading-relaxed">
                             A meticulously tiered progression designed to synchronize spiritual depth with academic excellence.
                         </p>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                         {courseStructure.map((row, idx) => (
-                            <motion.div
+                             <motion.div
                                 key={idx}
-                                initial={{ opacity: 0, y: 40 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                transition={{ delay: idx * 0.1, duration: 0.6 }}
-                                whileHover={{ y: -15 }}
-                                className="group relative"
+                                variants={fadeInUp}
+                                initial="initial"
+                                whileInView="animate"
+                                viewport={{ once: true }}
+                                whileHover={{ y: -12, transition: { duration: 0.4, ease: "easeOut" } }}
+                                className="group relative h-full"
                             >
-                                 <div className="relative bg-brand-cream dark:bg-slate-900/60 backdrop-blur-xl border border-slate-100 dark:border-white/10 p-6 sm:p-10 rounded-[1.5rem] sm:rounded-[2.5rem] shadow-xl sm:shadow-2xl dark:shadow-none h-full flex flex-col overflow-hidden">
+                                 <div className="relative bg-brand-cream dark:bg-slate-900/60 backdrop-blur-xl border border-slate-100 dark:border-white/10 p-6 sm:p-10 rounded-[1.5rem] sm:rounded-[2.5rem] shadow-xl sm:shadow-2xl dark:shadow-none h-full flex flex-col overflow-hidden transition-all duration-500 group-hover:border-tharqiya-orange/20 dark:group-hover:border-white/20 group-hover:shadow-[0_20px_50px_-10px_rgba(234,88,12,0.15)] dark:group-hover:shadow-[0_20px_50px_-10px_rgba(255,255,255,0.05)]">
+                                    {/* Subtle Glow Background */}
+                                    <div className="absolute inset-0 bg-gradient-to-br from-white/0 via-white/5 to-white/0 dark:from-white/0 dark:via-white/2 dark:to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
                                     {/* Level Indicator */}
                                     <div className="mb-6 sm:mb-10 relative">
                                         <div className={`w-16 sm:w-20 h-1.5 sm:h-2 bg-gradient-to-r ${row.color.includes('coral') ? 'from-edu-coral to-edu-coral/50' : 'from-edu-teal to-edu-teal/50'} rounded-full mb-4 sm:mb-6`} />
                                         <div className="flex justify-between items-start">
                                             <div>
-                                                <h3 className="text-xl sm:text-3xl font-black text-brand-deep dark:text-white font-outfit tracking-tight mb-1 sm:mb-2 group-hover:text-edu-coral dark:group-hover:text-edu-teal transition-colors">
+                                                <h3 className="text-xl sm:text-3xl font-black text-tharqiya-deep dark:text-slate-100 font-outfit tracking-tight mb-1 sm:mb-2 group-hover:text-edu-coral dark:group-hover:text-edu-teal transition-colors">
                                                     {row.course}
                                                 </h3>
                                                 <div className="flex items-center gap-2">
@@ -212,11 +203,11 @@ const PostHifzPage: React.FC = () => {
                                     <div className="grid grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8 mt-auto">
                                         <div className="space-y-1">
                                             <p className="text-[8px] sm:text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Age Limit</p>
-                                            <p className="text-base sm:text-lg font-black text-brand-deep dark:text-white">{row.age} Yrs</p>
+                                            <p className="text-base sm:text-lg font-black text-tharqiya-deep dark:text-white">{row.age} Yrs</p>
                                         </div>
                                         <div className="space-y-1">
                                             <p className="text-[8px] sm:text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Duration</p>
-                                            <p className="text-base sm:text-lg font-black text-brand-deep dark:text-white">{row.duration}</p>
+                                            <p className="text-base sm:text-lg font-black text-tharqiya-deep dark:text-white">{row.duration}</p>
                                         </div>
                                     </div>
 
@@ -258,32 +249,33 @@ const PostHifzPage: React.FC = () => {
             <section className="py-16 md:py-32 bg-slate-950">
                 <div className="max-w-7xl mx-auto px-6 lg:px-8">
                     <div className="mb-12 md:mb-20 text-center lg:text-left">
-                        <h2 className="text-2xl sm:text-5xl font-black text-white font-outfit tracking-tighter">The Tharqiya Curriculum Matrix</h2>
-                        <p className="text-slate-400 mt-4 text-xs sm:text-lg max-w-2xl font-medium">A meticulously balanced academic and spiritual journey divided into four transformative phases.</p>
+                        <h2 className="text-2xl sm:text-5xl font-black text-white font-outfit tracking-tighter">The Tharqiya <span className="text-gold-orange">Curriculum Matrix</span></h2>
+                        <p className="text-slate-200 mt-4 text-xs sm:text-lg max-w-2xl font-medium leading-relaxed">A meticulously balanced academic and spiritual journey divided into four transformative phases.</p>
                     </div>
 
                     <div className="space-y-6 sm:space-y-8">
                         {syllabusData.map((item, idx) => (
-                             <motion.div
-                                key={idx}
-                                initial={{ opacity: 0, x: -30 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                viewport={{ once: true }}
-                                whileHover={{ scale: 1.01, x: 10 }}
-                                className="group bg-white/5 border border-white/10 p-6 sm:p-10 rounded-[1.5rem] sm:rounded-[3rem] hover:bg-white/10 transition-all duration-500 flex flex-col lg:flex-row gap-6 sm:gap-12 items-start lg:items-center"
-                            >
-                                <div className="w-14 h-14 sm:w-24 sm:h-24 bg-edu-teal text-white rounded-2xl sm:rounded-[2rem] flex items-center justify-center shrink-0 shadow-xl sm:shadow-2xl shadow-edu-teal/20">
+                              <motion.div
+                                 key={idx}
+                                 variants={fadeInUp}
+                                 initial="initial"
+                                 whileInView="animate"
+                                 viewport={{ once: true }}
+                                 whileHover={{ scale: 1.005, x: 8, transition: { duration: 0.3 } }}
+                                 className="group bg-white/[0.03] backdrop-blur-xl border border-white/10 p-6 sm:p-10 rounded-[1.5rem] sm:rounded-[3rem] hover:bg-white/[0.07] hover:border-white/20 hover:shadow-[0_20px_50px_-10px_rgba(255,255,255,0.05)] transition-all duration-500 flex flex-col lg:flex-row gap-6 sm:gap-12 items-start lg:items-center"
+                             >
+                                <div className="icon-placard !text-white !bg-edu-teal group-hover:rotate-6 transition-transform">
                                     <item.icon className="w-7 h-7 sm:w-10 sm:h-10" />
                                 </div>
                                 <div className="flex-grow grid md:grid-cols-2 gap-6 sm:gap-12 w-full">
                                     <div className="relative">
-                                        <span className="text-edu-teal font-black uppercase text-[8px] sm:text-[10px] tracking-widest block mb-1">{item.level}</span>
-                                        <h3 className="text-lg sm:text-2xl font-black text-white mb-2 sm:mb-3 font-outfit tracking-tight">Islamic Mastery</h3>
-                                        <p className="text-sm sm:text-lg text-slate-400 leading-relaxed font-medium">{item.islamic}</p>
+                                        <span className="text-edu-teal font-black uppercase text-[8px] sm:text-[10px] tracking-widest block mb-2">{item.level}</span>
+                                        <h3 className="text-lg sm:text-2xl font-black text-white mb-2 sm:mb-4 font-outfit tracking-tight group-hover:text-gold-orange transition-colors">Islamic Mastery</h3>
+                                        <p className="text-sm sm:text-lg text-slate-300 leading-relaxed font-medium">{item.islamic}</p>
                                     </div>
                                     <div className="lg:border-l lg:border-white/10 lg:pl-12">
-                                        <h3 className="text-lg sm:text-2xl font-black text-white mb-2 sm:mb-3 font-outfit tracking-tight">Academic Pursuit</h3>
-                                        <p className="text-sm sm:text-lg text-slate-400 leading-relaxed font-medium">{item.academic}</p>
+                                        <h3 className="text-lg sm:text-2xl font-black text-white mb-2 sm:mb-4 font-outfit tracking-tight group-hover:text-gold-orange transition-colors">Academic Pursuit</h3>
+                                        <p className="text-sm sm:text-lg text-slate-300 leading-relaxed font-medium">{item.academic}</p>
                                     </div>
                                 </div>
                             </motion.div>
@@ -296,25 +288,26 @@ const PostHifzPage: React.FC = () => {
             <section className="py-24 md:py-32">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-20">
-                        <h2 className="text-4xl md:text-5xl font-black text-brand-deep dark:text-white font-outfit tracking-tighter">Complementary Sessions</h2>
-                        <p className="text-lg text-slate-500 dark:text-slate-400 mt-4 font-medium uppercase tracking-widest">Synthesizing the Tharqawi Spirit</p>
+                        <h2 className="text-4xl md:text-5xl font-black text-tharqiya-deep dark:text-slate-100 font-outfit tracking-tighter">Complementary Sessions</h2>
+                        <p className="text-lg text-academic-muted mt-4 font-medium uppercase tracking-widest">Synthesizing the Tharqawi Spirit</p>
                     </div>
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                         {sessions.map((session, i) => (
-                             <motion.div
-                                key={i}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                whileHover={{ y: -10 }}
-                                className="p-6 sm:p-10 bg-slate-50 dark:bg-slate-900/40 rounded-[1.5rem] sm:rounded-[2.5rem] border border-slate-100 dark:border-slate-800 hover:shadow-2xl transition-all group"
-                            >
+                              <motion.div
+                                 key={i}
+                                 variants={fadeInUp}
+                                 initial="initial"
+                                 whileInView="animate"
+                                 viewport={{ once: true }}
+                                 whileHover={{ y: -10 }}
+                                 className="p-6 sm:p-10 bg-slate-50 dark:bg-slate-900/40 rounded-[1.5rem] sm:rounded-[2.5rem] border border-slate-100 dark:border-slate-800 hover:shadow-2xl transition-all group"
+                             >
                                 <div className="w-12 h-12 sm:w-16 sm:h-16 bg-edu-coral dark:bg-edu-teal text-white dark:text-slate-950 rounded-xl sm:rounded-2xl flex items-center justify-center mb-6 sm:mb-8 group-hover:rotate-12 transition-transform duration-500">
                                     <session.icon className="w-6 h-6 sm:w-8 sm:h-8" />
                                 </div>
-                                <h4 className="text-xl sm:text-2xl font-black text-brand-deep dark:text-white mb-3 sm:mb-4 font-outfit tracking-tight">{session.title}</h4>
-                                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">{session.desc}</p>
+                                <h4 className="text-xl sm:text-2xl font-black text-tharqiya-deep dark:text-slate-100 mb-3 sm:mb-4 font-outfit tracking-tight">{session.title}</h4>
+                                <p className="text-xs sm:text-sm text-academic-muted leading-relaxed font-medium">{session.desc}</p>
                             </motion.div>
                         ))}
                     </div>
@@ -335,32 +328,33 @@ const PostHifzPage: React.FC = () => {
                                 Beyond The Books
                             </span>
                         </motion.div>
-                        <h2 className="text-4xl md:text-6xl font-black text-brand-deep dark:text-white font-outfit tracking-tighter uppercase mb-6">
+                        <h2 className="text-4xl md:text-6xl font-black text-tharqiya-deep dark:text-slate-100 font-outfit tracking-tighter uppercase mb-6">
                             Extra <span className="text-edu-coral">Curricular</span>
                         </h2>
                     </div>
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
                         {extraCurricular.map((act, idx) => (
-                             <motion.div
-                                key={idx}
-                                initial={{ opacity: 0, y: 30 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                transition={{ delay: idx * 0.1 }}
-                                className="group relative bg-tharqiya-cream dark:bg-slate-900/40 p-6 sm:p-8 rounded-[1.5rem] sm:rounded-[2rem] border border-slate-100 dark:border-white/5 hover:border-tharqiya-gold/30 transition-all duration-500 overflow-hidden"
-                            >
+                              <motion.div
+                                 key={idx}
+                                 variants={fadeInUp}
+                                 initial="initial"
+                                 whileInView="animate"
+                                 viewport={{ once: true }}
+                                 className="group relative bg-tharqiya-cream dark:bg-slate-900/40 p-6 sm:p-8 rounded-[1.5rem] sm:rounded-[2rem] border border-slate-100 dark:border-white/5 hover:border-tharqiya-gold/30 transition-all duration-500 overflow-hidden"
+                             >
                                 
                                 <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br ${act.accent} flex items-center justify-center text-white mb-6 sm:mb-8 group-hover:scale-110 transition-transform`}>
                                     <act.icon size={28} />
                                 </div>
 
-                                <h3 className="text-lg sm:text-xl font-black text-brand-deep dark:text-white mb-1 sm:mb-2 font-outfit uppercase tracking-tight">
+                                <h3 className="text-lg sm:text-xl font-black text-tharqiya-deep dark:text-slate-100 mb-1 sm:mb-2 font-outfit uppercase tracking-tight">
                                     {act.title}
                                 </h3>
                                 <p className="text-[8px] sm:text-[10px] font-black text-edu-coral dark:text-edu-teal uppercase tracking-widest mb-3 sm:mb-4">
                                     {act.subtitle}
                                 </p>
-                                <p className="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400 leading-relaxed">
+                                <p className="text-xs sm:text-sm font-medium text-academic-muted leading-relaxed">
                                     {act.desc}
                                 </p>
                             </motion.div>
@@ -369,21 +363,61 @@ const PostHifzPage: React.FC = () => {
                 </div>
             </section>
 
-             {/* Premium CTA */}
-            <section className="py-16 sm:py-24 bg-edu-teal dark:bg-edu-teal relative overflow-hidden">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-                    <h2 className="text-3xl md:text-6xl font-black text-white dark:text-slate-950 mb-6 sm:mb-8 font-outfit tracking-tighter">Begin Your Transformation</h2>
-                    <p className="text-lg sm:text-xl text-white/90 dark:text-slate-900/80 mb-8 sm:mb-12 max-w-2xl mx-auto font-medium leading-relaxed">
-                        Join the elite ranks of the Tharqiyathul Huffaz and shape the future of spiritual and global leadership.
-                    </p>
-                    <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="px-8 sm:px-16 py-4 sm:py-5 bg-brand-cream dark:bg-slate-950 text-edu-coral dark:text-edu-teal rounded-full font-black text-lg sm:text-xl shadow-2xl hover:shadow-white/20 transition-all tracking-widest uppercase"
+             {/* Premium Post-Hifz CTA */}
+            <section className="py-24 sm:py-32 relative overflow-hidden bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500">
+                <div className="max-w-7xl mx-auto px-6 relative z-10">
+                    <motion.div
+                        variants={fadeInUp}
+                        initial="initial"
+                        whileInView="animate"
+                        viewport={{ once: true }}
+                        className="relative"
                     >
-                        Apply for Admission
-                    </motion.button>
+                        {/* Glassmorphic Call to Action Card */}
+                        <div className="relative p-10 sm:p-20 rounded-[3rem] sm:rounded-[4rem] bg-white/40 dark:bg-slate-900/40 backdrop-blur-3xl border border-white dark:border-white/5 shadow-2xl overflow-hidden group text-center">
+                            {/* Decorative Islamic Pattern Background */}
+                            <div className="absolute inset-0 islamic-pattern opacity-[0.03] dark:opacity-[0.07] pointer-events-none" />
+                            
+                            {/* Animated Background Glow */}
+                            <div className="absolute -top-24 -left-24 w-64 h-64 bg-edu-teal/10 rounded-full blur-[100px] animate-pulse" />
+                            <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-edu-coral/10 rounded-full blur-[100px] animate-pulse [animation-delay:1s]" />
+
+                            <div className="relative z-10 space-y-10">
+                                <div className="relative inline-block">
+                                    <div className="absolute inset-0 bg-edu-teal/20 blur-xl rounded-full scale-150 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                                    <Quote className="w-12 h-12 sm:w-16 sm:h-16 text-edu-teal/40 mx-auto relative z-10 rotate-12 group-hover:rotate-0 transition-transform duration-700" />
+                                </div>
+
+                                <div className="space-y-6">
+                                    <h2 className="text-3xl sm:text-5xl md:text-7xl font-playfair font-black italic leading-[1.2] text-tharqiya-deep dark:text-white transition-colors duration-500 max-w-5xl mx-auto tracking-tight uppercase">
+                                        Begin Your <span className="text-gold-orange font-outfit not-italic">Transformation</span>
+                                    </h2>
+                                    <p className="text-sm sm:text-xl text-academic-muted max-w-2xl mx-auto font-bold uppercase tracking-[0.2em] leading-relaxed">
+                                        Join the elite ranks of the <span className="text-gold-orange">Tharqiyathul Huffaz</span> and shape the future of spiritual and global leadership.
+                                    </p>
+                                </div>
+
+                                <div className="pt-6">
+                                    <motion.button
+                                        whileHover={{ scale: 1.05, y: -5 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        className="btn-primary"
+                                    >
+                                        Apply for Admission
+                                    </motion.button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Floating Accents */}
+                        <div className="absolute -top-10 -right-10 w-24 h-24 bg-white/50 dark:bg-white/5 backdrop-blur-xl border border-white dark:border-white/10 rounded-3xl -rotate-12 animate-float -z-10 hidden lg:block" />
+                        <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white/50 dark:bg-white/5 backdrop-blur-xl border border-white dark:border-white/10 rounded-[2rem] rotate-12 animate-float [animation-delay:2s] -z-10 hidden lg:block" />
+                    </motion.div>
                 </div>
+                
+                {/* Background Decorations */}
+                <div className="absolute top-1/2 left-0 w-64 h-64 bg-edu-teal/5 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2" />
+                <div className="absolute top-1/2 right-0 w-64 h-64 bg-edu-coral/5 rounded-full blur-[120px] translate-x-1/2 -translate-y-1/2" />
             </section>
         </div>
     );

@@ -184,7 +184,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                             <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent" />
                         </div>
                         <div className="overflow-hidden">
-                            <p className="text-xs font-black truncate text-brand-deep dark:text-white uppercase tracking-tighter group-hover:text-edu-teal transition-colors">{user?.name}</p>
+                            <p className="text-xs font-black truncate text-tharqiya-deep dark:text-white uppercase tracking-tighter group-hover:text-edu-teal transition-colors">{user?.name}</p>
                             <p className="text-[10px] font-bold text-slate-500 truncate">{user?.role}</p>
                         </div>
                     </NavLink>
@@ -202,7 +202,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                         >
                             <Menu size={20} />
                         </button>
-                        <h1 className="text-base sm:text-xl font-black font-outfit text-brand-deep dark:text-white tracking-tight truncate max-w-[150px] sm:max-w-none">
+                        <h1 className="text-base sm:text-xl font-black font-outfit text-tharqiya-deep dark:text-white tracking-tight truncate max-w-[150px] sm:max-w-none">
                             {user?.role === 'PRINCIPAL' ? 'Principal' : 'Admin'} <span className="text-edu-teal hidden xs:inline">Console</span>
                         </h1>
                     </div>
@@ -226,7 +226,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                             className="flex items-center gap-2 sm:gap-3 group hover:opacity-80 transition-all"
                         >
                             <div className="text-right hidden sm:block">
-                                <p className="text-xs font-black text-brand-deep dark:text-white leading-none truncate max-w-[100px] group-hover:text-edu-teal transition-colors">{user?.name}</p>
+                                <p className="text-xs font-black text-tharqiya-deep dark:text-white leading-none truncate max-w-[100px] group-hover:text-edu-teal transition-colors">{user?.name}</p>
                                 <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1">
                                     {user?.role === 'PRINCIPAL' ? 'Principal' : 'Admin'}
                                 </p>

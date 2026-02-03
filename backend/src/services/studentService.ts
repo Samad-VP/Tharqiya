@@ -100,15 +100,16 @@ export const createPendingApplication = async (formData: any) => {
 
         // 4. Trigger Unified Welcome Notification
         // This template now includes both confirmation and credentials
-        await triggerNotification(result.user.id, 'APPLICATION_RECEIVED', {
+        // Use background: true to prevent blocking the UI
+        triggerNotification(result.user.id, 'APPLICATION_RECEIVED', {
             StudentName: name,
             ApplicationID: applicationNo,
             Username: username,
             TempPassword: tempPassword,
             LoginUrl: loginUrl
-        });
+        }, true);
 
-        return result;
+        return { ...result, username, tempPassword };
     } catch (error: any) {
         console.error('[STUDENT_SERVICE] Error in createPendingApplication:', error);
         throw error;
@@ -159,14 +160,15 @@ export const promoteToStudentAccount = async (studentId: string) => {
         });
 
         // 3. Send Credentials Notification
+        // Use background: true to prevent blocking the UI
         const loginUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/login`;
         
-        await triggerNotification(user.id, 'APPLICATION_CREDENTIALS_CREATED', {
+        triggerNotification(user.id, 'APPLICATION_CREDENTIALS_CREATED', {
             StudentName: student.name,
             Username: username,
             TempPassword: tempPassword,
             LoginUrl: loginUrl
-        });
+        }, true);
 
         return { user, student: updatedStudent, tempPassword };
     });
