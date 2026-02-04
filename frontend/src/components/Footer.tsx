@@ -3,10 +3,27 @@ import { motion } from 'framer-motion';
 import { Facebook, Instagram, Twitter, Mail, MapPin, Phone, ArrowUp } from 'lucide-react';
 import logo from '../assets/logo.png';
 
+const XIcon = ({ size = 18 }: { size?: number }) => (
+    <svg 
+        width={size} 
+        height={size} 
+        viewBox="0 0 24 24" 
+        fill="currentColor"
+    >
+        <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
+    </svg>
+);
+
 const Footer: React.FC = () => {
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
+
+    const socialLinks = [
+        { Icon: Facebook, href: '#', label: 'Facebook', color: 'hover:text-blue-600' },
+        { Icon: Instagram, href: '#', label: 'Instagram', color: 'hover:text-pink-600' },
+        { Icon: XIcon, href: '#', label: 'X (formerly Twitter)', color: 'hover:text-tharqiya-deep dark:hover:text-white' },
+    ];
 
     return (
         <footer className="bg-brand-cream dark:bg-slate-950 pt-16 sm:pt-32 pb-8 sm:pb-12 relative overflow-hidden transition-colors duration-500 border-t border-slate-200 dark:border-slate-900">
@@ -32,14 +49,16 @@ const Footer: React.FC = () => {
                             </p>
                         </div>
                         <div className="flex items-center gap-4">
-                            {[Facebook, Instagram, Twitter].map((Icon, idx) => (
+                            {socialLinks.map(({ Icon, href, label, color }, idx) => (
                                 <motion.a
                                     key={idx}
-                                    href="#"
-                                    whileHover={{ scale: 1.1, backgroundColor: '#C5A059', color: '#fff' }}
-                                    className="p-2 sm:p-3 bg-white dark:bg-slate-800/50 rounded-lg sm:rounded-xl text-tharqiya-deep/50 dark:text-slate-400 transition-all border border-slate-200 dark:border-slate-800 shadow-sm"
+                                    href={href}
+                                    aria-label={label}
+                                    whileHover={{ scale: 1.1, y: -4 }}
+                                    whileTap={{ scale: 0.9 }}
+                                    className={`p-3 sm:p-4 bg-white dark:bg-slate-900/80 rounded-2xl text-tharqiya-deep/60 dark:text-slate-400 transition-all border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-tharqiya-deep/20 dark:hover:border-white/20 ${color}`}
                                 >
-                                    <Icon size={18} />
+                                    <Icon size={20} />
                                 </motion.a>
                             ))}
                         </div>

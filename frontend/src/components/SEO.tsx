@@ -7,7 +7,7 @@ interface SEOProps {
   canonical?: string;
   ogType?: string;
   ogImage?: string;
-  twitterHandle?: string;
+  xHandle?: string; // Updated from twitterHandle
   jsonLd?: object;
   noindex?: boolean;
 }
@@ -18,7 +18,7 @@ const SEO: React.FC<SEOProps> = ({
   canonical,
   ogType = 'website',
   ogImage = '/logo.png', // Fallback to logo
-  twitterHandle = '@TharqiyaCourse',
+  xHandle = '@TharqiyaCourse', // Updated from twitterHandle
   jsonLd,
   noindex = false,
 }) => {
@@ -29,6 +29,13 @@ const SEO: React.FC<SEOProps> = ({
   const siteUrl = 'https://darussalameduvillage.com';
   const logoUrl = `${siteUrl}/logo.png`;
   const url = typeof window !== 'undefined' ? window.location.href : siteUrl;
+
+  // Ensure absolute image URL
+  const absoluteOgImage = ogImage.startsWith('http') 
+    ? ogImage 
+    : ogImage.startsWith('/') 
+      ? `${siteUrl}${ogImage}` 
+      : `${siteUrl}/${ogImage}`;
 
   // Base branding schema
   const defaultSchema = [
@@ -79,15 +86,15 @@ const SEO: React.FC<SEOProps> = ({
       <meta property="og:url" content={url} />
       <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={metaDescription} />
-      <meta property="og:image" content={ogImage} />
+      <meta property="og:image" content={absoluteOgImage} />
 
-      {/* Twitter */}
-      <meta property="twitter:card" content="summary_large_image" />
-      <meta property="twitter:url" content={url} />
-      <meta property="twitter:title" content={fullTitle} />
-      <meta property="twitter:description" content={metaDescription} />
-      <meta property="twitter:image" content={ogImage} />
-      {twitterHandle && <meta name="twitter:site" content={twitterHandle} />}
+      {/* X (formerly Twitter) */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:url" content={url} />
+      <meta name="twitter:title" content={fullTitle} />
+      <meta name="twitter:description" content={metaDescription} />
+      <meta name="twitter:image" content={absoluteOgImage} />
+      {xHandle && <meta name="twitter:site" content={xHandle} />}
 
       {/* JSON-LD Structured Data */}
       <script type="application/ld+json">
