@@ -14,19 +14,19 @@ interface Leader {
 
 const leaders: Leader[] = [
     {
-        role: "CHANCELLOR",
+        role: "PRESIDENT",
         nameEn: "SAYYID RASHEEDALI SHIHAB",
         nameAr: "السيد رشيد علي شهاب",
         image: chancellorImg
     },
     {
-        role: "PRO. CHANCELLOR",
+        role: "CHIEF ADVISOR",
         nameEn: "MOOSAKKUTTY HAZRATH",
         nameAr: "الشيخ موسى كوتي حضرت",
         image: proChancellorImg
     },
     {
-        role: "VICE. CHANCELLOR",
+        role: "GENERAL SECRETARY",
         nameEn: "AV ABDURAHMAN MUSLIYAR",
         nameAr: "الشيخ عبد الرحمن ااي في",
         image: viceChancellorImg
@@ -56,7 +56,7 @@ const Leadership: React.FC = () => {
                     </motion.div>
                 </div>
 
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8 md:gap-12">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-12 sm:gap-8 md:gap-12">
                     {leaders.map((leader, idx) => (
                         <motion.div
                             key={idx}

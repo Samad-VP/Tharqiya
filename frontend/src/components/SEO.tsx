@@ -36,6 +36,7 @@ const SEO: React.FC<SEOProps> = ({
       "@context": "https://schema.org",
       "@type": "Organization",
       "name": siteName,
+      "alternateName": "DHEV",
       "url": siteUrl,
       "logo": logoUrl,
       "sameAs": [
@@ -46,11 +47,15 @@ const SEO: React.FC<SEOProps> = ({
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
-      "name": "Tharqiya",
+      "name": "Darussalam Edu Village",
+      "alternateName": "Tharqiya",
       "url": siteUrl,
       "potentialAction": {
         "@type": "SearchAction",
-        "target": `${siteUrl}/search?q={search_term_string}`,
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": `${siteUrl}/search?q={search_term_string}`
+        },
         "query-input": "required name=search_term_string"
       }
     }

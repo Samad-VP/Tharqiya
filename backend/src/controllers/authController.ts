@@ -224,9 +224,49 @@ export const deleteUser = asyncHandler(async (req: AuthRequest, res: Response, n
 
     // Handle role-specific cleanup
     await prisma.$transaction(async (tx) => {
-        if (user.role === 'INTERVIEWER') {
-            await tx.interviewer.deleteMany({ where: { userId: id as string } });
+        // 1. Delete Interviews conducted by this user (if they were an interviewer)
+        // We first need to find the interviewer record ID
+        const interviewer = await tx.interviewer.findUnique({
+            where: { userId: id as string },
+            select: { id: true }
+        });
+
+        if (interviewer) {
+            // Delete Evaluations for these interviews
+            const interviews = await tx.interview.findMany({
+                where: { interviewerId: interviewer.id },
+                select: { id: true }
+            });
+            const interviewIds = interviews.map(i => i.id);
+            
+            await tx.evaluation.deleteMany({
+                where: { interviewId: { in: interviewIds } }
+            });
+
+            // Delete the interviews themselves
+            await tx.interview.deleteMany({
+                where: { interviewerId: interviewer.id }
+            });
+
+            // Delete the interviewer profile
+            await tx.interviewer.delete({
+                where: { id: interviewer.id }
+            });
         }
+
+        // 2. Delete Notifications where user is the recipient
+        await tx.notification.deleteMany({ where: { userId: id as string } });
+
+        // 3. Delete Notifications where user is the admin (adminId)
+        await tx.notification.deleteMany({ where: { adminId: id as string } });
+
+        // 4. Delete AuditLogs created by this user
+        await tx.auditLog.deleteMany({ where: { actorId: id as string } });
+
+        // 5. Delete Student profile if exists
+        await tx.student.deleteMany({ where: { userId: id as string } });
+
+        // 6. Finally delete the User
         await tx.user.delete({ where: { id: id as string } });
     });
 

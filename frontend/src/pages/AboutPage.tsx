@@ -76,7 +76,7 @@ const AboutPage: React.FC = () => {
 
                             <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-tharqiya-deep dark:text-white mb-10 font-outfit leading-tight tracking-tighter">
                                 A Message from the <br />
-                                <span className="text-gold-orange">Vice Chancellor</span>
+                                <span className="text-gold-orange">General Secretary</span>
                             </h2>
 
                             <motion.div 
@@ -98,7 +98,7 @@ const AboutPage: React.FC = () => {
                                             AV Abdurahman Musliyar
                                         </h4>
                                         <p className="text-xs sm:text-sm font-black text-edu-teal uppercase tracking-widest mt-1">
-                                            Vice Chancellor, DIU
+                                            General Secretary, DIU
                                         </p>
                                     </div>
                                 </div>
@@ -128,7 +128,7 @@ const AboutPage: React.FC = () => {
                                     <iframe 
                                         className="absolute inset-0 w-full h-full"
                                         src="https://www.youtube.com/embed/C3IeDIE3OT4" 
-                                        title="Vice Chancellor's Message & Campus Tour"
+                                        title="General Secretary's Message & Campus Tour"
                                         frameBorder="0"
                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                         allowFullScreen

@@ -102,9 +102,13 @@ const AdmissionPage: React.FC = () => {
     const nextStep = () => {
         if (validateStep(step)) {
             setStep(prev => prev + 1);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
-    const prevStep = () => setStep(prev => prev - 1);
+    const prevStep = () => {
+        setStep(prev => prev - 1);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [successData, setSuccessData] = useState<{ 
@@ -129,6 +133,7 @@ const AdmissionPage: React.FC = () => {
             setSuccessData(response.data);
             toast.success("Application submitted successfully!");
             setStep(5); // Move to a success step
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         } catch (err: any) {
             console.error("Form Submission Error:", err);
             toast.error(err.response?.data?.message || "Failed to submit application. Please try again.");

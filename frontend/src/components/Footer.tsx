@@ -9,33 +9,35 @@ const Footer: React.FC = () => {
     };
 
     return (
-        <footer className="bg-slate-950 pt-16 sm:pt-32 pb-8 sm:pb-12 relative overflow-hidden transition-colors duration-500">
+        <footer className="bg-brand-cream dark:bg-slate-950 pt-16 sm:pt-32 pb-8 sm:pb-12 relative overflow-hidden transition-colors duration-500 border-t border-slate-200 dark:border-slate-900">
             {/* Islamic Pattern Overlay */}
             
 
             <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 relative z-10">
-                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12 sm:gap-16 mb-20">
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-x-8 gap-y-12 sm:gap-16 mb-20">
                     {/* Brand Section */}
-                     <div className="col-span-2 md:col-span-2 lg:col-span-1 flex flex-col items-center text-center space-y-6 sm:space-y-8">
-                        <div className="flex items-center gap-3 mb-2 sm:mb-6">
-                            <div className="h-8 sm:h-10 w-auto flex items-center justify-center transition-transform group-hover:scale-110 duration-500">
-                                <img src={logo} alt="Darussalam Edu Village Official Logo" className="h-full w-auto object-contain" />
+                     <div className="flex flex-col items-center lg:items-start text-center lg:text-left space-y-6 sm:space-y-8">
+                        <div className="flex flex-col items-center lg:items-start w-fit text-center lg:text-left">
+                            <div className="flex items-center gap-3 mb-2 sm:mb-6">
+                                <div className="h-8 sm:h-10 w-auto flex items-center justify-center transition-transform group-hover:scale-110 duration-500">
+                                    <img src={logo} alt="Darussalam Edu Village Official Logo" className="h-full w-auto object-contain" />
+                                </div>
+                                <div className="leading-tight text-left">
+                                    <span className="block text-lg sm:text-xl font-black tracking-tighter font-outfit text-edu-teal">Darussalam</span>
+                                    <span className="block text-[8px] sm:text-[10px] font-bold text-tharqiya-deep/70 dark:text-white/70 tracking-[0.2em]">Edu Village</span>
+                                </div>
                             </div>
-                            <div className="leading-tight">
-                                <span className="block text-lg sm:text-xl font-black tracking-tighter font-outfit text-edu-coral">Darussalam</span>
-                                <span className="block text-[8px] sm:text-[10px] font-bold text-white/70 tracking-[0.2em]">Edu Village</span>
-                            </div>
+                            <p className="text-academic-muted dark:text-slate-400 font-medium leading-relaxed text-sm sm:text-base max-w-xs">
+                                Empowering Quranic scholars with modern tools and academic brilliance. Bridging traditional wisdom with future excellence.
+                            </p>
                         </div>
-                        <p className="text-slate-400 font-medium leading-relaxed text-center text-sm sm:text-base">
-                            Empowering Quranic scholars with modern tools and academic brilliance. Bridging traditional wisdom with future excellence.
-                        </p>
                         <div className="flex items-center gap-4">
                             {[Facebook, Instagram, Twitter].map((Icon, idx) => (
                                 <motion.a
                                     key={idx}
                                     href="#"
                                     whileHover={{ scale: 1.1, backgroundColor: '#C5A059', color: '#fff' }}
-                                    className="p-2 sm:p-3 bg-slate-800/50 rounded-lg sm:rounded-xl text-slate-400 transition-all border border-slate-800"
+                                    className="p-2 sm:p-3 bg-white dark:bg-slate-800/50 rounded-lg sm:rounded-xl text-tharqiya-deep/50 dark:text-slate-400 transition-all border border-slate-200 dark:border-slate-800 shadow-sm"
                                 >
                                     <Icon size={18} />
                                 </motion.a>
@@ -43,72 +45,77 @@ const Footer: React.FC = () => {
                         </div>
                     </div>
 
-                     {/* Quick Links */}
-                    <div className="text-center">
-                        <h4 className="text-xs sm:text-sm font-black uppercase tracking-[0.2em] mb-6 sm:mb-8 text-edu-teal">Navigation</h4>
-                        <ul className="space-y-3 sm:space-y-4 font-bold text-slate-400 text-sm sm:text-base">
-                            {['Home', 'About Tharqiya', 'Tharqiya Course', 'Faculty', 'Alumni', 'Admission', 'Student Portal'].map((link) => (
-                                <li key={link}>
-                                    <a href="#" className="hover:text-white transition-all flex items-center justify-center group">
-                                        <div className="w-0 group-hover:w-4 h-px bg-edu-teal mx-0 group-hover:mx-3 transition-all"></div>
-                                        {link}
-                                    </a>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                    {/* Navigation and Support - Grouped and Centered */}
+                    <div className="col-span-1 lg:col-span-2 flex justify-center gap-12 sm:gap-24 lg:gap-32 px-4">
+                        {/* Quick Links */}
+                        <div className="flex flex-col items-start w-fit">
+                            <h4 className="text-xs sm:text-sm font-black uppercase tracking-[0.2em] mb-6 sm:mb-8 text-edu-teal">Navigation</h4>
+                            <ul className="space-y-3 sm:space-y-4 font-bold text-academic-muted dark:text-slate-400 text-xs sm:text-sm">
+                                {['Home', 'About', 'Faculty', 'Alumni', 'Admission', 'Portal'].map((link) => (
+                                    <li key={link}>
+                                        <a href="#" className="hover:text-tharqiya-deep dark:hover:text-white transition-all flex items-center justify-start group">
+                                            <div className="w-0 group-hover:w-3 h-px bg-edu-teal mx-0 group-hover:mr-2 transition-all"></div>
+                                            {link}
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
 
-                    {/* Support Info */}
-                    <div className="text-center">
-                        <h4 className="text-xs sm:text-sm font-black uppercase tracking-[0.2em] mb-6 sm:mb-8 text-edu-teal">Support</h4>
-                        <ul className="space-y-3 sm:space-y-4 font-bold text-slate-400 text-sm sm:text-base">
-                            {['Downloads', 'Admission FAQs', 'Privacy Policy', 'Terms of Study', 'Contact Support'].map((link) => (
-                                <li key={link}>
-                                    <a href="#" className="hover:text-white transition-all flex items-center justify-center group">
-                                        <div className="w-0 group-hover:w-4 h-px bg-edu-teal mx-0 group-hover:mx-3 transition-all"></div>
-                                        {link}
-                                    </a>
-                                </li>
-                            ))}
-                        </ul>
+                        {/* Support Info */}
+                        <div className="flex flex-col items-start w-fit">
+                            <h4 className="text-xs sm:text-sm font-black uppercase tracking-[0.2em] mb-6 sm:mb-8 text-edu-teal">Support</h4>
+                            <ul className="space-y-3 sm:space-y-4 font-bold text-academic-muted dark:text-slate-400 text-xs sm:text-sm">
+                                {['Downloads', 'FAQs', 'Privacy', 'Terms', 'Contact'].map((link) => (
+                                    <li key={link}>
+                                        <a href="#" className="hover:text-tharqiya-deep dark:hover:text-white transition-all flex items-center justify-start group">
+                                            <div className="w-0 group-hover:w-3 h-px bg-edu-teal mx-0 group-hover:mr-2 transition-all"></div>
+                                            {link}
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
                     </div>
 
                     {/* Information */}
-                    <div className="col-span-2 md:col-span-2 lg:col-span-1 text-center">
-                        <h4 className="text-xs sm:text-sm font-black uppercase tracking-[0.2em] mb-6 sm:mb-8 text-edu-teal">Information</h4>
-                        <ul className="space-y-4 sm:space-y-6">
-                            <li className="flex flex-col items-center gap-3 sm:gap-4">
-                                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-slate-800/30 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0">
-                                    <MapPin className="text-edu-teal" size={16} />
-                                </div>
-                                <span className="text-slate-400 font-bold text-xs sm:text-sm leading-snug">
-                                    Darussalam Edu Village, <br />
-                                    Kozhikode, Kerala 673322
-                                </span>
-                            </li>
-                            <li className="flex flex-col items-center gap-3 sm:gap-4">
-                                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-slate-800/30 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0">
-                                    <Phone className="text-edu-teal" size={16} />
-                                </div>
-                                <a href="tel:+919847642004" className="text-slate-400 font-bold text-xs sm:text-sm hover:text-edu-teal transition-colors cursor-pointer">
-                                    +91 98476 42004
-                                </a>
-                            </li>
-                            <li className="flex flex-col items-center gap-3 sm:gap-4">
-                                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-slate-800/30 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0">
-                                    <Mail className="text-edu-teal" size={16} />
-                                </div>
-                                <a href="mailto:info@darussalameduvillage.com" className="text-slate-400 font-bold text-xs sm:text-sm hover:text-edu-teal transition-colors cursor-pointer">
-                                    info@darussalameduvillage.com
-                                </a>
-                            </li>
-                        </ul>
+                    <div className="flex flex-col items-center lg:items-start">
+                        <div className="w-fit text-left">
+                            <h4 className="text-xs sm:text-sm font-black uppercase tracking-[0.2em] mb-6 sm:mb-8 text-edu-teal">Information</h4>
+                            <ul className="space-y-4 sm:space-y-6">
+                                <li className="flex items-start gap-3 sm:gap-4">
+                                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white dark:bg-slate-800/30 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 shadow-sm border border-slate-100 dark:border-none">
+                                        <MapPin className="text-edu-teal" size={16} />
+                                    </div>
+                                    <span className="text-academic-muted dark:text-slate-400 font-bold text-xs sm:text-sm leading-snug">
+                                        Darussalam Edu Village, <br />
+                                        Kozhikode, Kerala 673322
+                                    </span>
+                                </li>
+                                <li className="flex items-start gap-3 sm:gap-4">
+                                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white dark:bg-slate-800/30 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 shadow-sm border border-slate-100 dark:border-none">
+                                        <Phone className="text-edu-teal" size={16} />
+                                    </div>
+                                    <a href="tel:+919847642004" className="text-academic-muted dark:text-slate-400 font-bold text-xs sm:text-sm hover:text-edu-teal transition-colors cursor-pointer">
+                                        +91 98476 42004
+                                    </a>
+                                </li>
+                                <li className="flex items-start gap-3 sm:gap-4">
+                                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white dark:bg-slate-800/30 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 shadow-sm border border-slate-100 dark:border-none">
+                                        <Mail className="text-edu-teal" size={16} />
+                                    </div>
+                                    <a href="mailto:info@darussalameduvillage.com" className="text-academic-muted dark:text-slate-400 font-bold text-xs sm:text-sm hover:text-edu-teal transition-colors cursor-pointer">
+                                        info@darussalameduvillage.com
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
 
                 {/* Bottom Bar */}
-                <div className="border-t border-slate-800 pt-8 sm:pt-10 flex flex-col md:flex-row justify-between items-center gap-6 sm:gap-8">
-                    <p className="text-slate-500 text-[10px] sm:text-xs font-bold uppercase tracking-widest leading-loose text-center md:text-left">
+                <div className="border-t border-slate-200 dark:border-slate-800 pt-8 sm:pt-10 flex flex-col md:flex-row justify-between items-center gap-6 sm:gap-8">
+                    <p className="text-academic-muted dark:text-slate-500 text-[10px] sm:text-xs font-bold uppercase tracking-widest leading-loose text-center md:text-left">
                         &copy; {new Date().getFullYear()} Darussalam Edu Village. All rights reserved.
                     </p>
 
