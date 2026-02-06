@@ -143,7 +143,7 @@ const FacultyPage: React.FC = () => {
             </section>
 
             {/* Motivational Quote - Premium Academic Section */}
-            <section className="py-24 sm:py-32 relative overflow-hidden bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500">
+            <section className="py-16 sm:py-24 md:py-32 relative overflow-hidden bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500">
                 <div className="max-w-7xl mx-auto px-6 relative z-10">
                     <motion.div
                         variants={fadeInUp}
@@ -153,7 +153,7 @@ const FacultyPage: React.FC = () => {
                         className="relative"
                     >
                         {/* Glassmorphic Quote Card */}
-                        <div className="relative p-10 sm:p-20 rounded-[3rem] sm:rounded-[4rem] bg-white/40 dark:bg-slate-900/40 backdrop-blur-3xl border border-white dark:border-white/5 shadow-2xl overflow-hidden group">
+                        <div className="relative p-6 sm:p-12 md:p-20 rounded-[2rem] sm:rounded-[3rem] md:rounded-[4rem] bg-white/40 dark:bg-slate-900/40 backdrop-blur-3xl border border-white dark:border-white/5 shadow-2xl overflow-hidden group">
                             {/* Decorative Islamic Pattern Background */}
                             <div className="absolute inset-0 islamic-pattern opacity-[0.03] dark:opacity-[0.07] pointer-events-none" />
                             
@@ -161,14 +161,14 @@ const FacultyPage: React.FC = () => {
                             <div className="absolute -top-24 -left-24 w-64 h-64 bg-edu-teal/10 rounded-full blur-[100px] animate-pulse" />
                             <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-edu-coral/10 rounded-full blur-[100px] animate-pulse [animation-delay:1s]" />
 
-                            <div className="relative z-10 text-center space-y-10">
+                            <div className="relative z-10 text-center space-y-6 sm:space-y-10">
                                 <div className="relative inline-block">
                                     <div className="absolute inset-0 bg-edu-teal/20 blur-xl rounded-full scale-150 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                                    <Quote className="w-12 h-12 sm:w-16 sm:h-16 text-edu-teal/40 mx-auto relative z-10" />
+                                    <Quote className="w-10 h-10 sm:w-16 sm:h-16 text-edu-teal/40 mx-auto relative z-10" />
                                 </div>
 
                                 <blockquote className="relative">
-                                    <h2 className="text-2xl sm:text-4xl md:text-5xl font-playfair italic leading-[1.3] text-tharqiya-deep dark:text-white transition-colors duration-500 max-w-5xl mx-auto">
+                                    <h2 className="text-xl sm:text-3xl md:text-5xl font-playfair italic leading-[1.3] text-tharqiya-deep dark:text-white transition-colors duration-500 max-w-5xl mx-auto">
                                         "The <span className="text-gold-orange font-black not-italic font-outfit">Scholar's Ink</span> is more sacred than the blood of martyrs. Our faculty represents the living bridge between <span className="text-gold-orange font-black not-italic font-outfit">Timeless Wisdom</span> and contemporary challenge."
                                     </h2>
                                 </blockquote>

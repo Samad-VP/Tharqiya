@@ -53,7 +53,7 @@ const AboutPage: React.FC = () => {
             </section>
 
             {/* Vice Chancellor's Message */}
-            <section className="py-24 sm:py-32 relative overflow-hidden bg-white/50 dark:bg-slate-900/20 backdrop-blur-sm border-b border-white/20 dark:border-slate-800/50">
+            <section className="py-16 sm:py-24 md:py-32 relative overflow-hidden bg-white/50 dark:bg-slate-900/20 backdrop-blur-sm border-b border-white/20 dark:border-slate-800/50">
                 {/* Highlight Glows */}
                 <div className="absolute top-0 left-1/4 w-96 h-96 bg-edu-teal/5 rounded-full blur-[120px] pointer-events-none" />
                 <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-edu-coral/5 rounded-full blur-[120px] pointer-events-none" />
@@ -74,37 +74,36 @@ const AboutPage: React.FC = () => {
                                 <div className="h-px w-10 bg-tharqiya-gold" />
                             </div>
 
-                            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-tharqiya-deep dark:text-white mb-10 font-outfit leading-tight tracking-tighter">
-                                A Message from the <br />
+                            <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-tharqiya-deep dark:text-white mb-10 font-outfit leading-tight tracking-tighter">
+                                A Message from the <br className="hidden sm:block" />
                                 <span className="text-gold-orange">General Secretary</span>
                             </h2>
 
                             <motion.div 
                                 whileHover={{ y: -8, scale: 1.01 }}
                                 transition={{ duration: 0.4, ease: "easeOut" }}
-                                className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl p-8 sm:p-12 rounded-[2.5rem] border border-white dark:border-white/5 shadow-2xl relative group mb-12 text-left max-w-3xl mx-auto"
+                                className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl p-6 sm:p-10 md:p-12 rounded-[2rem] sm:rounded-[2.5rem] border border-white dark:border-white/5 shadow-2xl relative group mb-12 text-left max-w-3xl mx-auto"
                             >
-                                <MessageCircle className="absolute -top-6 -right-6 w-16 h-16 text-edu-teal/20 group-hover:rotate-12 transition-transform duration-500" />
-                                <p className="text-lg sm:text-xl text-academic-muted leading-relaxed italic mb-8 relative z-10">
+                                <p className="text-base sm:text-lg md:text-xl text-academic-muted leading-relaxed italic mb-8 relative z-10">
                                     "Our vision for Darussalam Edu Village is to provide a sanctuary where the sacred memory of the Quran meets the highest standards of modern academic scholarship. Every facility on this campus is designed to nurture the intellect and the soul equally."
                                 </p>
                                 
-                                <div className="flex items-center gap-5">
-                                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white dark:bg-slate-950 overflow-hidden border-2 border-tharqiya-gold/30 shadow-lg shrink-0">
+                                <div className="flex items-center gap-4 sm:gap-5">
+                                    <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-2xl bg-white dark:bg-slate-950 overflow-hidden border-2 border-tharqiya-gold/30 shadow-lg shrink-0">
                                         <img src={viceChancellorImg} alt="AV Abdurahman Musliyar" className="w-full h-full object-cover" />
                                     </div>
                                     <div>
-                                        <h4 className="text-xl sm:text-2xl font-black text-tharqiya-deep dark:text-slate-100 font-outfit uppercase tracking-tighter">
-                                            AV Abdurahman Musliyar
+                                        <h4 className="text-base sm:text-xl font-black text-tharqiya-deep dark:text-slate-100 font-outfit uppercase tracking-tighter leading-tight">
+                                            AV ABDURAHMAN MUSLIYAR
                                         </h4>
-                                        <p className="text-xs sm:text-sm font-black text-edu-teal uppercase tracking-widest mt-1">
+                                        <p className="text-[9px] sm:text-xs font-black text-edu-teal uppercase tracking-widest mt-1">
                                             General Secretary, DIU
                                         </p>
                                     </div>
                                 </div>
                             </motion.div>
 
-                            <p className="text-academic-muted font-medium mb-12 max-w-2xl mx-auto">
+                            <p className="text-academic-muted font-medium mb-8 sm:mb-12 max-w-2xl mx-auto text-sm sm:text-base">
                                 Experience the serenity of our campus, our state-of-the-art library, and the creative spaces that define the Tharqiya experience through this special institutional feature.
                             </p>
                         </motion.div>
@@ -123,8 +122,8 @@ const AboutPage: React.FC = () => {
                                 transition={{ duration: 0.5, ease: "easeOut" }}
                                 className="relative group cursor-pointer"
                             >
-                                <div className="absolute -inset-4 sm:-inset-6 bg-edu-teal/10 rounded-[2.5rem] blur-3xl group-hover:bg-edu-teal/20 transition-all duration-700" />
-                                <div className="relative aspect-video rounded-[2rem] sm:rounded-[3rem] overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] border-4 sm:border-8 border-white dark:border-slate-800 bg-slate-900">
+                                <div className="absolute -inset-2 sm:-inset-6 bg-edu-teal/10 rounded-[2.5rem] blur-3xl group-hover:bg-edu-teal/20 transition-all duration-700" />
+                                <div className="relative aspect-video rounded-[1.5rem] sm:rounded-[3rem] overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] border-4 sm:border-8 border-white dark:border-slate-800 bg-slate-900">
                                     <iframe 
                                         className="absolute inset-0 w-full h-full"
                                         src="https://www.youtube.com/embed/C3IeDIE3OT4" 
@@ -288,7 +287,7 @@ const AboutPage: React.FC = () => {
 
              {/* CTA / Village Section */}
              {/* CTA / Village Section - Premium Academic Look */}
-            <section className="py-24 sm:py-32 relative overflow-hidden bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500">
+            <section className="py-16 sm:py-24 md:py-32 relative overflow-hidden bg-tharqiya-cream dark:bg-slate-950 transition-colors duration-500">
                 <div className="max-w-7xl mx-auto px-6 relative z-10">
                     <motion.div
                         variants={fadeInUp}
@@ -298,7 +297,7 @@ const AboutPage: React.FC = () => {
                         className="relative"
                     >
                         {/* Glassmorphic Village Card */}
-                        <div className="relative p-10 sm:p-20 rounded-[3rem] sm:rounded-[4rem] bg-white/40 dark:bg-slate-900/40 backdrop-blur-3xl border border-white dark:border-white/5 shadow-2xl overflow-hidden group text-center">
+                        <div className="relative p-6 sm:p-12 md:p-20 rounded-[2rem] sm:rounded-[3rem] md:rounded-[4rem] bg-white/40 dark:bg-slate-900/40 backdrop-blur-3xl border border-white dark:border-white/5 shadow-2xl overflow-hidden group text-center">
                             {/* Decorative Islamic Pattern Background */}
                             <div className="absolute inset-0 islamic-pattern opacity-[0.03] dark:opacity-[0.07] pointer-events-none" />
                             
@@ -306,32 +305,33 @@ const AboutPage: React.FC = () => {
                             <div className="absolute -top-24 -left-24 w-64 h-64 bg-edu-teal/10 rounded-full blur-[100px] animate-pulse" />
                             <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-edu-coral/10 rounded-full blur-[100px] animate-pulse [animation-delay:1s]" />
 
-                            <div className="relative z-10 space-y-10">
-                                <div className="space-y-6">
-                                    <h2 className="text-3xl sm:text-5xl md:text-7xl font-playfair font-black italic leading-[1.2] text-tharqiya-deep dark:text-white transition-colors duration-500 max-w-5xl mx-auto tracking-tight uppercase">
+                            <div className="relative z-10 space-y-6 sm:space-y-10">
+                                <div className="space-y-4 sm:space-y-6">
+                                    <h2 className="text-2xl sm:text-4xl md:text-7xl font-playfair font-black italic leading-[1.2] text-tharqiya-deep dark:text-white transition-colors duration-500 max-w-5xl mx-auto tracking-tight uppercase">
                                         Darussalam <span className="text-gold-orange font-outfit not-italic">Edu Village</span>
                                     </h2>
-                                    <p className="text-sm sm:text-xl text-academic-muted max-w-3xl mx-auto font-bold uppercase tracking-[0.2em] leading-relaxed">
+                                    <p className="text-xs sm:text-lg md:text-xl text-academic-muted max-w-3xl mx-auto font-bold uppercase tracking-[0.2em] leading-relaxed">
                                         Located in a tranquil sanctuary, Darussalam Edu Village allows students to escape urban static and focus entirely on their <span className="text-gold-orange">spiritual and academic evolution</span>.
                                     </p>
                                 </div>
 
-                                <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-6">
+                                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 pt-4 sm:pt-6">
                                     <motion.button
                                         whileHover={{ scale: 1.05, y: -5 }}
                                         whileTap={{ scale: 0.95 }}
-                                        className="btn-primary"
+                                        className="btn-primary w-full sm:w-auto"
                                     >
                                         Plan a Visit
                                     </motion.button>
                                     
-                                    <motion.button
+                                    <motion.a
+                                        href="tel:+919847642004"
                                         whileHover={{ scale: 1.05, y: -5 }}
                                         whileTap={{ scale: 0.95 }}
-                                        className="px-10 py-4 text-tharqiya-deep dark:text-white font-black tracking-widest border-2 border-tharqiya-deep/10 dark:border-white/10 rounded-full hover:bg-tharqiya-deep hover:text-white dark:hover:bg-white dark:hover:text-slate-950 transition-all duration-300"
+                                        className="px-10 py-4 text-tharqiya-deep dark:text-white font-black tracking-widest border-2 border-tharqiya-deep/10 dark:border-white/10 rounded-full hover:bg-tharqiya-deep hover:text-white dark:hover:bg-white dark:hover:text-slate-950 transition-all duration-300 inline-block w-full sm:w-auto"
                                     >
                                         Contact Us
-                                    </motion.button>
+                                    </motion.a>
                                 </div>
                             </div>
                         </div>

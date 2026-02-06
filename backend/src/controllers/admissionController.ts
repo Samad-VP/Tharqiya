@@ -11,7 +11,7 @@ import { promoteToStudentAccount } from '../services/studentService.js';
 // @route   POST /api/admissions/apply
 // @access  Private (Student only)
 export const applyForAdmission = asyncHandler(async (req: AuthRequest, res: Response, next: NextFunction) => {
-    const { dob, address, hifzCenter, fatherName, motherName, documents, primeHifzMentor, madrasaEducation, pincode, state, country, place, district } = req.body;
+    const { dob, address, hifzCenter, fatherName, motherName, documents, primeHifzMentor, madrasaEducation, pincode, state, country, place, district, firstOption, secondOption, thirdOption } = req.body;
 
     if (!req.user) {
         return next(new AppError('User not found in request', 401));
@@ -38,6 +38,9 @@ export const applyForAdmission = asyncHandler(async (req: AuthRequest, res: Resp
             country: country || 'India',
             place,
             district,
+            firstOption,
+            secondOption,
+            thirdOption,
             documents: documents || {},
         },
     });
@@ -493,7 +496,7 @@ export const updateMyProfile = asyncHandler(async (req: AuthRequest, res: Respon
         dob, address, hifzCenter, fatherName, motherName, 
         phone, documents, place, district, whatsapp, primeHifzMentor, madrasaEducation,
         profileImageUrl, profileImagePublicId, documentUrl, documentPublicId,
-        pincode, state, country
+        pincode, state, country, firstOption, secondOption, thirdOption
     } = (req.body as any);
 
     const student = await prisma.student.findUnique({
@@ -521,7 +524,10 @@ export const updateMyProfile = asyncHandler(async (req: AuthRequest, res: Respon
             madrasaEducation,
             pincode,
             state,
-            country
+            country,
+            firstOption,
+            secondOption,
+            thirdOption
         }
     });
 

@@ -21,6 +21,9 @@ interface ApplicationData {
     id: string;
     applicationNo: string;
     status: string;
+    firstOption?: string;
+    secondOption?: string;
+    thirdOption?: string;
     application: {
         status: string;
         appliedAt: string;
@@ -171,7 +174,19 @@ const StudentAllotment: React.FC = () => {
                                     </div>
                                 </div>
                                 
-                                {/* Allotment Letter Download Moved to Actions Section */}
+                                
+                                {/* Original Preferences Reference */}
+                                <div className="p-6 rounded-3xl bg-white/5 border border-white/5 backdrop-blur-sm">
+                                    <p className="text-[8px] font-black text-teal-100/50 uppercase tracking-[0.2em] mb-3">Your Original Preferences</p>
+                                    <div className="space-y-1.5">
+                                        {[appData.firstOption, appData.secondOption, appData.thirdOption].map((opt, i) => opt && (
+                                            <div key={i} className="flex items-center gap-2">
+                                                <span className="text-[9px] font-black text-white/30">#{i + 1}</span>
+                                                <p className="text-[10px] font-bold text-teal-50/70 truncate">{opt}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <MapPin className="absolute -bottom-16 -right-16 w-64 h-64 text-white/5 group-hover:rotate-12 group-hover:scale-120 transition-transform duration-1000" />

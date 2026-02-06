@@ -658,9 +658,12 @@ const AdminApplications: React.FC = () => {
                                             <div className="space-y-3">
                                                 <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/5">
                                                     <span className="block text-[8px] font-bold text-slate-500 uppercase mb-1">Options Selected</span>
-                                                    <div className="flex flex-wrap gap-2">
+                                                    <div className="flex flex-col gap-2">
                                                         {[selectedApplication.student?.firstOption, selectedApplication.student?.secondOption, selectedApplication.student?.thirdOption].map((opt, i) => opt && (
-                                                            <span key={i} className="px-2 py-1 bg-edu-teal/10 text-edu-teal rounded-lg text-[10px] font-black">{opt}</span>
+                                                            <div key={i} className="flex items-center gap-2">
+                                                                <span className="w-5 h-5 flex items-center justify-center bg-slate-100 dark:bg-white/5 rounded-md text-[8px] font-black text-slate-400">#{i + 1}</span>
+                                                                <span className="px-2 py-1 bg-edu-teal/10 text-edu-teal rounded-lg text-[10px] font-black">{opt}</span>
+                                                            </div>
                                                         ))}
                                                     </div>
                                                 </div>

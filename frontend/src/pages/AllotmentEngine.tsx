@@ -278,6 +278,7 @@ const AllotmentEngine: React.FC = () => {
                                             <div className="flex flex-col gap-1">
                                                 <p className="text-[9px] font-black uppercase text-slate-500 dark:text-slate-400"><span className="text-slate-300">#1</span> {can.student?.firstOption || 'None'}</p>
                                                 <p className="text-[9px] font-black uppercase text-slate-500 dark:text-slate-400"><span className="text-slate-300">#2</span> {can.student?.secondOption || 'None'}</p>
+                                                <p className="text-[9px] font-black uppercase text-slate-500 dark:text-slate-400"><span className="text-slate-300">#3</span> {can.student?.thirdOption || 'None'}</p>
                                             </div>
                                         </td>
                                         <td className="px-8 py-6">
@@ -307,6 +308,13 @@ const AllotmentEngine: React.FC = () => {
                                                             className={`px-4 py-2 rounded-xl bg-slate-50 dark:bg-white/5 text-slate-400 font-black text-[9px] uppercase tracking-widest transition-all border border-transparent ${isPrincipal ? 'hover:text-edu-coral hover:bg-edu-coral/5 hover:border-edu-coral/20' : 'opacity-50 cursor-not-allowed'}`}
                                                         >
                                                             Preference 2
+                                                        </button>
+                                                        <button 
+                                                            disabled={!isPrincipal}
+                                                            onClick={() => handlePropose(can.id, can.student?.thirdOption || 'Campus C')}
+                                                            className={`px-4 py-2 rounded-xl bg-slate-50 dark:bg-white/5 text-slate-400 font-black text-[9px] uppercase tracking-widest transition-all border border-transparent ${isPrincipal ? 'hover:text-edu-teal hover:bg-edu-teal/5 hover:border-edu-teal/20' : 'opacity-50 cursor-not-allowed'}`}
+                                                        >
+                                                            Preference 3
                                                         </button>
                                                     </>
                                                 )}
@@ -372,6 +380,7 @@ const AllotmentEngine: React.FC = () => {
                                         <div className="space-y-1">
                                             <p className="text-[10px] font-black uppercase text-slate-600 dark:text-slate-300"><span className="text-slate-300">#1</span> {can.student?.firstOption || 'None'}</p>
                                             <p className="text-[10px] font-black uppercase text-slate-600 dark:text-slate-300"><span className="text-slate-300">#2</span> {can.student?.secondOption || 'None'}</p>
+                                            <p className="text-[10px] font-black uppercase text-slate-600 dark:text-slate-300"><span className="text-slate-300">#3</span> {can.student?.thirdOption || 'None'}</p>
                                         </div>
                                     </div>
                                     <div className="space-y-1.5 text-right">
@@ -419,6 +428,13 @@ const AllotmentEngine: React.FC = () => {
                                             className="py-3 rounded-xl bg-edu-coral/10 text-edu-coral font-black text-[10px] uppercase tracking-widest active:scale-95 transition-all text-center"
                                         >
                                             Pref 2
+                                        </button>
+                                        <button 
+                                            disabled={!isPrincipal}
+                                            onClick={() => handlePropose(can.id, can.student?.thirdOption || 'Campus C')}
+                                            className="py-3 rounded-xl bg-edu-teal/10 text-edu-teal font-black text-[10px] uppercase tracking-widest active:scale-95 transition-all text-center col-span-2"
+                                        >
+                                            Pref 3
                                         </button>
                                     </div>
                                 ) : (

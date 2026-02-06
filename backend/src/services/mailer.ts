@@ -2,27 +2,30 @@ import nodemailer from 'nodemailer';
 
 /**
  * Brevo SMTP Configuration
- * SMTP_HOST: smtp-relay.brevo.com
- * SMTP_PORT: 587
- * SMTP_USER: apikey
- * SMTP_PASS: <BREVO_SMTP_KEY>
+ * Reconfigured to use Port 465 (SSL) as Port 587 is blocked in this environment.
  */
 
-const port = parseInt(process.env.SMTP_PORT || '587');
+let transporter: nodemailer.Transporter | null = null;
 
-const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
-    port: port,
-    secure: port === 465, // 465 is SSL, 587 is STARTTLS (secure: false)
-    auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-    },
-    tls: {
-        // Do not fail on invalid certs
-        rejectUnauthorized: false
+const getTransporter = () => {
+    if (!transporter) {
+        console.log(`[BREVO] Initializing transporter with user: ${process.env.SMTP_USER} and pass length: ${process.env.SMTP_PASS?.length || 0}`);
+        transporter = nodemailer.createTransport({
+            host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
+            port: 465,
+            secure: true, // true for 465, false for other ports
+            auth: {
+                user: process.env.SMTP_USER,
+                pass: process.env.SMTP_PASS,
+            },
+            tls: {
+                // Do not fail on invalid certs
+                rejectUnauthorized: false
+            }
+        });
     }
-});
+    return transporter;
+};
 
 export type Department = 'ADMIN' | 'ADMISSIONS' | 'SUPPORT' | 'INFO' | 'PRINCIPAL';
 
@@ -72,10 +75,10 @@ export const sendBrevoEmail = async ({
     try {
         console.log(`[BREVO SMTP] Attempting to send ${subject} to ${to} from ${fromName} <${fromEmail}>...`);
         
-        const info = await transporter.sendMail({
+        const info = await getTransporter().sendMail({
             from: `"${fromName}" <${fromEmail}>`,
             to,
-            subject,
+            subject: subject,
             html,
             text,
             replyTo: replyTo || fromEmail,
@@ -89,4 +92,4 @@ export const sendBrevoEmail = async ({
     }
 };
 
-export default transporter;
+export default { sendBrevoEmail };
