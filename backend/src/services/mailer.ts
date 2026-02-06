@@ -1,31 +1,10 @@
-import nodemailer from 'nodemailer';
+import axios from 'axios';
 
 /**
- * Brevo SMTP Configuration
- * Reconfigured to use Port 465 (SSL) as Port 587 is blocked in this environment.
+ * Brevo API Configuration
+ * API URL: https://api.brevo.com/v3/smtp/email
+ * Using REST API instead of SMTP to bypass cloud provider (Render) firewall blocks on Port 587/465.
  */
-
-let transporter: nodemailer.Transporter | null = null;
-
-const getTransporter = () => {
-    if (!transporter) {
-        console.log(`[BREVO] Initializing transporter with user: ${process.env.SMTP_USER} and pass length: ${process.env.SMTP_PASS?.length || 0}`);
-        transporter = nodemailer.createTransport({
-            host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
-            port: 465,
-            secure: true, // true for 465, false for other ports
-            auth: {
-                user: process.env.SMTP_USER,
-                pass: process.env.SMTP_PASS,
-            },
-            tls: {
-                // Do not fail on invalid certs
-                rejectUnauthorized: false
-            }
-        });
-    }
-    return transporter;
-};
 
 export type Department = 'ADMIN' | 'ADMISSIONS' | 'SUPPORT' | 'INFO' | 'PRINCIPAL';
 
@@ -57,7 +36,7 @@ interface SendEmailOptions {
 }
 
 /**
- * Core function to send emails via Brevo SMTP
+ * Core function to send emails via Brevo REST API
  */
 export const sendBrevoEmail = async ({
     to,
@@ -71,24 +50,41 @@ export const sendBrevoEmail = async ({
 }: SendEmailOptions) => {
     const fromEmail = fromEmailOverride || DEPARTMENT_EMAILS[department];
     const fromName = fromNameOverride || DEPARTMENT_NAMES[department];
+    const apiKey = process.env.BREVO_API_KEY;
+
+    if (!apiKey) {
+        console.error('[BREVO ERROR] API Key missing');
+        return { success: false, error: 'Brevo API Key is missing in environment variables' };
+    }
 
     try {
-        console.log(`[BREVO SMTP] Attempting to send ${subject} to ${to} from ${fromName} <${fromEmail}>...`);
+        console.log(`[BREVO API] Attempting to send ${subject} to ${to} from ${fromName} <${fromEmail}>...`);
         
-        const info = await getTransporter().sendMail({
-            from: `"${fromName}" <${fromEmail}>`,
-            to,
-            subject: subject,
-            html,
-            text,
-            replyTo: replyTo || fromEmail,
-        });
+        const response = await axios.post(
+            'https://api.brevo.com/v3/smtp/email',
+            {
+                sender: { name: fromName, email: fromEmail },
+                to: [{ email: to }],
+                subject: subject,
+                htmlContent: html,
+                textContent: text,
+                replyTo: { email: replyTo || fromEmail }
+            },
+            {
+                headers: {
+                    'api-key': apiKey,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            }
+        );
 
-        console.log(`[BREVO SUCCESS] Message ID: ${info.messageId}`);
-        return { success: true, messageId: info.messageId };
+        console.log(`[BREVO SUCCESS] Message ID: ${response.data.messageId}`);
+        return { success: true, messageId: response.data.messageId };
     } catch (error: any) {
-        console.error(`[BREVO ERROR] Failed to send email to ${to}:`, error.message);
-        return { success: false, error: error.message };
+        const errorMsg = error.response?.data?.message || error.message;
+        console.error(`[BREVO ERROR] Failed to send email to ${to}:`, errorMsg);
+        return { success: false, error: errorMsg };
     }
 };
 
