@@ -13,7 +13,9 @@ import {
     CalendarPlus,
     X,
     Check,
-    AlertCircle
+    AlertCircle,
+    ChevronDown,
+    User
 } from 'lucide-react';
 import AdminLayout from '../components/AdminLayout';
 import api from '../api/axiosInstance';
@@ -39,6 +41,7 @@ const AdminInterviews: React.FC = () => {
         sendNotifications: true,
         rescheduleReason: ''
     });
+    const [expandedInterviewers, setExpandedInterviewers] = useState<string[]>([]);
 
     const fetchData = async () => {
         try {
@@ -148,6 +151,27 @@ const AdminInterviews: React.FC = () => {
             setSelectedApps(pendingAssignment.map(app => app.id));
         }
     };
+    
+    const toggleInterviewer = (id: string) => {
+        setExpandedInterviewers(prev => 
+            prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+        );
+    };
+
+    const groupedInterviews = React.useMemo(() => {
+        const groups: Record<string, any> = {};
+        interviews.forEach(interview => {
+            const interviewerId = interview.interviewerId;
+            if (!groups[interviewerId]) {
+                groups[interviewerId] = {
+                    interviewer: interview.interviewer,
+                    interviews: []
+                };
+            }
+            groups[interviewerId].interviews.push(interview);
+        });
+        return groups;
+    }, [interviews]);
 
     const pendingAssignment = applications.filter(app => (app.status === 'ACCEPTED' || app.status === 'DOCS_VERIFIED') && !app.interview);
 
@@ -265,71 +289,110 @@ const AdminInterviews: React.FC = () => {
                         </div>
                     </div>
                 ) : (
-                    <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[2.5rem] shadow-xl overflow-hidden">
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-left">
-                                <thead>
-                                    <tr className="bg-slate-50/50 dark:bg-white/5 border-b border-slate-100 dark:border-slate-800">
-                                        <th className="px-8 py-6 font-black text-tharqiya-deep/60 dark:text-slate-500 uppercase tracking-widest text-[10px]">Candidate</th>
-                                        <th className="px-8 py-6 font-black text-tharqiya-deep/60 dark:text-slate-500 uppercase tracking-widest text-[10px]">Assigned Board</th>
-                                        <th className="px-8 py-6 font-black text-tharqiya-deep/60 dark:text-slate-500 uppercase tracking-widest text-[10px]">Date & Time</th>
-                                        <th className="px-8 py-6 font-black text-tharqiya-deep/60 dark:text-slate-500 uppercase tracking-widest text-[10px]">Location</th>
-                                        <th className="px-8 py-6 font-black text-tharqiya-deep/60 dark:text-slate-500 uppercase tracking-widest text-[10px] text-center">Status</th>
-                                        <th className="px-8 py-6 font-black text-tharqiya-deep/60 dark:text-slate-500 uppercase tracking-widest text-[10px] text-right">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-slate-50 dark:divide-slate-800 text-sm">
-                                    {interviews.length > 0 ? interviews.map((item) => (
-                                        <tr key={item.id} className="hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
-                                            <td className="px-8 py-6">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-10 h-10 rounded-xl bg-edu-teal/10 flex items-center justify-center font-black text-edu-teal text-xs">
-                                                        {(item.application?.student?.user?.name || item.application?.student?.name)?.[0] || 'S'}
-                                                    </div>
-                                                    <div>
-                                                        <p className="font-black text-tharqiya-deep dark:text-white font-outfit">{item.application?.student?.user?.name || item.application?.student?.name}</p>
-                                                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{item.application?.student?.applicationNo}</p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-8 py-6">
-                                                <div className="flex items-center gap-2">
-                                                    <div className="w-8 h-8 rounded-lg bg-edu-coral/10 flex items-center justify-center text-edu-coral">
-                                                        <UserCheck size={14} />
-                                                    </div>
-                                                    <span className="font-black text-tharqiya-deep dark:text-white text-xs">{item.interviewer?.user?.name}</span>
-                                                </div>
-                                            </td>
-                                            <td className="px-8 py-6">
-                                                <div className="flex flex-col">
-                                                    <span className="font-black text-tharqiya-deep dark:text-white text-xs">{new Date(item.scheduledAt).toLocaleDateString()}</span>
-                                                    <span className="text-[10px] font-bold text-tharqiya-deep/60 dark:text-slate-400">{new Date(item.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                                                </div>
-                                            </td>
-                                            <td className="px-8 py-6 text-tharqiya-deep/60 dark:text-slate-500 font-bold text-xs">{item.location}</td>
-                                            <td className="px-8 py-6 text-center">
-                                                <span className="px-3 py-1.5 rounded-full bg-edu-teal/10 text-edu-teal text-[9px] font-black uppercase tracking-widest">Confirmed</span>
-                                            </td>
-                                            <td className="px-8 py-6 text-right">
-                                                <button 
-                                                    onClick={() => openEditModal(item)}
-                                                    className="p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 text-slate-400 hover:text-edu-teal hover:bg-edu-teal/10 transition-all group"
-                                                >
-                                                    <MoreHorizontal size={18} className="group-hover:rotate-90 transition-transform" />
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    )) : (
-                                        <tr>
-                                            <td colSpan={5} className="px-8 py-20 text-center">
-                                                <Calendar className="w-12 h-12 text-slate-100 dark:text-slate-800 mx-auto mb-4" />
-                                                <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">No scheduled boards yet</p>
-                                            </td>
-                                        </tr>
+                    <div className="space-y-4">
+                        {Object.values(groupedInterviews).length > 0 ? Object.values(groupedInterviews).map((group: any) => (
+                            <div 
+                                key={group.interviewer.id} 
+                                className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[2.5rem] shadow-xl overflow-hidden transition-all duration-300"
+                            >
+                                {/* Group Header */}
+                                <button 
+                                    onClick={() => toggleInterviewer(group.interviewer.id)}
+                                    className="w-full flex items-center justify-between px-8 py-6 hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors"
+                                >
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-2xl bg-edu-coral/10 flex items-center justify-center text-edu-coral relative overflow-hidden">
+                                            {group.interviewer.user?.profileImageUrl ? (
+                                                <img src={group.interviewer.user.profileImageUrl} alt="" className="w-full h-full object-cover" />
+                                            ) : (
+                                                <User size={20} />
+                                            )}
+                                        </div>
+                                        <div className="text-left">
+                                            <h4 className="font-black text-tharqiya-deep dark:text-white font-outfit uppercase tracking-tight">Board: {group.interviewer.user?.name}</h4>
+                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{group.interviews.length} Assigned Candidates</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-4">
+                                        <div className="px-3 py-1 bg-edu-teal/10 text-edu-teal rounded-full text-[9px] font-black uppercase tracking-widest border border-edu-teal/20">
+                                            {group.interviews.length} Units
+                                        </div>
+                                        <motion.div
+                                            animate={{ rotate: expandedInterviewers.includes(group.interviewer.id) ? 180 : 0 }}
+                                            className="p-2 text-slate-400"
+                                        >
+                                            <ChevronDown size={20} />
+                                        </motion.div>
+                                    </div>
+                                </button>
+
+                                {/* Group Content */}
+                                <AnimatePresence>
+                                    {expandedInterviewers.includes(group.interviewer.id) && (
+                                        <motion.div
+                                            initial={{ height: 0, opacity: 0 }}
+                                            animate={{ height: 'auto', opacity: 1 }}
+                                            exit={{ height: 0, opacity: 0 }}
+                                            className="border-t border-slate-50 dark:border-slate-800 overflow-hidden"
+                                        >
+                                            <div className="overflow-x-auto">
+                                                <table className="w-full text-left">
+                                                    <thead>
+                                                        <tr className="bg-slate-50/30 dark:bg-white/2 border-b border-slate-50 dark:border-slate-800/50">
+                                                            <th className="px-8 py-4 font-black text-tharqiya-deep/50 dark:text-slate-500 uppercase tracking-widest text-[9px]">Candidate Name & ID</th>
+                                                            <th className="px-8 py-4 font-black text-tharqiya-deep/50 dark:text-slate-500 uppercase tracking-widest text-[9px]">Date & Shift</th>
+                                                            <th className="px-8 py-4 font-black text-tharqiya-deep/50 dark:text-slate-500 uppercase tracking-widest text-[9px]">Assigned Point</th>
+                                                            <th className="px-8 py-4 font-black text-tharqiya-deep/50 dark:text-slate-500 uppercase tracking-widest text-[9px] text-center">Status</th>
+                                                            <th className="px-8 py-4 font-black text-tharqiya-deep/50 dark:text-slate-500 uppercase tracking-widest text-[9px] text-right">Settings</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody className="divide-y divide-slate-50 dark:divide-slate-800/50 text-sm">
+                                                        {group.interviews.map((item: any) => (
+                                                            <tr key={item.id} className="hover:bg-slate-50/20 dark:hover:bg-white/2 transition-colors">
+                                                                <td className="px-8 py-5">
+                                                                    <div className="flex items-center gap-3">
+                                                                        <div className="w-9 h-9 rounded-xl bg-edu-teal/10 flex items-center justify-center font-black text-edu-teal text-[10px]">
+                                                                            {(item.application?.student?.user?.name || item.application?.student?.name)?.[0] || 'S'}
+                                                                        </div>
+                                                                        <div>
+                                                                            <p className="font-black text-tharqiya-deep dark:text-white font-outfit text-xs uppercase">{item.application?.student?.user?.name || item.application?.student?.name}</p>
+                                                                            <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">{item.application?.student?.applicationNo}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td className="px-8 py-5">
+                                                                    <div className="flex flex-col">
+                                                                        <span className="font-black text-tharqiya-deep dark:text-white text-[10px]">{new Date(item.scheduledAt).toLocaleDateString()}</span>
+                                                                        <span className="text-[9px] font-bold text-tharqiya-deep/60 dark:text-slate-400">{new Date(item.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                                                    </div>
+                                                                </td>
+                                                                <td className="px-8 py-5 text-tharqiya-deep/60 dark:text-slate-500 font-bold text-[10px] uppercase truncate max-w-[150px]">{item.location}</td>
+                                                                <td className="px-8 py-5 text-center">
+                                                                    <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-500 text-[8px] font-black uppercase tracking-widest border border-emerald-500/20">Active</span>
+                                                                </td>
+                                                                <td className="px-8 py-5 text-right">
+                                                                    <button 
+                                                                        onClick={() => openEditModal(item)}
+                                                                        className="p-2 rounded-xl bg-slate-50 dark:bg-white/5 text-slate-400 hover:text-edu-teal hover:bg-edu-teal/10 transition-all group"
+                                                                    >
+                                                                        <MoreHorizontal size={14} className="group-hover:rotate-90 transition-transform" />
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </motion.div>
                                     )}
-                                </tbody>
-                            </table>
-                        </div>
+                                </AnimatePresence>
+                            </div>
+                        )) : (
+                            <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[2.5rem] py-20 text-center shadow-xl">
+                                <Calendar className="w-12 h-12 text-slate-100 dark:text-slate-800 mx-auto mb-4" />
+                                <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">No scheduled boards yet</p>
+                            </div>
+                        )}
                     </div>
                 )}
              </div>
