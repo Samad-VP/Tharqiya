@@ -140,15 +140,16 @@ const FileUploader: React.FC<FileUploaderProps> = ({
       >
         <input 
           type="file" 
+          id={`file-upload-${label.replace(/\s+/g, '-').toLowerCase()}`}
           ref={fileInputRef}
           onChange={handleFileChange}
           accept={accept}
-          className="hidden"
+          className="sr-only"
         />
 
         {!file && !isUploading && (
-          <div 
-            onClick={() => fileInputRef.current?.click()}
+          <label 
+            htmlFor={`file-upload-${label.replace(/\s+/g, '-').toLowerCase()}`}
             className="flex flex-col items-center justify-center cursor-pointer py-4"
           >
             <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-3">
@@ -158,7 +159,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
             <p className="text-xs text-gray-500 mt-1">
               Max size: {maxSizeKB}KB
             </p>
-          </div>
+          </label>
         )}
 
         {isUploading && (

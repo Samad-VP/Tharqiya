@@ -70,13 +70,18 @@ const AdminInterviews: React.FC = () => {
     const handleSchedule = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
+            const formattedData = {
+                ...schedulingData,
+                scheduledAt: new Date(schedulingData.scheduledAt).toISOString()
+            };
+
             if (isEditMode && editingId) {
-                await api.patch(`/interviews/${editingId}`, schedulingData);
+                await api.patch(`/interviews/${editingId}`, formattedData);
                 toast.success(`Interview rescheduled successfully${schedulingData.sendNotifications ? ' with apology notification!' : '.'}`);
             } else {
                 const response = await api.post('/interviews/batch-schedule', {
                     applicationIds: selectedApps,
-                    ...schedulingData
+                    ...formattedData
                 });
                 
                 const results = response.data.data;
@@ -101,9 +106,11 @@ const AdminInterviews: React.FC = () => {
     const openEditModal = (interview: any) => {
         setIsEditMode(true);
         setEditingId(interview.id);
+        
         const date = new Date(interview.scheduledAt);
-        // Format date for datetime-local input (YYYY-MM-DDThh:mm)
-        const formattedDate = date.toISOString().slice(0, 16);
+        // Format date for datetime-local input (YYYY-MM-DDThh:mm) in local time
+        const pad = (n: number) => n.toString().padStart(2, '0');
+        const formattedDate = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
         
         setSchedulingData({
             interviewerId: interview.interviewerId,
