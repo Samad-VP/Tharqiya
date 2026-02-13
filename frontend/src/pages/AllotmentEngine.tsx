@@ -243,9 +243,31 @@ const AllotmentEngine: React.FC = () => {
                                             </div>
                                         </td>
                                         <td className="px-8 py-6">
-                                            <div className="flex items-center gap-2">
-                                                <TrendingUp size={14} className="text-edu-teal" />
-                                                <span className="font-black text-tharqiya-deep dark:text-white">{calculateAvgScore(can.interview?.evaluations)}</span>
+                                            <div className="group/marks relative w-fit">
+                                                <div className="flex items-center gap-2 cursor-help">
+                                                    <TrendingUp size={14} className="text-edu-teal" />
+                                                    <span className="font-black text-tharqiya-deep dark:text-white">{calculateAvgScore(can.interview?.evaluations)}</span>
+                                                </div>
+
+                                                {/* Subject-wise breakdown popover */}
+                                                <div className="absolute bottom-full left-0 mb-2 invisible group-hover/marks:visible opacity-0 group-hover/marks:opacity-100 transition-all z-50">
+                                                    <div className="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl shadow-2xl p-3 min-w-[200px]">
+                                                        <div className="space-y-2">
+                                                            {can.interview?.evaluations?.map((ev: any, i: number) => (
+                                                                <div key={i} className="flex justify-between items-center gap-4">
+                                                                    <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest truncate max-w-[100px]">{ev.subject}</span>
+                                                                    <span className="text-[10px] font-black text-edu-teal">{ev.marks}</span>
+                                                                </div>
+                                                            ))}
+                                                            {can.interview?.interviewer?.user?.name && (
+                                                                <div className="pt-2 mt-2 border-t border-slate-100 dark:border-slate-700 flex justify-center">
+                                                                    <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Evaluated by {can.interview.interviewer.user.name}</span>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                    <div className="w-2 h-2 bg-white dark:bg-slate-800 border-r border-b border-slate-100 dark:border-slate-700 rotate-45 mx-auto -mt-1" />
+                                                </div>
                                             </div>
                                         </td>
                                         <td className="px-8 py-6">
@@ -372,6 +394,26 @@ const AllotmentEngine: React.FC = () => {
                                         </div>
                                     </div>
                                 </div>
+
+                                {/* Subject-wise Marks Breakdown (Mobile) */}
+                                {can.interview?.evaluations?.length > 0 && (
+                                    <div className="bg-slate-50 dark:bg-white/5 rounded-2xl p-4 border border-slate-100 dark:border-slate-800">
+                                        <div className="flex items-center justify-between mb-3">
+                                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Evaluation Results</p>
+                                            {can.interview.interviewer?.user?.name && (
+                                                <span className="text-[7px] font-bold text-slate-400 uppercase tracking-widest">Evaluated by {can.interview.interviewer.user.name}</span>
+                                            )}
+                                        </div>
+                                        <div className="flex gap-2 overflow-x-auto pb-1 custom-scrollbar scrollbar-hide">
+                                            {can.interview.evaluations.map((ev: any, i: number) => (
+                                                <div key={i} className="flex-shrink-0 px-3 py-2 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl flex flex-col items-center min-w-[80px]">
+                                                    <span className="text-[8px] font-black text-slate-400 uppercase tracking-tighter mb-1 truncate w-full text-center">{ev.subject}</span>
+                                                    <span className="text-xs font-black text-edu-teal">{ev.marks}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
 
                                 {/* Preferences & Selection */}
                                 <div className="grid grid-cols-2 gap-4">

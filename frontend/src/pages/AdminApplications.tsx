@@ -18,7 +18,8 @@ import {
     Mail,
     MessageSquare,
     Bell,
-    ShieldCheck
+    ShieldCheck,
+    Trash2
 } from 'lucide-react';
 import AdminLayout from '../components/AdminLayout';
 import api from '../api/axiosInstance';
@@ -132,6 +133,21 @@ const AdminApplications: React.FC = () => {
             console.error('Error fetching notifications:', error);
         } finally {
             setLoadingNotifications(false);
+        }
+    };
+
+    const handleDeleteApplication = async (applicationId: string, studentName: string) => {
+        if (!window.confirm(`Are you sure you want to PERMANENTLY delete the application for ${studentName}? This action cannot be undone.`)) {
+            return;
+        }
+
+        const loadToast = toast.loading('Deleting application...');
+        try {
+            await api.delete(`/admissions/${applicationId}`);
+            toast.success('Application deleted successfully', { id: loadToast });
+            fetchApplications();
+        } catch (error: any) {
+            toast.error(error.response?.data?.message || 'Failed to delete application', { id: loadToast });
         }
     };
 
@@ -434,6 +450,15 @@ const AdminApplications: React.FC = () => {
                                 >
                                     {app.interview ? <CheckCircle2 size={18} /> : <Calendar size={18} />}
                                 </button>
+                                {['ADMIN', 'SUPER_ADMIN'].includes(currentUser?.role || '') && app.status === 'REJECTED' && (
+                                    <button 
+                                        onClick={() => handleDeleteApplication(app.id, app.student?.user?.name || app.student?.name)}
+                                        className="p-2.5 rounded-xl bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:scale-110 transition-all shadow-sm"
+                                        title="Delete Rejected Application"
+                                    >
+                                        <Trash2 size={18} />
+                                    </button>
+                                )}
                                 <button className="p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 text-slate-600 dark:text-slate-400 hover:text-tharqiya-deep dark:hover:text-white transition-all">
                                     <MoreHorizontal size={18} />
                                 </button>
@@ -496,16 +521,38 @@ const AdminApplications: React.FC = () => {
                                         <td className="px-8 py-6 text-slate-500 font-bold text-[13px]">{new Date(app.appliedAt).toLocaleDateString()}</td>
                                         <td className="px-8 py-6">
                                             {app.interview?.evaluations?.length > 0 ? (
-                                                <div className="flex items-center gap-2">
-                                                    <div className="w-12 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                                                        <div 
-                                                            className="h-full bg-edu-teal" 
-                                                            style={{ width: `${(app.interview.evaluations.reduce((acc: number, curr: any) => acc + curr.marks, 0) / (app.interview.evaluations.length * 100)) * 100}%` }} 
-                                                        />
+                                                <div className="group/marks relative">
+                                                    <div className="flex items-center gap-2 cursor-help">
+                                                        <div className="w-12 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                                                            <div 
+                                                                className="h-full bg-edu-teal" 
+                                                                style={{ width: `${(app.interview.evaluations.reduce((acc: number, curr: any) => acc + curr.marks, 0) / (app.interview.evaluations.length * 100)) * 100}%` }} 
+                                                            />
+                                                        </div>
+                                                        <span className="font-black text-tharqiya-deep dark:text-white text-[11px]">
+                                                            {(app.interview.evaluations.reduce((acc: number, curr: any) => acc + curr.marks, 0) / app.interview.evaluations.length).toFixed(1)}
+                                                        </span>
                                                     </div>
-                                                    <span className="font-black text-tharqiya-deep dark:text-white text-[11px]">
-                                                        {(app.interview.evaluations.reduce((acc: number, curr: any) => acc + curr.marks, 0) / app.interview.evaluations.length).toFixed(1)}
-                                                    </span>
+                                                    
+                                                    {/* Subject-wise breakdown popover */}
+                                                    <div className="absolute bottom-full left-0 mb-2 invisible group-hover/marks:visible opacity-0 group-hover/marks:opacity-100 transition-all z-50">
+                                                        <div className="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl shadow-2xl p-3 min-w-[200px]">
+                                                            <div className="space-y-2">
+                                                                {app.interview.evaluations.map((ev: any, i: number) => (
+                                                                    <div key={i} className="flex justify-between items-center gap-4">
+                                                                        <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest truncate max-w-[100px]">{ev.subject}</span>
+                                                                        <span className="text-[10px] font-black text-edu-teal">{ev.marks}</span>
+                                                                    </div>
+                                                                ))}
+                                                                {app.interview.interviewer?.user?.name && (
+                                                                    <div className="pt-2 mt-2 border-t border-slate-100 dark:border-slate-700 flex justify-center">
+                                                                        <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Evaluated by {app.interview.interviewer.user.name}</span>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                        <div className="w-2 h-2 bg-white dark:bg-slate-800 border-r border-b border-slate-100 dark:border-slate-700 rotate-45 mx-auto -mt-1" />
+                                                    </div>
                                                 </div>
                                             ) : (
                                                 <span className="font-black text-slate-300 uppercase italic text-[10px]">Pending</span>
@@ -544,6 +591,15 @@ const AdminApplications: React.FC = () => {
                                                 >
                                                     {app.interview ? <CheckCircle2 size={18} /> : <Calendar size={18} />}
                                                 </button>
+                                                )}
+                                                {['ADMIN', 'SUPER_ADMIN'].includes(currentUser?.role || '') && app.status === 'REJECTED' && (
+                                                    <button 
+                                                        onClick={() => handleDeleteApplication(app.id, app.student?.user?.name || app.student?.name)}
+                                                        className="p-2 rounded-xl bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:scale-110 transition-all shadow-sm"
+                                                        title="Delete Rejected Application"
+                                                    >
+                                                        <Trash2 size={18} />
+                                                    </button>
                                                 )}
                                                 <button className="p-2 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-400 hover:text-tharqiya-deep dark:hover:text-white transition-all">
                                                     <MoreHorizontal size={18} />
@@ -692,11 +748,14 @@ const AdminApplications: React.FC = () => {
                                             <div className="pt-2">
                                                 <div className="flex items-center justify-between mb-2">
                                                     <p className="text-[10px] font-black text-edu-coral uppercase tracking-[0.2em]">Evaluation Phase</p>
+                                                    {selectedApplication.interview?.interviewer?.user?.name && (
+                                                        <span className="text-[8px] font-bold text-slate-400 uppercase tracking-tight">Evaluated by {selectedApplication.interview.interviewer.user.name}</span>
+                                                    )}
                                                     <div className="px-2 py-0.5 bg-edu-coral/10 text-edu-coral rounded-lg text-[10px] font-black uppercase">
                                                         Avg: {(selectedApplication.interview.evaluations.reduce((acc: number, curr: any) => acc + curr.marks, 0) / selectedApplication.interview.evaluations.length).toFixed(1)}
                                                     </div>
                                                 </div>
-                                                <div className="space-y-2">
+                                                <div className="space-y-2 mt-3">
                                                     {selectedApplication.interview.evaluations.map((evalItem: any, i: number) => (
                                                         <div key={i} className="p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-100/50 dark:border-slate-800/50">
                                                             <div className="flex justify-between items-center mb-1">

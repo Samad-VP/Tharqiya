@@ -7,6 +7,12 @@ async function testHealth() {
     console.log('[TEST] Starting Health Check...');
     const prisma = new PrismaClient();
     
+    // Set a timeout to prevent hanging
+    const timeout = setTimeout(() => {
+        console.error('[FAIL] Health check timed out after 10s');
+        process.exit(1);
+    }, 10000);
+
     try {
         // 1. DB Connectivity
         await prisma.$queryRaw`SELECT 1`;
@@ -16,9 +22,11 @@ async function testHealth() {
         const count = await prisma.notification.count();
         console.log(`[PASS] Notification table reachable (Count: ${count})`);
 
+        clearTimeout(timeout);
         process.exit(0);
     } catch (error: any) {
         console.error('[FAIL] Health check failed:', error.message);
+        clearTimeout(timeout);
         process.exit(1);
     } finally {
         await prisma.$disconnect();

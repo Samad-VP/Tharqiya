@@ -1,5 +1,5 @@
 import express from 'express';
-import { applyForAdmission, getMyStatus, getAllApplications, downloadApplicationPDF, downloadResultPDF, downloadAllotmentPDF, downloadApplicantsListPDF, updateApplicationStatus, updateMyProfile, getMyNotifications, markNotificationsRead } from '../controllers/admissionController.js';
+import { applyForAdmission, getMyStatus, getAllApplications, downloadApplicationPDF, downloadResultPDF, downloadAllotmentPDF, downloadApplicantsListPDF, updateApplicationStatus, updateMyProfile, getMyNotifications, markNotificationsRead, deleteApplication } from '../controllers/admissionController.js';
 import { submitPublicApplication } from '../controllers/publicAdmissionController.js';
 import { confirmAdmission } from '../controllers/confirmAdmissionController.js';
 import { verifyDocuments, generateProvisionalAllotment, submitAllotmentForApproval, processAdmission } from '../controllers/admissions.controller.js';
@@ -25,6 +25,7 @@ router.patch('/:id/status', protect, authorize('ADMIN', 'SUPER_ADMIN'), updateAp
 
 // Internal Admin Operations
 router.patch('/:applicationId/verify-docs', protect, authorize('ADMIN', 'SUPER_ADMIN'), verifyDocuments);
+router.delete('/:id', protect, authorize('ADMIN', 'SUPER_ADMIN'), deleteApplication);
 router.post('/generate-allotment', protect, authorize('ADMIN', 'SUPER_ADMIN'), generateProvisionalAllotment);
 router.post('/submit-allotment', protect, authorize('ADMIN', 'SUPER_ADMIN'), submitAllotmentForApproval);
 router.post('/:applicationId/process-admission', protect, authorize('ADMIN', 'SUPER_ADMIN'), processAdmission);

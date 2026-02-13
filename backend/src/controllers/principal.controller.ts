@@ -20,6 +20,18 @@ export const getPendingApprovals = asyncHandler(async (req: AuthRequest, res: Re
                                 select: { name: true, email: true, profileImageUrl: true }
                             }
                         }
+                    },
+                    interview: {
+                        include: {
+                            evaluations: true,
+                            interviewer: {
+                                include: {
+                                    user: {
+                                        select: { name: true }
+                                    }
+                                }
+                            }
+                        }
                     }
                 } 
             } 

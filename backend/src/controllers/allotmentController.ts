@@ -26,7 +26,14 @@ export const getEligibleForAllotment = asyncHandler(async (req: Request, res: Re
             },
             interview: {
                 include: {
-                    evaluations: true
+                    evaluations: true,
+                    interviewer: {
+                        include: {
+                            user: {
+                                select: { name: true }
+                            }
+                        }
+                    }
                 }
             },
             allotment: true

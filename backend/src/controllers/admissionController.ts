@@ -593,3 +593,69 @@ export const markNotificationsRead = asyncHandler(async (req: AuthRequest, res: 
         message: 'Notifications marked as read'
     });
 });
+
+// @desc    Delete a rejected application (Admin only)
+// @route   DELETE /api/admissions/:id
+// @access  Private (Admin only)
+export const deleteApplication = asyncHandler(async (req: AuthRequest, res: Response, next: NextFunction) => {
+    const id = req.params.id as string;
+
+    const application = await prisma.application.findUnique({
+        where: { id },
+        include: {
+            student: true,
+            interview: true
+        }
+    });
+
+    if (!application) {
+        return next(new AppError('Application not found', 404));
+    }
+
+    if (application.status !== 'REJECTED') {
+        return next(new AppError('Only rejected applications can be deleted', 400));
+    }
+
+    const studentId = application.studentId;
+    const interviewId = application.interview?.id;
+
+    // Use transaction to ensure data integrity
+    await prisma.$transaction(async (tx) => {
+        // 1. Delete Evaluations
+        if (interviewId) {
+            await tx.evaluation.deleteMany({
+                where: { interviewId }
+            });
+
+            // 2. Delete Interview
+            await tx.interview.delete({
+                where: { id: interviewId }
+            });
+        }
+
+        // 3. Delete Allotment
+        await tx.allotment.deleteMany({
+            where: { applicationId: id }
+        });
+
+        // 4. Delete Result
+        await tx.result.deleteMany({
+            where: { studentId }
+        });
+
+        // 5. Delete Application
+        await tx.application.delete({
+            where: { id }
+        });
+
+        // 6. Delete Student
+        await tx.student.delete({
+            where: { id: studentId }
+        });
+    });
+
+    res.json({
+        status: 'success',
+        message: 'Rejected application and associated data deleted successfully'
+    });
+});
