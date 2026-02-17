@@ -1,8 +1,10 @@
-import { PDFDocument, rgb, StandardFonts, PDFFont, PageSizes } from 'pdf-lib';
+import { PDFDocument, rgb, StandardFonts, PDFFont, PageSizes, PDFPage } from 'pdf-lib';
+import fontkit from '@pdf-lib/fontkit';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import axios from 'axios';
+import { reshapeArabic } from './arabicReshaper.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,6 +19,85 @@ const COLORS = {
     SLATE: rgb(100/255, 116/255, 139/255),
     WHITE: rgb(1, 1, 1),
     GOLD: rgb(184/255, 134/255, 11/255),
+};
+
+// Check if text contains Arabic characters
+const hasArabic = (text: string): boolean => /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(text);
+
+// Load the Arabic font from @fontsource package
+let arabicFontBytes: Uint8Array | null = null;
+const loadArabicFontBytes = (): Uint8Array | null => {
+    if (arabicFontBytes) return arabicFontBytes;
+    try {
+        const possiblePaths = [
+            path.resolve('node_modules/@fontsource/noto-sans-arabic/files/noto-sans-arabic-arabic-700-normal.woff'),
+            path.join(__dirname, '../../node_modules/@fontsource/noto-sans-arabic/files/noto-sans-arabic-arabic-700-normal.woff'),
+            path.join(process.cwd(), 'node_modules/@fontsource/noto-sans-arabic/files/noto-sans-arabic-arabic-700-normal.woff'),
+        ];
+        for (const fp of possiblePaths) {
+            if (fs.existsSync(fp)) {
+                arabicFontBytes = fs.readFileSync(fp);
+                console.log('[PDF_SERVICE] Arabic font loaded from:', fp);
+                return arabicFontBytes;
+            }
+        }
+        console.warn('[PDF_SERVICE] Arabic font not found');
+    } catch (error) {
+        console.error('[PDF_SERVICE] Error loading Arabic font:', error);
+    }
+    return null;
+};
+
+// Embed Arabic font into a PDF document (call once per PDF)
+const embedArabicFont = async (pdfDoc: PDFDocument): Promise<PDFFont | null> => {
+    const fontBytes = loadArabicFontBytes();
+    if (!fontBytes) return null;
+    try {
+        pdfDoc.registerFontkit(fontkit);
+        return await pdfDoc.embedFont(fontBytes);
+    } catch (error) {
+        console.error('[PDF_SERVICE] Error embedding Arabic font:', error);
+        return null;
+    }
+};
+
+// Sanitize text for WinAnsi encoding (fallback when Arabic font is unavailable)
+const sanitizeForPDF = (text: string): string => {
+    if (!text) return 'N/A';
+    const sanitized = text.replace(/[^\x20-\x7E\xA0-\xFF]/g, '').trim();
+    return sanitized || 'N/A';
+};
+
+// Safe draw text: uses Arabic font for Arabic text, falls back to sanitized Latin
+const safeDrawText = (
+    page: PDFPage,
+    text: string,
+    options: { x: number; y: number; size: number; font: PDFFont; color: any; maxWidth?: number; lineHeight?: number },
+    arabicFont: PDFFont | null
+) => {
+    let { size, font, maxWidth } = options;
+    
+    // Dynamic Font Scaling: If maxWidth is provided, shrink font size to fit
+    if (maxWidth && maxWidth > 0) {
+        let currentWidth = font.widthOfTextAtSize(text, size);
+        while (currentWidth > maxWidth && size > 7) {
+            size -= 0.5;
+            currentWidth = font.widthOfTextAtSize(text, size);
+        }
+    }
+
+    const drawOptions = { ...options, size, font };
+
+    if (hasArabic(text) && arabicFont) {
+        // Reshape Arabic text for proper letter joining and RTL display
+        const shapedText = reshapeArabic(text);
+        page.drawText(shapedText, { ...drawOptions, font: arabicFont });
+    } else if (hasArabic(text)) {
+        // No Arabic font available — sanitize to prevent crash
+        page.drawText(sanitizeForPDF(text), drawOptions);
+    } else {
+        page.drawText(text, drawOptions);
+    }
 };
 
 const embedImage = async (pdfDoc: PDFDocument, filename: string) => {
@@ -189,7 +270,7 @@ export const generateApplicationPDF = async (studentData: any) => {
         color: COLORS.TEAL,
     });
 
-    const subtText = 'Center for Advanced Qur\'anic Studies & Academic Excellence';
+    const subtText = "Center for Advanced Qur'anic Studies & Academic Excellence";
     const subtWidth = italicFont.widthOfTextAtSize(subtText, 10);
     page.drawText(subtText, {
         x: targetCenter - subtWidth / 2,
@@ -213,7 +294,7 @@ export const generateApplicationPDF = async (studentData: any) => {
     yPos -= 8;
     page.drawLine({
         start: { x: 50, y: yPos },
-        end: { x: 545, y: yPos },
+        end: { x: width - 50, y: yPos },
         thickness: 1.5,
         color: COLORS.TEAL,
     });
@@ -261,11 +342,11 @@ export const generateApplicationPDF = async (studentData: any) => {
 
     const drawRow = (label: string, value: string, secondLabel?: string, secondValue?: string) => {
         page.drawText(`${label}:`, { x: 60, y: yPos, size: 10, font: boldFont, color: COLORS.SLATE });
-        page.drawText(String(value || 'N/A'), { x: 160, y: yPos, size: 10, font, color: COLORS.TEXT });
+        page.drawText(sanitizeForPDF(String(value || 'N/A')), { x: 160, y: yPos, size: 10, font, color: COLORS.TEXT });
         
         if (secondLabel) {
             page.drawText(`${secondLabel}:`, { x: 330, y: yPos, size: 10, font: boldFont, color: COLORS.SLATE });
-            page.drawText(String(secondValue || 'N/A'), { x: 430, y: yPos, size: 10, font, color: COLORS.TEXT });
+            page.drawText(sanitizeForPDF(String(secondValue || 'N/A')), { x: 430, y: yPos, size: 10, font, color: COLORS.TEXT });
         }
         
         yPos -= 17; // Slightly tighter spacing to ensure signature area fits
@@ -316,7 +397,7 @@ export const generateApplicationPDF = async (studentData: any) => {
     page.drawLine({ start: { x: 50, y: yPos }, end: { x: 180, y: yPos }, thickness: 1, color: COLORS.SLATE });
     page.drawText("Applicant's Signature", { x: 55, y: yPos - 12, size: 8, font, color: COLORS.SLATE });
 
-    page.drawLine({ start: { x: 420, y: yPos }, end: { x: 550, y: yPos }, thickness: 1, color: COLORS.SLATE });
+    page.drawLine({ start: { x: 420, y: yPos }, end: { x: width - 50, y: yPos }, thickness: 1, color: COLORS.SLATE });
     page.drawText("Guardian's Signature", { x: 425, y: yPos - 12, size: 8, font, color: COLORS.SLATE });
 
     // Footer
@@ -475,7 +556,7 @@ export const generateResultPDF = async (studentData: any, resultData: any, evalu
         color: COLORS.TEAL,
     });
 
-    const subtText = 'Center for Advanced Qur\'anic Studies & Academic Excellence';
+    const subtText = "Center for Advanced Qur'anic Studies & Academic Excellence";
     const subtWidth = italicFont.widthOfTextAtSize(subtText, 10);
     page.drawText(subtText, {
         x: targetCenter - subtWidth / 2,
@@ -502,7 +583,7 @@ export const generateResultPDF = async (studentData: any, resultData: any, evalu
     yPos -= 8;
     page.drawLine({
         start: { x: 50, y: yPos },
-        end: { x: 545, y: yPos },
+        end: { x: width - 50, y: yPos },
         thickness: 1.5,
         color: COLORS.TEAL,
     });
@@ -512,7 +593,7 @@ export const generateResultPDF = async (studentData: any, resultData: any, evalu
     
     // Left Box: Candidate Name
     page.drawRectangle({ x: 50, y: yPos, width: 200, height: 25, color: COLORS.CREAM, borderColor: COLORS.TEAL, borderWidth: 0.5 });
-    page.drawText('CANDIDATE: ' + studentData.user?.name.toUpperCase(), { x: 60, y: yPos + 8, size: 10, font: boldFont, color: COLORS.DEEP });
+    page.drawText('CANDIDATE: ' + (studentData.user?.name || studentData.name || 'N/A').toUpperCase(), { x: 60, y: yPos + 8, size: 10, font: boldFont, color: COLORS.DEEP });
     
     // Right Box: Application ID
     page.drawRectangle({ x: width - 200, y: yPos, width: 150, height: 25, color: COLORS.CREAM, borderColor: COLORS.TEAL, borderWidth: 0.5 });
@@ -536,11 +617,11 @@ export const generateResultPDF = async (studentData: any, resultData: any, evalu
         if (idx % 2 === 0) {
             page.drawRectangle({ x: 50, y: yPos - 8, width: width - 100, height: 25, color: rgb(0.98, 0.98, 0.98) });
         }
-        page.drawText(evaluation.subject, { x: 65, y: yPos, size: 10, font: boldFont, color: COLORS.TEXT });
+        page.drawText(sanitizeForPDF(evaluation.subject), { x: 65, y: yPos, size: 10, font: boldFont, color: COLORS.TEXT });
         page.drawText(`${evaluation.marks}`, { x: 300, y: yPos, size: 11, font: boldFont, color: COLORS.TEXT });
         
         // Truncate Remarks if too long
-        let remarks = evaluation.remarks || '-';
+        let remarks = sanitizeForPDF(evaluation.remarks || '-');
         if (remarks.length > 35) remarks = remarks.substring(0, 32) + '...';
         
         page.drawText(remarks, { x: 380, y: yPos, size: 9, font, color: COLORS.SLATE });
@@ -635,6 +716,7 @@ export const generateAllotmentPDF = async (studentData: any, allotmentData: any)
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
     const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
     const italicFont = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
+    const arabicFont = await embedArabicFont(pdfDoc);
 
     const primaryLogo = await embedImage(pdfDoc, 'edu_village_logo.png');
     const studentPhoto = await fetchAndEmbedPhoto(pdfDoc, studentData.user?.profileImageUrl || studentData.documents?.photo);
@@ -707,30 +789,48 @@ export const generateAllotmentPDF = async (studentData: any, allotmentData: any)
     const affilText = 'Under Darussalam Islamic University (DIU)';
     page.drawText(affilText, { x: targetCenter - italicFont.widthOfTextAtSize(affilText, 10) / 2, y: headerY + headerHeight - 65, size: 10, font: italicFont, color: COLORS.TEAL });
 
+    let yPos = height - 205;
     const titleText = 'OFFICIAL ALLOTMENT LETTER - 2026';
-    page.drawText(titleText, { x: targetCenter - boldFont.widthOfTextAtSize(titleText, 12) / 2, y: headerY + headerHeight - 85, size: 12, font: boldFont, color: COLORS.DEEP });
+    page.drawText(titleText, { 
+        x: targetCenter - boldFont.widthOfTextAtSize(titleText, 14) / 2, 
+        y: yPos, 
+        size: 14, 
+        font: boldFont, 
+        color: COLORS.DEEP 
+    });
 
-    let yPos = height - 210;
-    page.drawLine({ start: { x: 50, y: yPos }, end: { x: 545, y: yPos }, thickness: 1.5, color: COLORS.TEAL });
+    yPos -= 8;
+    page.drawLine({ start: { x: 50, y: yPos }, end: { x: width - 50, y: yPos }, thickness: 1.5, color: COLORS.TEAL });
 
     // Allotment Details Table
-    yPos -= 40;
-    const tableTop = yPos;
+    yPos -= 35;
     const rowHeight = 30;
-    const col1Width = 150;
-    const col2Width = 300;
-    const tableX = (width - (col1Width + col2Width)) / 2;
+    const col1Width = 145;
+    const col2Width = width - 100 - col1Width;
+    const tableX = 50; // Standardized left margin
 
     // Table Header
     page.drawRectangle({ x: tableX, y: yPos, width: col1Width + col2Width, height: 30, color: COLORS.TEAL });
     page.drawText('ALLOTMENT DETAILS', { x: tableX + 10, y: yPos + 8, size: 11, font: boldFont, color: COLORS.WHITE });
     yPos -= rowHeight;
 
+    // Map Arabic course names to clean PDF-safe display
+    const COURSE_LEVEL_DISPLAY: Record<string, string> = {
+        'التمهيدية': 'Level 1 - At-Tamheediyyah (Basic)',
+        'الإبتدائية': 'Level 2 - Al-Ibtidaaiyyah (IX, X)',
+        'الإعدادية': 'Level 3 - Al-Idaadiyyah (+1, +2, D1)',
+        'الثانوية': 'Level 4 - Ath-Thanaawiyyah (+2, D1)',
+        'العالية': 'Level 5 - Al-Aaliyah (D2, D3, PG)',
+        'الفاضل': 'Level 6 - Al-Faadil (PG)',
+    };
+    const courseDisplay = COURSE_LEVEL_DISPLAY[allotmentData.course] || allotmentData.course;
+
     const details = [
         ['Candidate Name', studentData.user?.name || studentData.name],
         ['Application ID', studentData.applicationNo],
         ['Allotted Campus', allotmentData.campus],
-        ['Assigned Programme', allotmentData.course],
+        ['Assigned Programme', 'Tharqiya Course'],
+        ['Course Level', courseDisplay],
         ['Academic Session', '2026-2027'],
     ];
 
@@ -748,11 +848,18 @@ export const generateAllotmentPDF = async (studentData: any, allotmentData: any)
         // Label
         page.drawText(label, { x: tableX + 10, y: yPos + 8, size: 10, font: boldFont, color: COLORS.SLATE });
         
-        // Value (Truncate if needed)
-        let displayValue = String(value || 'N/A');
-        if (displayValue.length > 40) displayValue = displayValue.substring(0, 37) + '...';
+        // Value — use Arabic font if text contains Arabic characters
+        // No hard truncation here — use safeDrawText with maxWidth for auto-shrinking
+        const displayValue = String(value || 'N/A');
         
-        page.drawText(displayValue, { x: tableX + col1Width + 10, y: yPos + 8, size: 11, font: boldFont, color: COLORS.TEXT });
+        safeDrawText(page, displayValue, { 
+            x: tableX + col1Width + 10, 
+            y: yPos + 8, 
+            size: 11, 
+            font: boldFont, 
+            color: COLORS.TEXT,
+            maxWidth: col2Width - 20 // Added maxWidth for dynamic scaling
+        }, arabicFont);
         
         yPos -= rowHeight;
     });
@@ -780,8 +887,8 @@ export const generateAllotmentPDF = async (studentData: any, allotmentData: any)
 
     // Signatures
     yPos -= 80;
-    page.drawLine({ start: { x: 400, y: yPos }, end: { x: 550, y: yPos }, thickness: 1, color: COLORS.DEEP });
-    page.drawText("Registrar / Admission Officer", { x: 410, y: yPos - 15, size: 9, font: boldFont, color: COLORS.DEEP });
+    page.drawLine({ start: { x: width - 150 - 50, y: yPos }, end: { x: width - 50, y: yPos }, thickness: 1, color: COLORS.DEEP });
+    page.drawText('Allottment Officer', { x: width - 145 - 50, y: yPos - 12, size: 9, font, color: COLORS.DEEP });
 
     // Footer
     page.drawRectangle({ x: 20, y: 20, width: width - 40, height: 50, color: COLORS.WHITE, borderColor: COLORS.TEAL, borderWidth: 0.5 });
@@ -983,9 +1090,9 @@ export const generateApplicantsListPDF = async (applications: any[], filterTitle
             const data = [
                 { text: String(rowIdx + 1), font: font, width: colWidths[0] },
                 { text: student.applicationNo, font: boldFont, width: colWidths[1] },
-                { text: student.name.toUpperCase(), font: boldFont, width: colWidths[2] - 10 },
+                { text: sanitizeForPDF(student.name).toUpperCase(), font: boldFont, width: colWidths[2] - 10 },
                 { text: app.status.replace(/_/g, ' '), font: font, width: colWidths[3] - 5 },
-                { text: (student.district || student.state || 'N/A'), font: font, width: colWidths[4] - 10 },
+                { text: sanitizeForPDF(student.district || student.state || 'N/A'), font: font, width: colWidths[4] - 10 },
                 { text: app.interview?.evaluations?.length > 0 ? String(Math.round(app.interview.evaluations.reduce((s: any, e: any) => s + e.marks, 0) / app.interview.evaluations.length)) : '—', font: boldFont, width: colWidths[5] }
             ];
 
@@ -1013,7 +1120,7 @@ export const generateApplicantsListPDF = async (applications: any[], filterTitle
             // Minor Detail (Place) - correctly aligned under Origin
             if (student.place) {
                 const originX = 45 + colWidths[0] + colWidths[1] + colWidths[2] + colWidths[3];
-                const placeText = truncateText(student.place, colWidths[4] - 10, italicFont, 7);
+                const placeText = truncateText(sanitizeForPDF(student.place), colWidths[4] - 10, italicFont, 7);
                 page.drawText(placeText, { 
                     x: originX, 
                     y: yPos + 2, 

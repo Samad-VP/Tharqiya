@@ -164,7 +164,11 @@ const StudentAllotment: React.FC = () => {
                             <div className="w-full md:w-72 space-y-5 shrink-0">
                                 <div className="p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-inner group/item hover:bg-white/10 transition-colors">
                                     <p className="text-[9px] font-black text-teal-100/70 uppercase tracking-[0.2em] mb-1.5">Assigned Programme</p>
-                                    <p className="text-sm sm:text-base font-black text-white">{appData.application.allotment.course}</p>
+                                    <p className="text-sm sm:text-base font-black text-white">Tharqiya Course</p>
+                                    <div className="mt-3 pt-3 border-t border-white/10">
+                                        <p className="text-[9px] font-black text-teal-100/70 uppercase tracking-[0.2em] mb-1.5">Course Level</p>
+                                        <p className="text-sm sm:text-base font-black text-white" dir="rtl">{appData.application.allotment.course}</p>
+                                    </div>
                                 </div>
                                 <div className="p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-inner group/item hover:bg-white/10 transition-colors">
                                     <p className="text-[9px] font-black text-teal-100/70 uppercase tracking-[0.2em] mb-1.5">Campus Status</p>
@@ -244,7 +248,7 @@ const StudentAllotment: React.FC = () => {
                         </div>
 
                         {/* Secondary Actions */}
-                        {(appData.application.status === 'ACCEPTED' || appData.application.status === 'REJECTED') && (
+                        {['ALLOTTED', 'ADMISSION_AUTHORIZED', 'ACCEPTED', 'REJECTED'].includes(appData.application.status) && (
                             <>
                                 <motion.button
                                     whileHover={{ y: -5, boxShadow: '0 20px 40px -10px rgba(245, 158, 11, 0.3)' }}
@@ -256,7 +260,7 @@ const StudentAllotment: React.FC = () => {
                                     Official Selection Letter
                                 </motion.button>
 
-                                {appData.application.status === 'ACCEPTED' && (
+                                {appData.application.status !== 'REJECTED' && (
                                     <motion.button
                                         whileHover={{ y: -5, boxShadow: '0 20px 40px -10px rgba(13, 148, 136, 0.3)' }}
                                         whileTap={{ scale: 0.98 }}
