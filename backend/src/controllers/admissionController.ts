@@ -396,7 +396,7 @@ export const downloadResultPDF = asyncHandler(async (req: AuthRequest, res: Resp
     const pdfBytes = await generateResultPDF(student, result, evaluations);
 
     res.contentType('application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename=Selection-Letter-${student.applicationNo}.pdf`);
+    res.setHeader('Content-Disposition', `attachment; filename=Mark-List-${student.applicationNo}.pdf`);
     res.send(Buffer.from(pdfBytes));
 });
 

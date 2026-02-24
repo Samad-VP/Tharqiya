@@ -611,7 +611,7 @@ export const generateResultPDF = async (studentData: any, resultData: any, evalu
 
         // Form Subject
         let yPos = height - 205;
-        const subjectTitle = 'OFFICIAL SELECTION ENTRY - 2026';
+        const subjectTitle = 'OFFICIAL MARK LIST - 2026';
         const subjectWidth = boldFont.widthOfTextAtSize(subjectTitle, 14);
         
         page.drawText(subjectTitle, {
@@ -719,7 +719,7 @@ export const generateResultPDF = async (studentData: any, resultData: any, evalu
 
         const footerText1 = 'Darussalam Edu Village © 2026 | Tharqiya Admission System';
         const footerText2 = 'For more info, visit: www.darussalameduvillage.com';
-        const footerText3 = 'This is a digitally generated official selection record.';
+        const footerText3 = 'This is a digitally generated official mark list record.';
         
         const f1w = boldFont.widthOfTextAtSize(footerText1, 9);
         const f2w = font.widthOfTextAtSize(footerText2, 9);

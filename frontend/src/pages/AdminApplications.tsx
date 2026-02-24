@@ -814,6 +814,7 @@ const AdminApplications: React.FC = () => {
                                         <div>
                                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Documents & Identity</p>
                                             <div className="grid grid-cols-2 gap-3">
+                                                {/* Profile Photo */}
                                                 {selectedApplication.student?.documents?.photo ? (
                                                     <div className="relative group rounded-xl overflow-hidden bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-slate-800">
                                                         <img 
@@ -824,6 +825,7 @@ const AdminApplications: React.FC = () => {
                                                         <div className="absolute inset-x-0 bottom-0 bg-tharqiya-deep/80 backdrop-blur-sm p-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                                                             <a href={selectedApplication.student.documents.photo} target="_blank" rel="noreferrer" className="text-[8px] font-black text-white uppercase tracking-widest block text-center">View Photo</a>
                                                         </div>
+                                                        <div className="absolute top-1 left-1 px-1.5 py-0.5 bg-white/90 dark:bg-slate-900/90 rounded text-[6px] font-black uppercase text-tharqiya-deep tracking-tighter">Photo</div>
                                                     </div>
                                                 ) : (
                                                     <div className="flex flex-col items-center justify-center h-24 rounded-xl bg-slate-50 dark:bg-white/5 border border-dashed border-slate-200 dark:border-slate-800">
@@ -832,21 +834,51 @@ const AdminApplications: React.FC = () => {
                                                     </div>
                                                 )}
 
-                                                {selectedApplication.student?.documents?.certificate ? (
+                                                {/* Identity Document (Aadhaar/Passport) */}
+                                                {(selectedApplication.student?.documents?.identityDoc || selectedApplication.student?.documents?.certificate) ? (
                                                     <a 
-                                                        href={selectedApplication.student.documents.certificate} 
+                                                        href={selectedApplication.student.documents.identityDoc || selectedApplication.student.documents.certificate} 
                                                         target="_blank" 
                                                         rel="noreferrer"
-                                                        className="flex flex-col items-center justify-center h-24 rounded-xl bg-edu-teal/5 border border-edu-teal/20 hover:bg-edu-teal/10 transition-colors"
+                                                        className="flex flex-col items-center justify-center h-24 rounded-xl bg-edu-teal/5 border border-edu-teal/20 hover:bg-edu-teal/10 transition-colors relative group"
                                                     >
-                                                        <Download className="w-6 h-6 text-edu-teal" />
-                                                        <span className="text-[8px] font-black text-edu-teal uppercase tracking-widest mt-2">View Certificate</span>
+                                                        <Download className="w-6 h-6 text-edu-teal group-hover:scale-110 transition-transform" />
+                                                        <span className="text-[8px] font-black text-edu-teal uppercase tracking-widest mt-2">{selectedApplication.student.documents.identityDoc ? 'Identity Doc' : 'Certificate'}</span>
+                                                        <div className="absolute top-1 left-1 px-1.5 py-0.5 bg-edu-teal/10 rounded text-[6px] font-black uppercase text-edu-teal tracking-tighter">Identity</div>
                                                     </a>
                                                 ) : (
                                                     <div className="flex flex-col items-center justify-center h-24 rounded-xl bg-slate-50 dark:bg-white/5 border border-dashed border-slate-200 dark:border-slate-800">
                                                         <FolderOpen className="w-6 h-6 text-slate-300" />
-                                                        <span className="text-[8px] font-bold text-slate-400 uppercase mt-1">No Documents</span>
+                                                        <span className="text-[8px] font-bold text-slate-400 uppercase mt-1">No Identity Doc</span>
                                                     </div>
+                                                )}
+
+                                                {/* General Education Certificate */}
+                                                {selectedApplication.student?.documents?.generalEdu && (
+                                                    <a 
+                                                        href={selectedApplication.student.documents.generalEdu} 
+                                                        target="_blank" 
+                                                        rel="noreferrer"
+                                                        className="flex flex-col items-center justify-center h-24 rounded-xl bg-blue-500/5 border border-blue-500/20 hover:bg-blue-500/10 transition-colors relative group"
+                                                    >
+                                                        <Download className="w-6 h-6 text-blue-500 group-hover:scale-110 transition-transform" />
+                                                        <span className="text-[8px] font-black text-blue-500 uppercase tracking-widest mt-2">General Edu</span>
+                                                        <div className="absolute top-1 left-1 px-1.5 py-0.5 bg-blue-500/10 rounded text-[6px] font-black uppercase text-blue-500 tracking-tighter">Academia</div>
+                                                    </a>
+                                                )}
+
+                                                {/* Madrasa Education Certificate */}
+                                                {selectedApplication.student?.documents?.madrasaEdu && (
+                                                    <a 
+                                                        href={selectedApplication.student.documents.madrasaEdu} 
+                                                        target="_blank" 
+                                                        rel="noreferrer"
+                                                        className="flex flex-col items-center justify-center h-24 rounded-xl bg-edu-yellow/10 border border-edu-yellow/20 hover:bg-edu-yellow/20 transition-colors relative group"
+                                                    >
+                                                        <Download className="w-6 h-6 text-edu-yellow group-hover:scale-110 transition-transform" />
+                                                        <span className="text-[8px] font-black text-edu-yellow uppercase tracking-widest mt-2">Madrasa Edu</span>
+                                                        <div className="absolute top-1 left-1 px-1.5 py-0.5 bg-edu-yellow/20 rounded text-[6px] font-black uppercase text-edu-yellow tracking-tighter">Hifz</div>
+                                                    </a>
                                                 )}
                                             </div>
                                         </div>

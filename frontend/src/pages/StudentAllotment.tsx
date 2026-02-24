@@ -257,7 +257,7 @@ const StudentAllotment: React.FC = () => {
                                     className="w-full h-20 bg-edu-yellow text-tharqiya-deep rounded-[2rem] font-black text-sm shadow-lg shadow-edu-yellow/20 flex items-center justify-center gap-4 uppercase tracking-[0.2em] transition-all font-outfit"
                                 >
                                     <Download className="w-6 h-6" />
-                                    Official Selection Letter
+                                    Official mark list
                                 </motion.button>
 
                                 {appData.application.status !== 'REJECTED' && (
@@ -293,7 +293,7 @@ const StudentAllotment: React.FC = () => {
                             <div className="hidden lg:block absolute top-10 left-0 w-full h-[2px] bg-slate-100 dark:bg-slate-800 -translate-y-1/2 z-0" />
                             
                             {[
-                                { label: 'Application Submitted', desc: 'Dossier Received', icon: FileText, active: true },
+                                { label: 'Application Submitted', desc: 'Application Received', icon: FileText, active: true },
                                 { label: 'Documentation Verified', desc: 'Profile Authenticated', icon: CheckSquare, active: ['DOCS_VERIFIED', 'REVIEWED', 'INTERVIEW_SCHEDULED', 'EVALUATED', 'ALLOTMENT_READY', 'ALLOTTED', 'ADMISSION_AUTHORIZED', 'ACCEPTED'].includes(appData.application.status) },
                                 { label: 'Interview Processed', desc: 'Panel Evaluation Base', icon: User, active: ['EVALUATED', 'ALLOTMENT_READY', 'ALLOTTED', 'ADMISSION_AUTHORIZED', 'ACCEPTED'].includes(appData.application.status) },
                                 { label: 'Campus Allotted', desc: 'Programme Confirmation', icon: MapPin, active: ['ALLOTTED', 'ADMISSION_AUTHORIZED', 'ACCEPTED'].includes(appData.application.status) },

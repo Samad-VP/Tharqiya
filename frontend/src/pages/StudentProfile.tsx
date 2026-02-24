@@ -27,8 +27,8 @@ const StudentProfile: React.FC = () => {
         phone: '', 
         profileImageUrl: '',
         profileImagePublicId: '',
-        documentUrl: '',
-        documentPublicId: '',
+        identityDocUrl: '',
+        identityDocPublicId: '',
         generalEduUrl: '',
         generalEduPublicId: '',
         madrasaEduUrl: '',
@@ -63,8 +63,8 @@ const StudentProfile: React.FC = () => {
                         phone: student.user?.phone || '',
                         profileImageUrl: student.user?.profileImageUrl || '',
                         profileImagePublicId: student.user?.profileImagePublicId || '',
-                        documentUrl: student.documentUrl || '',
-                        documentPublicId: student.documentPublicId || '',
+                        identityDocUrl: student.documents?.identityDoc || student.documentUrl || student.documents?.certificate || '',
+                        identityDocPublicId: student.documents?.identityDocPublicId || student.documentPublicId || student.documents?.certificatePublicId || '',
                         generalEduUrl: student.documents?.generalEdu || '',
                         generalEduPublicId: student.documents?.generalEduPublicId || '',
                         madrasaEduUrl: student.documents?.madrasaEdu || '',
@@ -160,7 +160,7 @@ const StudentProfile: React.FC = () => {
         // Handle replacement if we have an old ID
         let oldId = '';
         if (type === 'photo') oldId = formData.profileImagePublicId;
-        else if (type === 'document') oldId = formData.documentPublicId;
+        else if (type === 'document') oldId = formData.identityDocPublicId;
         else if (type === 'generalEdu') oldId = formData.generalEduPublicId;
         else if (type === 'madrasaEdu') oldId = formData.madrasaEduPublicId;
 
@@ -189,11 +189,22 @@ const StudentProfile: React.FC = () => {
                 updateUser({ profileImageUrl: fileUrl, profileImagePublicId: fileId });
                 await api.patch('/admissions/my-profile', { profileImageUrl: fileUrl, profileImagePublicId: fileId });
             } else if (type === 'document') {
-                const updatedDocs = { ...formData.documents, certificate: fileUrl, certificatePublicId: fileId };
-                setFormData(prev => ({ ...prev, documentUrl: fileUrl, documentPublicId: fileId, documents: updatedDocs }));
+                const updatedDocs = { 
+                    ...formData.documents, 
+                    identityDoc: fileUrl, 
+                    identityDocPublicId: fileId 
+                    // Cleanup legacy certificate key if it exists
+                };
+                if (updatedDocs.certificate) delete updatedDocs.certificate;
+                if (updatedDocs.certificatePublicId) delete updatedDocs.certificatePublicId;
+
+                setFormData(prev => ({ 
+                    ...prev, 
+                    identityDocUrl: fileUrl, 
+                    identityDocPublicId: fileId, 
+                    documents: updatedDocs 
+                }));
                 await api.patch('/admissions/my-profile', { 
-                    documentUrl: fileUrl, 
-                    documentPublicId: fileId,
                     documents: updatedDocs
                 });
             } else if (type === 'generalEdu') {
@@ -226,10 +237,12 @@ const StudentProfile: React.FC = () => {
                 await api.patch('/admissions/my-profile', { profileImageUrl: '', profileImagePublicId: '' });
             } else if (type === 'document') {
                 const updatedDocs = { ...formData.documents };
+                delete updatedDocs.identityDoc;
+                delete updatedDocs.identityDocPublicId;
                 delete updatedDocs.certificate;
                 delete updatedDocs.certificatePublicId;
-                setFormData(prev => ({ ...prev, documentUrl: '', documentPublicId: '', documents: updatedDocs }));
-                await api.patch('/admissions/my-profile', { documentUrl: '', documentPublicId: '', documents: updatedDocs });
+                setFormData(prev => ({ ...prev, identityDocUrl: '', identityDocPublicId: '', documents: updatedDocs }));
+                await api.patch('/admissions/my-profile', { documents: updatedDocs });
             } else if (type === 'generalEdu') {
                 const updatedDocs = { ...formData.documents };
                 delete updatedDocs.generalEdu;
@@ -480,25 +493,25 @@ const StudentProfile: React.FC = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* SSLC */}
                             <div className="p-6 rounded-3xl bg-slate-50 dark:bg-slate-950/50 border-2 border-dashed border-slate-200 dark:border-slate-800 relative overflow-hidden group/upload">
-                                {formData.documentUrl ? (
+                                {formData.identityDocUrl ? (
                                     <div className="space-y-4">
                                         <div className="flex items-center gap-3">
                                             <div className="p-2 bg-white dark:bg-slate-800 rounded-lg shadow-sm">
                                                 <FileText size={20} className="text-edu-teal" />
                                             </div>
-                                            <p className="text-[10px] font-black text-tharqiya-deep dark:text-white uppercase">SSLC/Cert</p>
+                                            <p className="text-[10px] font-black text-tharqiya-deep dark:text-white uppercase">Identity Doc</p>
                                         </div>
                                         <div className="flex gap-2">
-                                            <a href={formData.documentUrl} target="_blank" rel="noopener noreferrer" className="flex-grow text-center py-2 bg-white dark:bg-slate-800 border rounded-lg text-[8px] font-black uppercase">View</a>
+                                            <a href={formData.identityDocUrl} target="_blank" rel="noopener noreferrer" className="flex-grow text-center py-2 bg-white dark:bg-slate-800 border rounded-lg text-[8px] font-black uppercase">View</a>
                                             <button type="button" onClick={() => removeFile('document')} className="p-2 bg-rose-50 text-rose-600 rounded-lg"><Trash2 size={16} /></button>
                                         </div>
                                     </div>
                                 ) : (
                                     <div className="text-center py-2">
                                         <Upload size={20} className="mx-auto text-slate-300 mb-2" />
-                                        <p className="text-[10px] font-black uppercase mb-3 text-slate-500">SSLC/Cert</p>
-                                        <button type="button" onClick={() => document.getElementById('sslc-up')?.click()} className="px-4 py-2 bg-edu-teal text-white rounded-lg text-[8px] font-black uppercase tracking-widest shadow-lg shadow-edu-teal/20">Upload</button>
-                                        <input id="sslc-up" type="file" className="hidden" accept=".pdf,.jpeg,.png,.jpg" onChange={(e) => handleFileUpload(e, 'document')} />
+                                        <p className="text-[10px] font-black uppercase mb-3 text-slate-500">Identity Document</p>
+                                        <button type="button" onClick={() => document.getElementById('id-up')?.click()} className="px-4 py-2 bg-edu-teal text-white rounded-lg text-[8px] font-black uppercase tracking-widest shadow-lg shadow-edu-teal/20">Upload</button>
+                                        <input id="id-up" type="file" className="hidden" accept=".pdf,.jpeg,.png,.jpg" onChange={(e) => handleFileUpload(e, 'document')} />
                                     </div>
                                 )}
                                 {uploading === 'document' && (

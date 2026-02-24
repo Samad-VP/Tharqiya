@@ -301,7 +301,7 @@ const StudentPortal: React.FC = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
                         {/* Main Content Column */}
                         <div className="lg:col-span-8 space-y-8 lg:space-y-12">
-                            {/* Application Dossier */}
+                            {/* Application Form */}
                             <motion.div 
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
@@ -310,7 +310,7 @@ const StudentPortal: React.FC = () => {
                                 <div className="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-edu-teal via-edu-coral to-edu-yellow" />
                                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-10 lg:mb-12">
                                     <div>
-                                        <h3 className="h-premium-md text-tharqiya-deep dark:text-slate-100 bg-none bg-clip-border leading-none">Application Dossier</h3>
+                                        <h3 className="h-premium-md text-tharqiya-deep dark:text-slate-100 bg-none bg-clip-border leading-none">Application form</h3>
                                         <p className="text-premium-xs text-slate-400 mt-3">Comprehensive Candidate Verification</p>
                                     </div>
                                     <motion.button 
@@ -319,7 +319,7 @@ const StudentPortal: React.FC = () => {
                                         onClick={() => handleDownload('application')} 
                                         className="w-full sm:w-auto h-12 sm:h-14 px-8 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-slate-800 rounded-2xl flex items-center justify-center gap-3 text-[11px] font-black uppercase tracking-widest text-tharqiya-deep dark:text-white hover:bg-edu-teal hover:text-white hover:border-edu-teal transition-all shadow-sm"
                                     >
-                                        <Download size={18} /> Download Dossier
+                                        <Download size={18} /> Download Application form
                                     </motion.button>
                                 </div>
 

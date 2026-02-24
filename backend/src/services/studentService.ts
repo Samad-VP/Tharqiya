@@ -26,7 +26,7 @@ export const createPendingApplication = async (formData: any) => {
         dawrasCount, schoolEducation, kitabsStudied, 
         firstOption, secondOption, thirdOption, 
         fatherName, motherName, documents, email, primeHifzMentor,
-        pincode, state, country
+        pincode, state, country, madrasaEducation
     } = formData;
 
     return await executeWithRetry(async (tx) => {
@@ -78,6 +78,7 @@ export const createPendingApplication = async (formData: any) => {
                 fatherName: fatherName || 'N/A',
                 motherName: motherName || 'N/A',
                 primeHifzMentor: primeHifzMentor || 'N/A',
+                madrasaEducation: madrasaEducation || 'N/A',
                 pincode: pincode || 'N/A',
                 state: state || 'N/A',
                 country: country || 'India',
