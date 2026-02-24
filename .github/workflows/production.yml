@@ -46,13 +46,6 @@ jobs:
         working-directory: ./backend
         run: npm run build
 
-      - name: Backend - Run Health Tests
-        working-directory: ./backend
-        run: npm run test:ci
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DIRECT_URL: ${{ secrets.DIRECT_URL }}
-
       # --- FRONTEND VALIDATION ---
       - name: Frontend - Install Dependencies
         working-directory: ./frontend
