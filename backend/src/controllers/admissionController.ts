@@ -6,6 +6,7 @@ import { asyncHandler } from '../utils/asyncHandler.js';
 import { AppError } from '../utils/AppError.js';
 import { triggerNotification } from '../services/notificationService.js';
 import { promoteToStudentAccount } from '../services/studentService.js';
+import { executeWithRetry, generateNextApplicationNo } from '../utils/applicationUtils.js';
 
 // @desc    Submit a new application
 // @route   POST /api/admissions/apply
@@ -17,39 +18,42 @@ export const applyForAdmission = asyncHandler(async (req: AuthRequest, res: Resp
         return next(new AppError('User not found in request', 401));
     }
 
-    // Generate Application Number: TQ-2026-XXXX
-    const count = await prisma.student.count();
-    const applicationNo = `TQ-2026-${(count + 1).toString().padStart(4, '0')}`;
+    const { student, applicationNo } = await executeWithRetry(async (tx) => {
+        // Generate Application Number: TQ-2026-XXXX
+        const applicationNo = await generateNextApplicationNo(tx);
 
-    const student = await prisma.student.create({
-        data: {
-            userId: req.user.id,
-            applicationNo,
-            name: req.user.name,
-            dob: dob ? new Date(dob) : new Date(),
-            address: address || 'N/A',
-            hifzCenter: hifzCenter || 'N/A',
-            fatherName: fatherName || 'N/A',
-            motherName: motherName || 'N/A',
-            primeHifzMentor: primeHifzMentor || 'N/A',
-            madrasaEducation: madrasaEducation || 'N/A',
-            pincode,
-            state,
-            country: country || 'India',
-            place,
-            district,
-            firstOption,
-            secondOption,
-            thirdOption,
-            documents: documents || {},
-        },
-    });
+        const student = await tx.student.create({
+            data: {
+                userId: req.user!.id,
+                applicationNo,
+                name: req.user!.name,
+                dob: dob ? new Date(dob) : new Date(),
+                address: address || 'N/A',
+                hifzCenter: hifzCenter || 'N/A',
+                fatherName: fatherName || 'N/A',
+                motherName: motherName || 'N/A',
+                primeHifzMentor: primeHifzMentor || 'N/A',
+                madrasaEducation: madrasaEducation || 'N/A',
+                pincode,
+                state,
+                country: country || 'India',
+                place,
+                district,
+                firstOption,
+                secondOption,
+                thirdOption,
+                documents: documents || {},
+            },
+        });
 
-    await prisma.application.create({
-        data: {
-            studentId: student.id,
-            status: 'PENDING',
-        },
+        await tx.application.create({
+            data: {
+                studentId: student.id,
+                status: 'PENDING',
+            },
+        });
+
+        return { student, applicationNo };
     });
 
     // Trigger Notification

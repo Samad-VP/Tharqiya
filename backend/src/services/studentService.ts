@@ -1,6 +1,7 @@
 import prisma from '../config/db.js';
 import bcrypt from 'bcryptjs';
 import { triggerNotification } from './notificationService.js';
+import { executeWithRetry, generateNextApplicationNo } from '../utils/applicationUtils.js';
 
 export const generateUsername = (name: string, applicationNo: string): string => {
     const firstName = name.split(' ')[0].toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -28,10 +29,9 @@ export const createPendingApplication = async (formData: any) => {
         pincode, state, country
     } = formData;
 
-    try {
+    return await executeWithRetry(async (tx) => {
         // 1. Generate Application Number
-        const count = await prisma.student.count();
-        const applicationNo = `TQ-2026-${(count + 1).toString().padStart(4, '0')}`;
+        const applicationNo = await generateNextApplicationNo(tx);
 
         // 2. Generate Credentials
         const username = generateUsername(name, applicationNo);
@@ -39,81 +39,83 @@ export const createPendingApplication = async (formData: any) => {
         const hashedPassword = await bcrypt.hash(tempPassword, 10);
         const loginUrl = `${process.env.FRONTEND_URL || 'https://darussalameduvillage.com'}/login`;
 
-        // 3. Create User, Student and Application (Transaction)
+        // 3. Create User, Student and Application
         const photoUrl = documents?.photo || '';
         const photoId = documents?.photoPublicId || '';
 
-        const result = await prisma.$transaction(async (tx) => {
-            const user = await tx.user.create({
-                data: {
-                    email: email || `${username}@tharqiya.edu`,
-                    username,
-                    password: hashedPassword,
-                    role: 'STUDENT',
-                    name,
-                    phone: whatsapp || phone,
-                    whatsapp: whatsapp || phone,
-                    isFirstLogin: false,
-                    profileImageUrl: photoUrl,
-                    profileImagePublicId: photoId
-                }
-            });
+        const user = await tx.user.create({
+            data: {
+                email: email || `${username}@tharqiya.edu`,
+                username,
+                password: hashedPassword,
+                role: 'STUDENT',
+                name,
+                phone: whatsapp || phone,
+                whatsapp: whatsapp || phone,
+                isFirstLogin: false,
+                profileImageUrl: photoUrl,
+                profileImagePublicId: photoId
+            }
+        });
 
-            const student = await tx.student.create({
-                data: {
-                    userId: user.id,
-                    applicationNo,
-                    name,
-                    dob: dob ? new Date(dob) : new Date(),
-                    place: place || 'N/A',
-                    district: district || 'N/A',
-                    address: address || 'N/A',
-                    whatsapp: whatsapp || phone,
-                    hifzCenter: hifzCenter || hifzInstitution || 'N/A',
-                    dawrasCount: dawrasCount?.toString() || '0',
-                    schoolEducation: schoolEducation || 'N/A',
-                    kitabsStudied: kitabsStudied || '',
-                    firstOption: firstOption || 'N/A',
-                    secondOption: secondOption || 'N/A',
-                    thirdOption: thirdOption || 'N/A',
-                    fatherName: fatherName || 'N/A',
-                    motherName: motherName || 'N/A',
-                    primeHifzMentor: primeHifzMentor || 'N/A',
-                    pincode: pincode || 'N/A',
-                    state: state || 'N/A',
-                    country: country || 'India',
-                    status: 'PENDING',
-                    documents: documents || {},
-                    resources: { email: email || null } as any
-                }
-            });
+        const student = await tx.student.create({
+            data: {
+                userId: user.id,
+                applicationNo,
+                name,
+                dob: dob ? new Date(dob) : new Date(),
+                place: place || 'N/A',
+                district: district || 'N/A',
+                address: address || 'N/A',
+                whatsapp: whatsapp || phone,
+                hifzCenter: hifzCenter || hifzInstitution || 'N/A',
+                dawrasCount: dawrasCount?.toString() || '0',
+                schoolEducation: schoolEducation || 'N/A',
+                kitabsStudied: kitabsStudied || '',
+                firstOption: firstOption || 'N/A',
+                secondOption: secondOption || 'N/A',
+                thirdOption: thirdOption || 'N/A',
+                fatherName: fatherName || 'N/A',
+                motherName: motherName || 'N/A',
+                primeHifzMentor: primeHifzMentor || 'N/A',
+                pincode: pincode || 'N/A',
+                state: state || 'N/A',
+                country: country || 'India',
+                status: 'PENDING',
+                documents: documents || {},
+                resources: { email: email || null } as any
+            }
+        });
 
-            const application = await tx.application.create({
-                data: {
-                    studentId: student.id,
-                    status: 'PENDING',
-                }
-            });
-
-            return { user, student, application };
+        const application = await tx.application.create({
+            data: {
+                studentId: student.id,
+                status: 'PENDING',
+            }
         });
 
         // 4. Trigger Unified Welcome Notification
-        // This template now includes both confirmation and credentials
-        // Use background: true to prevent blocking the UI
+        // Note: We trigger this outside the transaction if we want to be safe, 
+        // but here executeWithRetry handles the transaction.
+        // We can keep it inside if it's async and doesn't block the transaction too much, 
+        // or just after return.
+        
+        // Actually, triggerNotification is called with background: true at the end of the original function.
+        // Let's keep the core logic inside the transaction and return result.
+
+        return { user, student, application, username, tempPassword, loginUrl, applicationNo };
+    }).then(result => {
+        // Trigger notification after transaction success
         triggerNotification(result.user.id, 'APPLICATION_RECEIVED', {
             StudentName: name,
-            ApplicationID: applicationNo,
-            Username: username,
-            TempPassword: tempPassword,
-            LoginUrl: loginUrl
+            ApplicationID: result.applicationNo,
+            Username: result.username,
+            TempPassword: result.tempPassword,
+            LoginUrl: result.loginUrl
         }, true);
 
-        return { ...result, username, tempPassword };
-    } catch (error: any) {
-        console.error('[STUDENT_SERVICE] Error in createPendingApplication:', error);
-        throw error;
-    }
+        return result;
+    });
 };
 
 /**
