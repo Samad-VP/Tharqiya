@@ -35,6 +35,8 @@ jobs:
       - name: Backend - Prisma Generate
         working-directory: ./backend
         run: npx prisma generate
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Backend - Lint & Type Check
         working-directory: ./backend
