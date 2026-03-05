@@ -57,15 +57,42 @@ export const getDashboardStats = asyncHandler(async (req: AuthRequest, res: Resp
         timestamp: app.appliedAt
     }));
 
-    // 6. Application Trends (Groups by day for last 7 days as a starting point)
-    // For simplicity, we'll return some static labels for now until we implement real time-series aggregation if needed
+    // 6. Application Trends (Last 30 days, grouped by day)
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const rawTrends: any[] = await prisma.$queryRaw`
+        SELECT DATE_TRUNC('day', "appliedAt") AS day, COUNT(*)::int AS count
+        FROM "Application"
+        WHERE "appliedAt" >= ${thirtyDaysAgo}
+        GROUP BY day
+        ORDER BY day ASC
+    `;
+
+    // Fill in missing days with zero counts for a smooth chart
+    const trendMap = new Map<string, number>();
+    rawTrends.forEach(r => {
+        const key = new Date(r.day).toISOString().split('T')[0];
+        trendMap.set(key, r.count);
+    });
+
+    const trendData: { date: string; count: number }[] = [];
+    for (let i = 29; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const key = d.toISOString().split('T')[0];
+        const label = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+        trendData.push({ date: label, count: trendMap.get(key) || 0 });
+    }
+
     const stats = {
         totalApplications,
         pendingReview,
         interviewsScheduled,
         averageScore,
         finalizedSeats,
-        recentActivities
+        recentActivities,
+        trendData
     };
 
     res.status(200).json({

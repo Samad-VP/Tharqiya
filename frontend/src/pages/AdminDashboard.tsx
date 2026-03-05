@@ -7,12 +7,28 @@ import {
     Trophy,
     ArrowUpRight,
     TrendingUp,
-    Loader2
+    Loader2,
+    BarChart3
 } from 'lucide-react';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import AdminLayout from '../components/AdminLayout';
 import api from '../api/axiosInstance';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
+
+const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+        return (
+            <div className="bg-white dark:bg-slate-800 px-4 py-3 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700">
+                <p className="text-xs font-bold text-slate-500 mb-1">{label}</p>
+                <p className="text-sm font-black text-tharqiya-deep dark:text-white">
+                    {payload[0].value} Application{payload[0].value !== 1 ? 's' : ''}
+                </p>
+            </div>
+        );
+    }
+    return null;
+};
 
 const AdminDashboard: React.FC = () => {
     const { user: currentUser, loading: authLoading } = useAuth();
@@ -45,6 +61,9 @@ const AdminDashboard: React.FC = () => {
         { label: 'Interviews Scheduled', value: stats?.interviewsScheduled || '0', icon: CalendarCheck, color: 'text-edu-teal', bg: 'bg-edu-teal/10', trend: '0%' },
         { label: 'Average Score', value: stats?.averageScore || '0.0', icon: Trophy, color: 'text-edu-coral', bg: 'bg-edu-coral/10', trend: '0' },
     ];
+
+    const trendData = stats?.trendData || [];
+    const hasTrendData = trendData.some((d: any) => d.count > 0);
 
     return (
         <AdminLayout>
@@ -113,9 +132,14 @@ const AdminDashboard: React.FC = () => {
                     ))}
                 </div>
 
-                {/* Charts Area Placeholder */}
+                {/* Charts & Activities */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
-                    <div className="lg:col-span-2 p-6 sm:p-10 rounded-[2rem] sm:rounded-[2.5rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xl min-h-[300px] sm:min-h-[400px]">
+                    <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 }}
+                        className="lg:col-span-2 p-6 sm:p-10 rounded-[2rem] sm:rounded-[2.5rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xl min-h-[300px] sm:min-h-[400px]"
+                    >
                         <div className="flex justify-between items-center mb-6 sm:mb-10">
                             <div>
                                 <h4 className="h-premium-md text-tharqiya-deep dark:text-white">Application Trends</h4>
@@ -125,10 +149,58 @@ const AdminDashboard: React.FC = () => {
                                 <ArrowUpRight size={20} />
                             </button>
                         </div>
-                        <div className="w-full h-[200px] sm:h-[250px] flex items-center justify-center border-2 border-dashed border-slate-100 dark:border-slate-800 rounded-2xl sm:rounded-3xl">
-                             <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px] sm:text-xs">Chart Visualisation Placeholder</p>
-                        </div>
-                    </div>
+
+                        {loading ? (
+                            <div className="w-full h-[200px] sm:h-[250px] flex items-center justify-center">
+                                <Loader2 className="w-8 h-8 text-edu-teal animate-spin" />
+                            </div>
+                        ) : !hasTrendData ? (
+                            <div className="w-full h-[200px] sm:h-[250px] flex flex-col items-center justify-center gap-3">
+                                <div className="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-white/5 flex items-center justify-center">
+                                    <BarChart3 className="w-7 h-7 text-slate-300 dark:text-slate-600" />
+                                </div>
+                                <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px] sm:text-xs">No application data in the last 30 days</p>
+                            </div>
+                        ) : (
+                            <div className="w-full h-[200px] sm:h-[250px]">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <AreaChart data={trendData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+                                        <defs>
+                                            <linearGradient id="trendGradient" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="5%" stopColor="#5FB2C0" stopOpacity={0.3} />
+                                                <stop offset="95%" stopColor="#5FB2C0" stopOpacity={0} />
+                                            </linearGradient>
+                                        </defs>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.1)" vertical={false} />
+                                        <XAxis 
+                                            dataKey="date" 
+                                            axisLine={false}
+                                            tickLine={false}
+                                            tick={{ fill: '#94A3B8', fontSize: 11, fontWeight: 600 }}
+                                            interval="preserveStartEnd"
+                                            tickCount={7}
+                                        />
+                                        <YAxis 
+                                            axisLine={false}
+                                            tickLine={false}
+                                            tick={{ fill: '#94A3B8', fontSize: 11, fontWeight: 600 }}
+                                            allowDecimals={false}
+                                        />
+                                        <Tooltip content={<CustomTooltip />} />
+                                        <Area
+                                            type="monotone"
+                                            dataKey="count"
+                                            stroke="#5FB2C0"
+                                            strokeWidth={2.5}
+                                            fill="url(#trendGradient)"
+                                            dot={false}
+                                            activeDot={{ r: 6, fill: '#5FB2C0', stroke: '#fff', strokeWidth: 2 }}
+                                        />
+                                    </AreaChart>
+                                </ResponsiveContainer>
+                            </div>
+                        )}
+                    </motion.div>
 
                     <div className="p-6 sm:p-10 rounded-[2rem] sm:rounded-[2.5rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xl">
                         <h4 className="text-xl sm:text-2xl font-black text-tharqiya-deep dark:text-white font-outfit tracking-tight mb-6 sm:mb-8">Recent Activities</h4>
@@ -166,3 +238,4 @@ const AdminDashboard: React.FC = () => {
 };
 
 export default AdminDashboard;
+

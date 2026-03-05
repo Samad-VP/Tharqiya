@@ -990,7 +990,8 @@ export const generateAllotmentPDF = async (studentData: any, allotmentData: any)
 
 const truncateText = (text: string, maxWidth: number, font: any, size: number) => {
     if (!text) return '';
-    let truncated = text;
+    // Sanitize to remove non-WinAnsi characters (e.g. Malayalam) before measuring
+    let truncated = sanitizeForPDF(text);
     let width = font.widthOfTextAtSize(truncated, size);
     
     if (width <= maxWidth) return truncated;
@@ -1003,6 +1004,11 @@ const truncateText = (text: string, maxWidth: number, font: any, size: number) =
 };
 
 const calculateColumnWidths = (applications: any[], font: any, boldFont: any, fontSize: number, totalTableWidth: number) => {
+    // Guard: empty list → return default proportional widths
+    if (!applications || applications.length === 0) {
+        return [30, 70, 165, 90, 125, 45];
+    }
+
     // Fixed columns: # (30), Score (45)
     const fixedWidths = { index: 30, score: 45 };
     let availableWidth = totalTableWidth - fixedWidths.index - fixedWidths.score;
@@ -1014,11 +1020,12 @@ const calculateColumnWidths = (applications: any[], font: any, boldFont: any, fo
     let maxOriginWidth = 0;
 
     applications.forEach(app => {
-        const student = app.student;
-        maxIdWidth = Math.max(maxIdWidth, boldFont.widthOfTextAtSize(student.applicationNo, fontSize));
-        maxStatusWidth = Math.max(maxStatusWidth, font.widthOfTextAtSize(app.status.replace(/_/g, ' '), fontSize));
-        maxNameWidth = Math.max(maxNameWidth, boldFont.widthOfTextAtSize(student.name.toUpperCase(), fontSize));
-        maxOriginWidth = Math.max(maxOriginWidth, font.widthOfTextAtSize(student.district || student.state || 'N/A', fontSize));
+        const student = app?.student;
+        // Sanitize all text before measuring — Helvetica only supports WinAnsi (Latin) characters
+        maxIdWidth = Math.max(maxIdWidth, boldFont.widthOfTextAtSize(sanitizeForPDF(student?.applicationNo || 'N/A'), fontSize));
+        maxStatusWidth = Math.max(maxStatusWidth, font.widthOfTextAtSize(sanitizeForPDF((app?.status || 'PENDING').replace(/_/g, ' ')), fontSize));
+        maxNameWidth = Math.max(maxNameWidth, boldFont.widthOfTextAtSize(sanitizeForPDF(student?.name || 'N/A').toUpperCase(), fontSize));
+        maxOriginWidth = Math.max(maxOriginWidth, font.widthOfTextAtSize(sanitizeForPDF(student?.district || student?.state || 'N/A'), fontSize));
     });
 
     // Add padding (10px per column)
@@ -1034,8 +1041,8 @@ const calculateColumnWidths = (applications: any[], font: any, boldFont: any, fo
 
     // Proportionally divide remaining width between Name and Origin
     const nameOriginSum = maxNameWidth + maxOriginWidth;
-    const nameWidth = (maxNameWidth / nameOriginSum) * availableWidth;
-    const originWidth = (maxOriginWidth / nameOriginSum) * availableWidth;
+    const nameWidth = nameOriginSum > 0 ? (maxNameWidth / nameOriginSum) * availableWidth : availableWidth / 2;
+    const originWidth = nameOriginSum > 0 ? (maxOriginWidth / nameOriginSum) * availableWidth : availableWidth / 2;
 
     return [fixedWidths.index, idWidth, nameWidth, statusWidth, originWidth, fixedWidths.score];
 };
@@ -1151,15 +1158,15 @@ export const generateApplicantsListPDF = async (applications: any[], filterTitle
                 }
 
                 let rxPos = 45;
-                const student = app.student;
+                const student = app?.student;
                 
                 // Core Data with dynamic widths and proportional truncation
                 const data = [
                     { text: String(rowIdx + 1), font: font, width: colWidths[0] },
-                    { text: student.applicationNo, font: boldFont, width: colWidths[1] },
-                    { text: sanitizeForPDF(student.name).toUpperCase(), font: boldFont, width: colWidths[2] - 10 },
-                    { text: app.status.replace(/_/g, ' '), font: font, width: colWidths[3] - 5 },
-                    { text: sanitizeForPDF(student.district || student.state || 'N/A'), font: font, width: colWidths[4] - 10 },
+                    { text: student?.applicationNo || 'N/A', font: boldFont, width: colWidths[1] },
+                    { text: sanitizeForPDF(student?.name || 'N/A').toUpperCase(), font: boldFont, width: colWidths[2] - 10 },
+                    { text: (app.status || 'PENDING').replace(/_/g, ' '), font: font, width: colWidths[3] - 5 },
+                    { text: sanitizeForPDF(student?.district || student?.state || 'N/A'), font: font, width: colWidths[4] - 10 },
                     { text: app.interview?.evaluations?.length > 0 ? String(Math.round(app.interview.evaluations.reduce((s: any, e: any) => s + e.marks, 0) / app.interview.evaluations.length)) : '—', font: boldFont, width: colWidths[5] }
                 ];
 
@@ -1185,7 +1192,7 @@ export const generateApplicantsListPDF = async (applications: any[], filterTitle
                 });
 
                 // Minor Detail (Place) - correctly aligned under Origin
-                if (student.place) {
+                if (student?.place) {
                     const originX = 45 + colWidths[0] + colWidths[1] + colWidths[2] + colWidths[3];
                     const placeText = truncateText(sanitizeForPDF(student.place), colWidths[4] - 10, italicFont, 7);
                     page.drawText(placeText, { 
