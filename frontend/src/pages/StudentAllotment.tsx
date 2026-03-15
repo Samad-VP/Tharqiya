@@ -103,9 +103,9 @@ const StudentAllotment: React.FC = () => {
             <div className="w-24 h-24 bg-slate-50 dark:bg-slate-900 rounded-[2.5rem] flex items-center justify-center mx-auto mb-10 shadow-inner">
                 <MapPin className="w-12 h-12 text-slate-300 dark:text-slate-600" />
             </div>
-            <h2 className="text-3xl sm:text-5xl font-black text-tharqiya-deep dark:text-slate-100 bg-none bg-clip-border mb-6 tracking-tight font-outfit uppercase">Allotment Pending</h2>
+            <h2 className="text-3xl sm:text-5xl font-black text-tharqiya-deep dark:text-slate-100 bg-none bg-clip-border mb-6 tracking-tight font-outfit uppercase">Selection Board Decision Pending</h2>
             <p className="text-slate-500 dark:text-slate-400 max-w-lg mx-auto mb-12 font-medium text-sm sm:text-base leading-relaxed">
-                Your application is currently under review by the Selection Board. Once finalized, your allotted campus and programme details will appear here.
+                Your application is currently in the Selection Board's review pipeline. Once your campus allotment is finalized or updated, the details will appear here.
             </p>
             <Link to="/student/portal">
                 <button className="text-edu-teal font-black uppercase tracking-widest text-sm hover:gap-4 transition-all flex items-center gap-2 mx-auto">

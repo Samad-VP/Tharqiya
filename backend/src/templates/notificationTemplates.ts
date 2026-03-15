@@ -457,6 +457,91 @@ Congratulations! Your admission to the Tharqiya Course is confirmed. Check your 
 ${ISLAMIC_CLOSING_AR}`.trim(),
   },
 
+  ALLOTMENT_CORRECTION: {
+    email: {
+      roleKey: 'PRINCIPAL',
+      fromName: 'Office of the Principal – Darussalam Edu Village',
+      fromEmail: process.env.EMAIL_PRINCIPAL || 'principal@darussalameduvillage.com',
+      subject: "CORRECTION: Seat Allotment Update – Tharqiya Course",
+      template: (data: NotificationData) => `
+        <div style="font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: ${BRAND_TEXT}; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+          <div style="background-color: ${BRAND_CORAL}; padding: 30px; text-align: center;">
+            <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.025em;">Important Update</h1>
+          </div>
+          <div style="padding: 40px; background-color: #ffffff;">
+            <p style="font-size: 16px; font-weight: bold; color: ${BRAND_CORAL}; margin-bottom: 24px;">${ISLAMIC_GREETING_AR}</p>
+            <p>Dear <strong>${data.StudentName}</strong>,</p>
+            <p>We are writing to inform you of a <strong>correction</strong> regarding your seat allotment for the Tharqiya Course.</p>
+            
+            <div style="background-color: #fff7ed; padding: 20px; border-radius: 12px; border: 1px solid #fed7aa; margin: 24px 0;">
+              <p style="margin: 0; color: #c2410c; font-size: 14px;">Please be advised that your previous allotment record contained an error during high-volume processing. We sincerely apologize for any confusion this may have caused.</p>
+            </div>
+
+            <div style="background-color: #f0fdf4; padding: 24px; border-radius: 12px; border: 1px solid #dcfce7; margin: 24px 0;">
+              <p style="margin-top: 0; color: #166534; font-weight: bold; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em;">Updated Allotment Details:</p>
+              <p style="margin: 0; color: #064e3b;"><span style="font-size: 18px; font-weight: bold;">${data.CampusName}</span></p>
+            </div>
+
+            <p><strong>Next Action:</strong><br>
+            Please log in to your portal immediately to view the revised details and confirm your acceptance. Your previous allotment letter is now void.</p>
+
+            <div style="text-align: center; margin: 32px 0;">
+              <a href="${LOGIN_URL}" style="background-color: ${BRAND_TEAL}; color: #ffffff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block;">View Revised Allotment</a>
+            </div>
+
+            <p style="margin-top: 32px; font-weight: bold; color: ${BRAND_TEAL};">${ISLAMIC_CLOSING_AR}</p>
+            <p style="margin: 0; font-weight: 800; color: #1e293b;">Office of the Principal</p>
+            <p style="margin: 0; font-size: 14px; color: ${BRAND_SLATE};">Darussalam Edu Village</p>
+          </div>
+          <div style="background-color: #f1f5f9; padding: 20px; text-align: center; color: #94a3b8; font-size: 12px;">
+            &copy; ${new Date().getFullYear()} Darussalam Edu Village. All rights reserved.
+          </div>
+        </div>
+      `
+    }
+  },
+
+  ALLOTMENT_REVOKED: {
+    email: {
+      roleKey: 'PRINCIPAL',
+      fromName: 'Office of the Principal – Darussalam Edu Village',
+      fromEmail: process.env.EMAIL_PRINCIPAL || 'principal@darussalameduvillage.com',
+      subject: "IMPORTANT: Allotment Withdrawal – Tharqiya Course",
+      template: (data: NotificationData) => `
+        <div style="font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: ${BRAND_TEXT}; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+          <div style="background-color: ${BRAND_DEEP}; padding: 30px; text-align: center;">
+            <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.025em;">Allotment Update</h1>
+          </div>
+          <div style="padding: 40px; background-color: #ffffff;">
+            <p style="font-size: 16px; font-weight: bold; color: ${BRAND_DEEP}; margin-bottom: 24px;">${ISLAMIC_GREETING_AR}</p>
+            <p>Dear <strong>${data.StudentName}</strong>,</p>
+            <p>We are writing to formally inform you that your provisional seat allotment for the Tharqiya Course has been <strong>withdrawn</strong> due to an error in the batch processing system.</p>
+            
+            <div style="background-color: #fef2f2; padding: 20px; border-radius: 12px; border: 1px solid #fee2e2; margin: 24px 0;">
+              <p style="margin: 0; color: #991b1b; font-size: 14px;"><strong>Reason for Withdrawal:</strong> Process Error / Data Synchronization Issue.</p>
+            </div>
+
+            <p><strong>What this means:</strong><br>
+            Your application has been reverted to the <strong>Under Review</strong> status. Our admissions committee is re-evaluating the current allotment pool to ensure absolute fairness and accuracy.</p>
+
+            <p>We deeply regret any inconvenience or discouragement this correction may cause. You will receive a new notification as soon as the re-evaluation is complete.</p>
+
+            <div style="text-align: center; margin: 32px 0;">
+              <a href="${LOGIN_URL}" style="background-color: ${BRAND_SLATE}; color: #ffffff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block;">Check Application Status</a>
+            </div>
+
+            <p style="margin-top: 32px; font-weight: bold; color: ${BRAND_TEAL};">${ISLAMIC_CLOSING_AR}</p>
+            <p style="margin: 0; font-weight: 800; color: #1e293b;">Office of the Principal</p>
+            <p style="margin: 0; font-size: 14px; color: ${BRAND_SLATE};">Darussalam Edu Village</p>
+          </div>
+          <div style="background-color: #f1f5f9; padding: 20px; text-align: center; color: #94a3b8; font-size: 12px;">
+            &copy; ${new Date().getFullYear()} Darussalam Edu Village. All rights reserved.
+          </div>
+        </div>
+      `
+    }
+  },
+
   ADMIN_ALERT: {
     email: {
       roleKey: 'ADMIN',

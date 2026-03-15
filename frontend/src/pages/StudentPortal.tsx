@@ -125,6 +125,7 @@ const StudentPortal: React.FC = () => {
         switch (status) {
             case 'DOCS_VERIFIED': return 'Documents Verified';
             case 'INTERVIEW_SCHEDULED': return 'Interview Scheduled';
+            case 'EVALUATED': return 'In Selection Pipeline';
             case 'ALLOTMENT_READY': return 'Awaiting Allotment';
             case 'ADMISSION_AUTHORIZED': return 'Admission Authorized';
             default: return status.replace(/_/g, ' ');

@@ -19,6 +19,19 @@ const AdminDashboard: React.FC = () => {
     const [stats, setStats] = React.useState<any>(null);
     const [loading, setLoading] = React.useState(true);
 
+    const handleAccept = async (applicationId: string) => {
+        const loadToast = toast.loading("Enrolling student...");
+        try {
+            await api.post(`/admin/applications/${applicationId}/accept`);
+            toast.success("Student Enrolled Officially", { id: loadToast });
+            // Refresh stats to update table
+            const response = await api.get('/admin/dashboard-stats');
+            setStats(response.data.data);
+        } catch (err: any) {
+            toast.error(err.response?.data?.message || "Failed to enroll student", { id: loadToast });
+        }
+    };
+
     React.useEffect(() => {
         const fetchStats = async () => {
             if (!currentUser?.token) return;
@@ -125,8 +138,39 @@ const AdminDashboard: React.FC = () => {
                                 <ArrowUpRight size={20} />
                             </button>
                         </div>
-                        <div className="w-full h-[200px] sm:h-[250px] flex items-center justify-center border-2 border-dashed border-slate-100 dark:border-slate-800 rounded-2xl sm:rounded-3xl">
-                             <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px] sm:text-xs">Chart Visualisation Placeholder</p>
+                        <div className="w-full h-[250px] flex items-end justify-between gap-2 px-2 pb-2">
+                             {loading ? (
+                                 <div className="w-full h-full flex items-center justify-center">
+                                     <Loader2 className="w-8 h-8 text-edu-teal animate-spin" />
+                                 </div>
+                             ) : stats?.applicationTrends?.length > 0 ? (
+                                 stats.applicationTrends.map((trend: any, i: number) => (
+                                     <div key={i} className="flex-1 flex flex-col items-center gap-2 group cursor-pointer relative pt-4">
+                                         {/* Tooltip on Hover */}
+                                         <div className="absolute -top-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all bg-tharqiya-deep text-white px-2 py-1 rounded text-[10px] font-black z-20 pointer-events-none whitespace-nowrap">
+                                             {trend.count} Applications
+                                         </div>
+                                         
+                                         <motion.div 
+                                             initial={{ height: 0 }}
+                                             animate={{ height: `${(trend.count / Math.max(...stats.applicationTrends.map((t: any) => t.count), 1)) * 100}%` }}
+                                             transition={{ duration: 1, delay: i * 0.1, ease: "easeOut" }}
+                                             className="w-full bg-gradient-to-t from-edu-teal to-edu-teal/40 rounded-t-xl group-hover:from-edu-coral group-hover:to-edu-coral/40 transition-colors relative"
+                                         >
+                                             <div className="absolute inset-x-0 top-0 h-1 bg-white/20 rounded-full blur-sm" />
+                                         </motion.div>
+                                         
+                                         <p className="text-[9px] font-black text-slate-400 uppercase tracking-tighter w-full text-center truncate">
+                                             {new Date(trend.date).toLocaleDateString('en-US', { weekday: 'short' })}
+                                         </p>
+                                     </div>
+                                 ))
+                             ) : (
+                                <div className="w-full h-full flex flex-col items-center justify-center border-2 border-dashed border-slate-100 dark:border-slate-800 rounded-3xl">
+                                    <TrendingUp size={40} className="text-slate-100 dark:text-slate-800 mb-4" />
+                                    <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Insufficient Data for Trends</p>
+                                </div>
+                             )}
                         </div>
                     </div>
 
@@ -158,6 +202,116 @@ const AdminDashboard: React.FC = () => {
                                  </div>
                              )}
                         </div>
+                    </div>
+                </div>
+
+                {/* Allotment Verification Section */}
+                <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[2.5rem] shadow-xl overflow-hidden mt-8">
+                    <div className="p-6 sm:p-10 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h4 className="text-xl sm:text-2xl font-black text-tharqiya-deep dark:text-white font-outfit uppercase tracking-tighter">Allotment Verification</h4>
+                            <p className="text-premium-xs text-slate-500 mt-1">Review and track students who have secured their seats</p>
+                        </div>
+                        <div className="px-5 py-2 rounded-2xl bg-edu-teal/10 text-edu-teal font-black text-[10px] uppercase tracking-widest border border-edu-teal/20 w-fit">
+                            {stats?.allottedStudents?.length || 0} New Allotments
+                        </div>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse">
+                            <thead>
+                                <tr className="bg-slate-50/50 dark:bg-white/5 border-b border-slate-100 dark:border-slate-800">
+                                    <th className="px-8 py-6 font-black text-slate-500 uppercase tracking-widest text-[10px]">Student Details</th>
+                                    <th className="px-8 py-6 font-black text-slate-500 uppercase tracking-widest text-[10px]">Assigned Campus</th>
+                                    <th className="px-8 py-6 font-black text-slate-500 uppercase tracking-widest text-[10px]">Course</th>
+                                    <th className="px-8 py-6 font-black text-slate-500 uppercase tracking-widest text-[10px]">Enrollment Status</th>
+                                    <th className="px-8 py-6 font-black text-slate-500 uppercase tracking-widest text-[10px] text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
+                                {loading ? (
+                                    <tr>
+                                        <td colSpan={5} className="px-8 py-12 text-center">
+                                            <Loader2 className="w-8 h-8 text-edu-teal animate-spin mx-auto" />
+                                        </td>
+                                    </tr>
+                                ) : stats?.allottedStudents?.length > 0 ? (
+                                    stats.allottedStudents.map((app: any, idx: number) => (
+                                        <motion.tr 
+                                            key={idx}
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            className="group hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors"
+                                        >
+                                            <td className="px-8 py-6">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-10 h-10 rounded-xl bg-edu-teal/10 flex items-center justify-center font-black text-edu-teal text-xs border border-edu-teal/20">
+                                                        {app.student?.user?.profileImageUrl ? (
+                                                            <img src={app.student.user.profileImageUrl} alt="" className="w-full h-full object-cover rounded-xl" />
+                                                        ) : (app.student?.user?.name?.[0] || app.student?.name?.[0])}
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-black text-tharqiya-deep dark:text-white font-outfit uppercase tracking-tight text-sm">
+                                                            {app.student?.user?.name || app.student?.name}
+                                                        </p>
+                                                        <p className="text-[10px] text-slate-400 uppercase font-black tracking-widest mt-0.5">
+                                                            {app.student?.applicationNo}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-6">
+                                                <span className="px-3 py-1.5 rounded-xl bg-edu-coral/10 text-edu-coral font-black text-[10px] uppercase tracking-widest border border-edu-coral/10">
+                                                    {app.allotment?.campus || 'TBD'}
+                                                </span>
+                                            </td>
+                                            <td className="px-8 py-6">
+                                                <p className="font-bold text-tharqiya-deep dark:text-slate-300 text-[11px] uppercase tracking-tight">
+                                                    {app.allotment?.course || 'Pending Selection'}
+                                                </p>
+                                            </td>
+                                            <td className="px-8 py-6">
+                                                <div className="flex items-center gap-2">
+                                                    <span className={`w-2 h-2 rounded-full ${app.status === 'ACCEPTED' ? 'bg-emerald-500 animate-pulse' : 'bg-blue-500'}`} />
+                                                    <span className={`text-[10px] font-black uppercase tracking-widest ${app.status === 'ACCEPTED' ? 'text-emerald-500' : 'text-blue-600'}`}>
+                                                        {app.status === 'ACCEPTED' ? 'Admission Confirmed' : 'Allotment Issued'}
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-6 text-right">
+                                                {app.status === 'ACCEPTED' ? (
+                                                    <span className="px-4 py-2 rounded-xl bg-emerald-500/10 text-emerald-500 font-bold text-[9px] uppercase tracking-widest border border-emerald-500/20">
+                                                        Enrolled
+                                                    </span>
+                                                ) : app.status === 'ADMISSION_AUTHORIZED' ? (
+                                                    <button 
+                                                        onClick={() => handleAccept(app.id)}
+                                                        className="px-4 py-2 rounded-xl bg-edu-teal text-white hover:bg-edu-teal/90 font-bold text-[9px] uppercase tracking-widest transition-all shadow-md shadow-edu-teal/10"
+                                                    >
+                                                        Accept Enrollment
+                                                    </button>
+                                                ) : (
+                                                    <button className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-500 hover:text-edu-teal hover:bg-edu-teal/10 font-bold text-[9px] uppercase tracking-widest transition-all border border-transparent hover:border-edu-teal/20">
+                                                        Verify Docs
+                                                    </button>
+                                                )}
+                                            </td>
+                                        </motion.tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan={5} className="px-8 py-20 text-center">
+                                            <div className="flex flex-col items-center justify-center space-y-3">
+                                                <div className="w-12 h-12 rounded-full bg-slate-50 dark:bg-white/5 flex items-center justify-center">
+                                                    <Clock className="w-6 h-6 text-slate-200" />
+                                                </div>
+                                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">No students found in allotment pipeline</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

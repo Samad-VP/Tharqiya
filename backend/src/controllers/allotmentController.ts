@@ -1,8 +1,11 @@
 import { Request, Response } from 'express';
+import pkg from '@prisma/client';
+const { ApplicationStatus } = pkg;
 import prisma from '../config/db.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { AppError } from '../utils/AppError.js';
 import { triggerNotification } from '../services/notificationService.js';
+import { logAction } from '../services/audit.service.js';
 
 // @desc    Get candidates eligible for allotment
 // @route   GET /api/allotments/eligible
@@ -13,8 +16,8 @@ import { triggerNotification } from '../services/notificationService.js';
 export const getEligibleForAllotment = asyncHandler(async (req: Request, res: Response) => {
     const candidates = await prisma.application.findMany({
         where: {
-            // Fetch candidates who are evaluated or ready for allotment
-            status: { in: ['EVALUATED', 'ALLOTMENT_READY', 'ALLOTTED'] }
+            // Fetch candidates who are in any stage of the allotment/admission pipeline
+            status: { in: ['EVALUATED', 'ALLOTMENT_READY', 'ALLOTTED', 'ADMISSION_AUTHORIZED', 'ACCEPTED'] }
         },
         include: {
             student: {
@@ -159,4 +162,100 @@ export const finalizeAllotments = asyncHandler(async (req: Request, res: Respons
         status: 'success',
         data: results
     });
+});
+
+// @desc    Run Batch Merit-Based Allotment
+// @route   POST /api/allotments/batch-run
+// @access  Private (Admin, Super Admin)
+export const generateProvisionalAllotment = asyncHandler(async (req: Request, res: Response) => {
+    const adminId = (req as any).user.id;
+    
+    // 1. Fetch all evaluated candidates ordered by Marks
+    const candidates = await prisma.result.findMany({
+        where: { decision: 'PENDING' },
+        orderBy: { averageMarks: 'desc' }
+    });
+
+    if (candidates.length === 0) {
+        return res.json({ message: 'No candidates in evaluation pool' });
+    }
+
+    // 2. Fetch all campuses
+    const campuses = await prisma.campus.findMany();
+
+    // 3. Process Allotments
+    let allotmentCount = 0;
+    for (const candidate of candidates) {
+        const student = await prisma.student.findUnique({
+            where: { id: candidate.studentId },
+            include: { application: true }
+        });
+
+        if (!student || !student.application) continue;
+
+        // Check preferences
+        const preferences = [student.firstOption, student.secondOption, student.thirdOption].filter(Boolean);
+        
+        let allottedCampus = null;
+        for (const pref of preferences) {
+            const campus = campuses.find(c => c.name === pref);
+            if (campus) {
+                const occupied = await prisma.allotment.count({ where: { campus: campus.name } });
+                if (occupied < campus.maxSeats) {
+                    allottedCampus = campus.name;
+                    break;
+                }
+            }
+        }
+
+        if (allottedCampus) {
+            await prisma.allotment.upsert({
+                where: { applicationId: student.application.id },
+                update: { campus: allottedCampus, course: student.firstOption || 'Tharqiya' },
+                create: { applicationId: student.application.id, campus: allottedCampus, course: student.firstOption || 'Tharqiya' }
+            });
+
+            await prisma.application.update({
+                where: { id: student.application.id },
+                data: { 
+                    status: 'ALLOTMENT_READY',
+                    student: {
+                        update: { status: 'ALLOTMENT_READY' }
+                    }
+                }
+            });
+
+            allotmentCount++;
+        }
+    }
+    
+    await logAction(adminId, 'GENERATE_ALLOTMENT_RUN', undefined, { processed: candidates.length, allotted: allotmentCount });
+    res.json({ message: `Provisional allotment generated. ${allotmentCount} seats allotted.` });
+});
+
+// @desc    Submit all ready allotments to Principal for approval
+// @route   POST /api/allotments/submit-approval
+// @access  Private (Admin, Super Admin)
+export const submitAllotmentForApproval = asyncHandler(async (req: Request, res: Response) => {
+    const adminId = (req as any).user.id;
+    
+    // Update all ALLOTMENT_READY applications to ALLOTTED
+    const result = await prisma.application.updateMany({
+        where: { status: 'ALLOTMENT_READY' },
+        data: { status: 'ALLOTTED' }
+    });
+
+    // Also update the student status
+    const applications = await prisma.application.findMany({
+        where: { status: 'ALLOTTED' },
+        select: { studentId: true }
+    });
+
+    await prisma.student.updateMany({
+        where: { id: { in: applications.map(a => a.studentId) } },
+        data: { status: 'ALLOTTED' }
+    });
+    
+    await logAction(adminId, 'SUBMIT_ALLOTMENT_APPROVAL', undefined, { count: result.count });
+    res.json({ message: `${result.count} allotments submitted to Principal for final approval` });
 });

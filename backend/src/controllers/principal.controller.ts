@@ -44,23 +44,24 @@ export const approveAllotment = asyncHandler(async (req: AuthRequest, res: Respo
 
     const principalId = req.user.id;
     
-    // Update Allotments to Finalized
-    await prisma.allotment.updateMany({
-        where: { id: { in: allotmentIds } },
-        data: { isFinalized: true }
-    });
-    
-    const allotments = await prisma.allotment.findMany({
-        where: { id: { in: allotmentIds } },
-        select: { applicationId: true }
-    });
-    
-    const appIds = allotments.map(a => a.applicationId);
-    
-    await prisma.application.updateMany({
-        where: { id: { in: appIds } },
-        data: { status: 'ADMISSION_AUTHORIZED' }
-    });
+    // Update Allotments and synchronized Statuses using Promise.all for reliability
+    await Promise.all(allotmentIds.map(async (id) => {
+        const allotment = await prisma.allotment.update({
+            where: { id },
+            data: { isFinalized: true },
+            include: { application: true }
+        });
+
+        await prisma.application.update({
+            where: { id: allotment.applicationId },
+            data: { 
+                status: 'ADMISSION_AUTHORIZED',
+                student: {
+                    update: { status: 'ADMISSION_AUTHORIZED' }
+                }
+            }
+        });
+    }));
     
     await logAction(principalId, 'APPROVE_ALLOTMENT_BATCH', undefined, { count: allotmentIds.length });
     
@@ -74,14 +75,22 @@ export const approveAllotment = asyncHandler(async (req: AuthRequest, res: Respo
 // @route   POST /api/principal/override-allotment
 // @access  Private (Principal)
 export const overrideAllotment = asyncHandler(async (req: AuthRequest, res: Response, next: NextFunction) => {
-    const { allotmentId, newCourse, newCampus, reason } = req.body;
+    const { allotmentId, newCourse, newCampus, reason, notifyStudent } = req.body;
     if (!allotmentId || !newCampus) {
         return next(new AppError('Allotment ID and new campus are required', 400));
     }
 
     const principalId = req.user.id;
     
-    const oldAllotment = await prisma.allotment.findUnique({ where: { id: allotmentId } });
+    const oldAllotment = await prisma.allotment.findUnique({ 
+        where: { id: allotmentId },
+        include: { 
+            application: { 
+                include: { student: { include: { user: true } } } 
+            } 
+        }
+    });
+
     if (!oldAllotment) {
         return next(new AppError('Allotment not found', 404));
     }
@@ -91,15 +100,84 @@ export const overrideAllotment = asyncHandler(async (req: AuthRequest, res: Resp
         data: { course: newCourse || oldAllotment.course, campus: newCampus }
     });
     
+    // Trigger Notification if requested
+    if (notifyStudent && oldAllotment.application.student.userId && oldAllotment.application.student.user) {
+        const { triggerNotification } = await import('../services/notificationService.js');
+        await triggerNotification(oldAllotment.application.student.userId, 'ALLOTMENT_CORRECTION', {
+            StudentName: oldAllotment.application.student.user.name,
+            CampusName: newCampus
+        });
+    }
+
     await logAction(principalId, 'OVERRIDE_ALLOTMENT', allotmentId, { 
         reason, 
         previous: { course: oldAllotment.course, campus: oldAllotment.campus },
-        new: { course: newCourse || oldAllotment.course, campus: newCampus }
+        new: { course: newCourse || oldAllotment.course, campus: newCampus },
+        notified: !!notifyStudent
     });
     
     res.json({ 
         status: 'success',
-        message: 'Allotment overridden successfully' 
+        message: notifyStudent ? 'Allotment overridden and student notified' : 'Allotment overridden successfully' 
+    });
+});
+
+// @desc    Revoke Allotment (Made in error)
+// @route   POST /api/principal/revoke-allotment
+// @access  Private (Principal)
+export const revokeAllotment = asyncHandler(async (req: AuthRequest, res: Response, next: NextFunction) => {
+    const { allotmentId, reason } = req.body;
+    if (!allotmentId) {
+        return next(new AppError('Allotment ID is required', 400));
+    }
+
+    const principalId = req.user.id;
+
+    const allotment = await prisma.allotment.findUnique({
+        where: { id: allotmentId },
+        include: { 
+            application: { 
+                include: { student: { include: { user: true } } } 
+            } 
+        }
+    });
+
+    if (!allotment) {
+        return next(new AppError('Allotment not found', 404));
+    }
+
+    const applicationId = allotment.applicationId;
+
+    // 1. Delete Allotment
+    await prisma.allotment.delete({
+        where: { id: allotmentId }
+    });
+
+    // 2. Revert Application and Student Status to EVALUATED (or ALLOTMENT_READY if we want them back in queue)
+    // The user said "mistakenly alloted", so EVALUATED is safer to review again.
+    await prisma.application.update({
+        where: { id: applicationId },
+        data: { 
+            status: 'EVALUATED',
+            student: {
+                update: { status: 'EVALUATED' }
+            }
+        }
+    });
+
+    // 3. Notify Student
+    if (allotment.application.student.userId && allotment.application.student.user) {
+        const { triggerNotification } = await import('../services/notificationService.js');
+        await triggerNotification(allotment.application.student.userId, 'ALLOTMENT_REVOKED', {
+            StudentName: allotment.application.student.user.name
+        });
+    }
+
+    await logAction(principalId, 'REVOKE_ALLOTMENT', applicationId, { reason });
+
+    res.json({
+        status: 'success',
+        message: 'Allotment revoked and application reverted to evaluation stage'
     });
 });
 

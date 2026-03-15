@@ -1,8 +1,8 @@
 import express from 'express';
-import { applyForAdmission, getMyStatus, getAllApplications, downloadApplicationPDF, downloadResultPDF, downloadAllotmentPDF, downloadApplicantsListPDF, updateApplicationStatus, updateMyProfile, getMyNotifications, markNotificationsRead } from '../controllers/admissionController.js';
+import { applyForAdmission, getMyStatus, getAllApplications, downloadApplicationPDF, downloadResultPDF, downloadAllotmentPDF, downloadApplicantsListPDF, updateApplicationStatus, updateMyProfile, getMyNotifications, markNotificationsRead, verifyDocuments, processAdmission } from '../controllers/admissionController.js';
 import { submitPublicApplication } from '../controllers/publicAdmissionController.js';
 import { confirmAdmission } from '../controllers/confirmAdmissionController.js';
-import { verifyDocuments, generateProvisionalAllotment, submitAllotmentForApproval, processAdmission } from '../controllers/admissions.controller.js';
+import { generateProvisionalAllotment, submitAllotmentForApproval } from '../controllers/allotmentController.js';
 import { protect, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
