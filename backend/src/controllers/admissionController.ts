@@ -95,7 +95,8 @@ export const getMyStatus = asyncHandler(async (req: AuthRequest, res: Response, 
                             }
                         }
                     },
-                    allotment: true
+                    allotment: true,
+                    payments: true
                 } 
             },
             user: {
@@ -284,30 +285,40 @@ export const downloadApplicantsListPDF = asyncHandler(async (req: AuthRequest, r
         where.student = studentWhere;
     }
 
-    const applications = await prisma.application.findMany({
-        where,
-        include: {
-            student: {
-                include: {
-                    user: { select: { name: true, email: true } }
+    try {
+        const applications = await prisma.application.findMany({
+            where,
+            include: {
+                student: {
+                    include: {
+                        user: { select: { name: true, email: true } }
+                    }
+                },
+                interview: {
+                    include: { evaluations: true }
                 }
             },
-            interview: {
-                include: { evaluations: true }
-            }
-        },
-        orderBy: { appliedAt: 'desc' }
-    });
+            orderBy: { appliedAt: 'desc' },
+            take: 1000 // Limit to prevent memory issues
+        });
 
-    let filterTitle = 'All Applicants';
-    if (status) filterTitle = `Status: ${status}`;
-    if (search) filterTitle += ` | Search: ${search}`;
+        if (!applications || applications.length === 0) {
+            return next(new AppError('No applications found for the given criteria', 404));
+        }
 
-    const pdfBytes = await generateApplicantsListPDF(applications, filterTitle);
+        let filterTitle = 'All Applicants';
+        if (status) filterTitle = `Status: ${status}`;
+        if (search) filterTitle += ` | Search: ${search}`;
 
-    res.contentType('application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename=Applicants-Roster-${new Date().getTime()}.pdf`);
-    res.send(Buffer.from(pdfBytes));
+        const pdfBytes = await generateApplicantsListPDF(applications, filterTitle);
+
+        res.contentType('application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename=Applicants-Roster-${new Date().getTime()}.pdf`);
+        res.send(Buffer.from(pdfBytes));
+    } catch (error: any) {
+        console.error('PDF Generation Error:', error);
+        return next(new AppError(`Failed to generate PDF: ${error.message}`, 500));
+    }
 });
 
 // @desc    Download student's own application as PDF
@@ -656,8 +667,8 @@ export const processAdmission = asyncHandler(async (req: AuthRequest, res: Respo
         include: { student: { include: { user: true } } }
     });
 
-    if (!application || application.status !== 'ADMISSION_AUTHORIZED') {
-        return next(new AppError('Admission not authorized by Principal yet', 400));
+    if (!application || !['ADMISSION_AUTHORIZED', 'ALLOTTED', 'ALLOTMENT_READY'].includes(application.status)) {
+        return next(new AppError('Admission not authorized by Principal or allotment not ready yet', 400));
     }
     
     // Generate Credentials

@@ -19,6 +19,23 @@ const COLORS = {
     GOLD: rgb(184/255, 134/255, 11/255),
 };
 
+// HELPER: Sanitize text for Standard Fonts (Helvetica/WinAnsi)
+// Standard fonts in pdf-lib throw errors on characters they can't encode.
+const sanitizeText = (text: string | null | undefined): string => {
+    if (!text) return '';
+    // Replace non-WinAnsi/extended characters with fallback.
+    // This is a basic filter to keep it safe for Helvetica.
+    return text.toString().replace(/[^\x20-\x7E\xA0-\xFF]/g, '?');
+};
+
+const safeMeasure = (font: any, text: string, size: number) => {
+    try {
+        return font.widthOfTextAtSize(sanitizeText(text), size);
+    } catch (e) {
+        return font.widthOfTextAtSize('?', size) * text.length;
+    }
+};
+
 const embedImage = async (pdfDoc: PDFDocument, filename: string) => {
     try {
         // Check multiple possible paths for production and development
@@ -82,6 +99,8 @@ const fetchAndEmbedPhoto = async (pdfDoc: PDFDocument, url?: string) => {
 };
 
 export const generateApplicationPDF = async (studentData: any) => {
+    if (!studentData) throw new Error("No student data provided for PDF generation");
+    
     const pdfDoc = await PDFDocument.create();
     const page = pdfDoc.addPage(PageSizes.A4);
     const { width, height } = page.getSize();
@@ -112,9 +131,6 @@ export const generateApplicationPDF = async (studentData: any) => {
         height: headerHeight,
         color: COLORS.WHITE,
     });
-
-    // Primary Logo (Left Aligned)
-
 
     // Student Photo (Right Aligned) - Standard Passport Size (approx 3.5x4.5cm)
     const photoWidth = 100;
@@ -228,7 +244,7 @@ export const generateApplicationPDF = async (studentData: any) => {
         color: COLORS.TEAL,
         opacity: 0.1,
     });
-    page.drawText(`APP ID: ${studentData.applicationNo}`, {
+    page.drawText(`APP ID: ${studentData.applicationNo || 'N/A'}`, {
         x: 60,
         y: yPos + 3,
         size: 10,
@@ -261,11 +277,11 @@ export const generateApplicationPDF = async (studentData: any) => {
 
     const drawRow = (label: string, value: string, secondLabel?: string, secondValue?: string) => {
         page.drawText(`${label}:`, { x: 60, y: yPos, size: 10, font: boldFont, color: COLORS.SLATE });
-        page.drawText(String(value || 'N/A'), { x: 160, y: yPos, size: 10, font, color: COLORS.TEXT });
+        page.drawText(sanitizeText(String(value || 'N/A')), { x: 160, y: yPos, size: 10, font, color: COLORS.TEXT });
         
         if (secondLabel) {
             page.drawText(`${secondLabel}:`, { x: 330, y: yPos, size: 10, font: boldFont, color: COLORS.SLATE });
-            page.drawText(String(secondValue || 'N/A'), { x: 430, y: yPos, size: 10, font, color: COLORS.TEXT });
+            page.drawText(sanitizeText(String(secondValue || 'N/A')), { x: 430, y: yPos, size: 10, font, color: COLORS.TEXT });
         }
         
         yPos -= 17; // Slightly tighter spacing to ensure signature area fits
@@ -273,8 +289,8 @@ export const generateApplicationPDF = async (studentData: any) => {
 
     // Personal Details
     drawSectionHeader('I. Candidate Personal Information');
-    drawRow('Full Name', studentData.user?.name || studentData.name);
-    drawRow('Date of Birth', new Date(studentData.dob).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }), 'Gender', 'Male');
+    drawRow('Full Name', studentData.user?.name || studentData.name || 'Unknown');
+    drawRow('Date of Birth', studentData.dob ? new Date(studentData.dob).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : 'N/A', 'Gender', 'Male');
     drawRow('Place of Birth', studentData.place, 'District', studentData.district);
     drawRow('Father/Guardian', studentData.fatherName);
     
@@ -287,7 +303,7 @@ export const generateApplicationPDF = async (studentData: any) => {
     yPos -= 5;
     drawSectionHeader('III. Academic & Hifz Background');
     drawRow('Hifz Institution', studentData.hifzCenter);
-    drawRow('Dawras Completed', String(studentData.dawrasCount), 'General Educ.', studentData.schoolEducation);
+    drawRow('Dawras Completed', String(studentData.dawrasCount || '0'), 'General Educ.', studentData.schoolEducation);
     drawRow('Madrasa Educ.', studentData.madrasaEducation || 'N/A', 'Prime Hifz Mentor', studentData.primeHifzMentor || 'N/A');
 
     yPos -= 5;
@@ -365,15 +381,17 @@ export const generateApplicationPDF = async (studentData: any) => {
     return await pdfDoc.save();
 };
 
-export const generateResultPDF = async (studentData: any, resultData: any, evaluations: any[]) => {
+export const generateResultPDF = async (studentData: any, resultData: any, evaluations: any[] = []) => {
+    if (!studentData || !resultData) throw new Error("Incomplete data for result PDF generation");
+    
     const pdfDoc = await PDFDocument.create();
     const page = pdfDoc.addPage(PageSizes.A4);
     const { width, height } = page.getSize();
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
     const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
     const italicFont = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
-    const primaryLogo = await embedImage(pdfDoc, 'edu_village_logo.png');
 
+    const primaryLogo = await embedImage(pdfDoc, 'edu_village_logo.png');
     const studentPhoto = await fetchAndEmbedPhoto(pdfDoc, studentData.user?.profileImageUrl || studentData.documents?.photo);
 
     // Page Border
@@ -396,9 +414,6 @@ export const generateResultPDF = async (studentData: any, resultData: any, evalu
         height: headerHeight,
         color: COLORS.WHITE,
     });
-
-    // Primary Logo (Left Aligned)
-
 
     // Student Photo (Right Aligned) - Standard Passport Size (approx 3.5x4.5cm)
     const photoWidth = 100;
@@ -426,8 +441,6 @@ export const generateResultPDF = async (studentData: any, resultData: any, evalu
         });
         page.drawText('PHOTO', { x: photoX + 32, y: photoY + 58, size: 10, font: boldFont, color: COLORS.SLATE });
     }
-
-
 
     // Brand Header - Website Style (Logo Only)
     const logoScale = 0.07; // Made small again
@@ -512,11 +525,11 @@ export const generateResultPDF = async (studentData: any, resultData: any, evalu
     
     // Left Box: Candidate Name
     page.drawRectangle({ x: 50, y: yPos, width: 200, height: 25, color: COLORS.CREAM, borderColor: COLORS.TEAL, borderWidth: 0.5 });
-    page.drawText('CANDIDATE: ' + studentData.user?.name.toUpperCase(), { x: 60, y: yPos + 8, size: 10, font: boldFont, color: COLORS.DEEP });
+    page.drawText('CANDIDATE: ' + (studentData.user?.name || studentData.name || 'Unknown').toUpperCase(), { x: 60, y: yPos + 8, size: 10, font: boldFont, color: COLORS.DEEP });
     
     // Right Box: Application ID
     page.drawRectangle({ x: width - 200, y: yPos, width: 150, height: 25, color: COLORS.CREAM, borderColor: COLORS.TEAL, borderWidth: 0.5 });
-    page.drawText('APP ID: ' + studentData.applicationNo, { x: width - 190, y: yPos + 8, size: 10, font: boldFont, color: COLORS.DEEP });
+    page.drawText('APP ID: ' + (studentData.applicationNo || 'N/A'), { x: width - 190, y: yPos + 8, size: 10, font: boldFont, color: COLORS.DEEP });
 
     yPos -= 40;
 
@@ -536,11 +549,11 @@ export const generateResultPDF = async (studentData: any, resultData: any, evalu
         if (idx % 2 === 0) {
             page.drawRectangle({ x: 50, y: yPos - 8, width: width - 100, height: 25, color: rgb(0.98, 0.98, 0.98) });
         }
-        page.drawText(evaluation.subject, { x: 65, y: yPos, size: 10, font: boldFont, color: COLORS.TEXT });
-        page.drawText(`${evaluation.marks}`, { x: 300, y: yPos, size: 11, font: boldFont, color: COLORS.TEXT });
+        page.drawText(sanitizeText(evaluation.subject || 'General'), { x: 65, y: yPos, size: 10, font: boldFont, color: COLORS.TEXT });
+        page.drawText(sanitizeText(`${evaluation.marks ?? '—'}`), { x: 300, y: yPos, size: 11, font: boldFont, color: COLORS.TEXT });
         
         // Truncate Remarks if too long
-        let remarks = evaluation.remarks || '-';
+        let remarks = sanitizeText(evaluation.remarks || '-');
         if (remarks.length > 35) remarks = remarks.substring(0, 32) + '...';
         
         page.drawText(remarks, { x: 380, y: yPos, size: 9, font, color: COLORS.SLATE });
@@ -554,8 +567,8 @@ export const generateResultPDF = async (studentData: any, resultData: any, evalu
     page.drawRectangle({ x: width - 250, y: summaryBoxY, width: 200, height: 60, color: COLORS.CREAM, borderColor: COLORS.SLATE, borderWidth: 0.5 });
     
     page.drawText('PERFORMANCE SUMMARY', { x: width - 235, y: yPos - 15, size: 9, font: boldFont, color: COLORS.TEAL });
-    page.drawText(`TOTAL MARKS: ${resultData.totalMarks}`, { x: width - 235, y: yPos - 35, size: 10, font: boldFont, color: COLORS.DEEP });
-    page.drawText(`PERCENTAGE: ${resultData.averageMarks}%`, { x: width - 235, y: yPos - 50, size: 10, font: boldFont, color: COLORS.DEEP });
+    page.drawText(`TOTAL MARKS: ${resultData.totalMarks || '0'}`, { x: width - 235, y: yPos - 35, size: 10, font: boldFont, color: COLORS.DEEP });
+    page.drawText(`PERCENTAGE: ${resultData.averageMarks || '0'}%`, { x: width - 235, y: yPos - 50, size: 10, font: boldFont, color: COLORS.DEEP });
 
     // Final Decision Badge
     const isAccepted = resultData.decision === 'ACCEPTED';
@@ -568,7 +581,7 @@ export const generateResultPDF = async (studentData: any, resultData: any, evalu
     page.drawRectangle({ x: 50, y: yPos - 40, width: 5, height: 50, color: badgeColor }); // Left accent bar
     
     page.drawText('FINAL ADMISSION DECISION:', { x: 65, y: yPos - 10, size: 9, font: boldFont, color: COLORS.SLATE });
-    page.drawText(resultData.decision, { x: 65, y: yPos - 30, size: 18, font: boldFont, color: badgeColor });
+    page.drawText(resultData.decision || 'PENDING', { x: 65, y: yPos - 30, size: 18, font: boldFont, color: badgeColor });
 
     // Principal's Note
     yPos -= 80;
@@ -629,6 +642,8 @@ export const generateResultPDF = async (studentData: any, resultData: any, evalu
 };
 
 export const generateAllotmentPDF = async (studentData: any, allotmentData: any) => {
+    if (!studentData || !allotmentData) throw new Error("Incomplete data for allotment PDF generation");
+
     const pdfDoc = await PDFDocument.create();
     const page = pdfDoc.addPage(PageSizes.A4);
     const { width, height } = page.getSize();
@@ -666,8 +681,6 @@ export const generateAllotmentPDF = async (studentData: any, allotmentData: any)
         page.drawRectangle({ x: photoX, y: photoY, width: photoWidth, height: photoHeight, borderColor: COLORS.SLATE, borderWidth: 1, color: rgb(0.98, 0.98, 0.98) });
         page.drawText('PHOTO', { x: photoX + 32, y: photoY + 58, size: 10, font: boldFont, color: COLORS.SLATE });
     }
-
-
 
     // Brand Header - Website Style (Logo Only)
     const logoScale = 0.07; // Made small again
@@ -715,7 +728,6 @@ export const generateAllotmentPDF = async (studentData: any, allotmentData: any)
 
     // Allotment Details Table
     yPos -= 40;
-    const tableTop = yPos;
     const rowHeight = 30;
     const col1Width = 150;
     const col2Width = 300;
@@ -727,10 +739,10 @@ export const generateAllotmentPDF = async (studentData: any, allotmentData: any)
     yPos -= rowHeight;
 
     const details = [
-        ['Candidate Name', studentData.user?.name || studentData.name],
-        ['Application ID', studentData.applicationNo],
-        ['Allotted Campus', allotmentData.campus],
-        ['Assigned Programme', allotmentData.course],
+        ['Candidate Name', studentData.user?.name || studentData.name || 'Unknown'],
+        ['Application ID', studentData.applicationNo || 'N/A'],
+        ['Allotted Campus', allotmentData.campus || 'TBD'],
+        ['Assigned Programme', allotmentData.course || 'TBD'],
         ['Academic Session', '2026-2027'],
     ];
 
@@ -749,7 +761,7 @@ export const generateAllotmentPDF = async (studentData: any, allotmentData: any)
         page.drawText(label, { x: tableX + 10, y: yPos + 8, size: 10, font: boldFont, color: COLORS.SLATE });
         
         // Value (Truncate if needed)
-        let displayValue = String(value || 'N/A');
+        let displayValue = sanitizeText(String(value || 'N/A'));
         if (displayValue.length > 40) displayValue = displayValue.substring(0, 37) + '...';
         
         page.drawText(displayValue, { x: tableX + col1Width + 10, y: yPos + 8, size: 11, font: boldFont, color: COLORS.TEXT });
@@ -785,7 +797,7 @@ export const generateAllotmentPDF = async (studentData: any, allotmentData: any)
 
     // Footer
     page.drawRectangle({ x: 20, y: 20, width: width - 40, height: 50, color: COLORS.WHITE, borderColor: COLORS.TEAL, borderWidth: 0.5 });
-    const footerText1 = `Darussalam Edu Village © 2026 | ID: ${studentData.applicationNo} | Admission System`;
+    const footerText1 = `Darussalam Edu Village © 2026 | ID: ${studentData.applicationNo || 'N/A'} | Admission System`;
     const footerText2 = 'For more info, visit: www.darussalameduvillage.com';
     const footerText3 = 'This is a digitally generated official allotment record.';
     
@@ -822,14 +834,15 @@ export const generateAllotmentPDF = async (studentData: any, allotmentData: any)
 
 const truncateText = (text: string, maxWidth: number, font: any, size: number) => {
     if (!text) return '';
-    let truncated = text;
-    let width = font.widthOfTextAtSize(truncated, size);
+    const safeInput = sanitizeText(text);
+    let truncated = safeInput;
+    let width = safeMeasure(font, truncated, size);
     
     if (width <= maxWidth) return truncated;
     
     while (width > maxWidth - 10 && truncated.length > 0) {
         truncated = truncated.substring(0, truncated.length - 1);
-        width = font.widthOfTextAtSize(truncated + '...', size);
+        width = safeMeasure(font, truncated + '...', size);
     }
     return truncated + '...';
 };
@@ -845,10 +858,14 @@ const calculateColumnWidths = (applications: any[], font: any, boldFont: any, fo
     let maxNameWidth = 0;
 
     applications.forEach(app => {
-        const student = app.student;
-        maxIdWidth = Math.max(maxIdWidth, boldFont.widthOfTextAtSize(student.applicationNo, fontSize));
-        maxStatusWidth = Math.max(maxStatusWidth, font.widthOfTextAtSize(app.status.replace(/_/g, ' '), fontSize));
-        maxNameWidth = Math.max(maxNameWidth, boldFont.widthOfTextAtSize(student.name.toUpperCase(), fontSize));
+        const student = app.student || {};
+        const name = sanitizeText(String(student.name || 'Unknown'));
+        const appNo = sanitizeText(String(student.applicationNo || 'N/A'));
+        const status = sanitizeText(String(app.status || 'PENDING').replace(/_/g, ' '));
+
+        maxIdWidth = Math.max(maxIdWidth, safeMeasure(boldFont, appNo, fontSize));
+        maxStatusWidth = Math.max(maxStatusWidth, safeMeasure(font, status, fontSize));
+        maxNameWidth = Math.max(maxNameWidth, safeMeasure(boldFont, name.toUpperCase(), fontSize));
     });
 
     // Add padding
@@ -972,27 +989,27 @@ export const generateApplicantsListPDF = async (applications: any[], filterTitle
             }
 
             let rxPos = 45;
-            const student = app.student;
+            const student = app.student || {};
             const evaluations = app.interview?.evaluations || [];
             
             // Strict Subject Mapping
             const getMark = (subjectName: string) => {
-                const ev = evaluations.find((e: any) => e.subject.toLowerCase() === subjectName.toLowerCase());
-                return ev ? String(ev.marks) : '—';
+                const ev = evaluations.find((e: any) => (e.subject || '').toLowerCase() === subjectName.toLowerCase());
+                return ev ? String(ev.marks ?? '—') : '—';
             };
 
             const hifzMark = getMark('Hifz');
             const engMark = getMark('English');
             const genMark = getMark('General');
 
-            const totalMarks = evaluations.length > 0 ? Math.round(evaluations.reduce((s: any, e: any) => s + e.marks, 0) / evaluations.length) : 0;
+            const totalMarks = evaluations.length > 0 ? Math.round(evaluations.reduce((s: any, e: any) => s + (Number(e.marks) || 0), 0) / evaluations.length) : 0;
             
             // Core Data with dynamic widths and proportional truncation
             const data = [
                 { text: String(rowIdx + 1), font: font, width: colWidths[0] },
-                { text: student.applicationNo, font: boldFont, width: colWidths[1] },
-                { text: student.name.toUpperCase(), font: boldFont, width: colWidths[2] - 10 },
-                { text: app.status.replace(/_/g, ' '), font: font, width: colWidths[3] - 5 },
+                { text: student.applicationNo || 'N/A', font: boldFont, width: colWidths[1] },
+                { text: (student.name || 'Unknown').toUpperCase(), font: boldFont, width: colWidths[2] - 10 },
+                { text: (app.status || 'PENDING').replace(/_/g, ' '), font: font, width: colWidths[3] - 5 },
                 { text: hifzMark, font: font, width: colWidths[4] },
                 { text: engMark, font: font, width: colWidths[5] },
                 { text: genMark, font: font, width: colWidths[6] },
@@ -1005,9 +1022,10 @@ export const generateApplicantsListPDF = async (applications: any[], filterTitle
                 // Status Color Logic
                 let color = COLORS.TEXT;
                 if (i === 3) {
-                    if (app.status === 'ACCEPTED' || app.status === 'ADMISSION_AUTHORIZED') color = COLORS.TEAL;
-                    else if (app.status === 'REJECTED') color = COLORS.CORAL;
-                    else if (app.status === 'PENDING') color = rgb(0.8, 0.5, 0); // Amber
+                    const status = app.status || 'PENDING';
+                    if (status === 'ACCEPTED' || status === 'ADMISSION_AUTHORIZED') color = COLORS.TEAL;
+                    else if (status === 'REJECTED') color = COLORS.CORAL;
+                    else if (status === 'PENDING') color = rgb(0.8, 0.5, 0); // Amber
                 }
 
                 page.drawText(displayValue, { 

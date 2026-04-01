@@ -6,7 +6,6 @@ import { Timer, FolderOpen, CheckSquare, ShieldAlert, ShieldCheck, Download, Bel
 import toast from 'react-hot-toast';
 import logo from '../assets/logo.png';
 import { motion, AnimatePresence } from 'framer-motion';
-
 interface ApplicationData {
     id: string;
     applicationNo: string;
@@ -18,6 +17,7 @@ interface ApplicationData {
     address: string;
     fatherName: string;
     application: {
+        id: string;
         status: string;
         appliedAt: string;
         interview?: {
@@ -36,7 +36,7 @@ interface ApplicationData {
             campus: string;
             course: string;
             isFinalized: boolean;
-        }
+        };
     };
     resources?: any;
     user?: {
@@ -399,8 +399,8 @@ const StudentPortal: React.FC = () => {
                                 </motion.div>
                             )}
 
-                            {/* Section 4: Allotment Decision Summary */}
-                            {appData.application.allotment && (
+                            {/* Admission & Fee section */}
+                            {['ALLOTTED', 'ADMISSION_AUTHORIZED', 'ACCEPTED'].includes(appData.application.status) && (
                                 <motion.div 
                                     initial={{ opacity: 0, y: 30 }}
                                     whileInView={{ opacity: 1, y: 0 }}
@@ -412,10 +412,18 @@ const StudentPortal: React.FC = () => {
                                                 <ShieldCheck size={32} />
                                             </div>
                                             <div>
-                                                <span className="px-3 py-1 bg-edu-teal/10 text-edu-teal rounded-full text-[9px] font-black uppercase tracking-widest border border-edu-teal/20">Allotment Decision Released</span>
-                                                <h3 className="text-2xl sm:text-3xl font-black text-tharqiya-deep dark:text-white bg-none bg-clip-border font-outfit tracking-tighter mt-2 leading-none uppercase">Your Campus <span className="text-edu-teal">Selection</span></h3>
+                                                <span className="px-3 py-1 bg-edu-teal/10 text-edu-teal rounded-full text-[9px] font-black uppercase tracking-widest border border-edu-teal/20">
+                                                    {appData.application.status === 'ACCEPTED' ? 'Admission Confirmed' : 'Allotment Released'}
+                                                </span>
+                                                <h3 className="text-2xl sm:text-3xl font-black text-tharqiya-deep dark:text-white bg-none bg-clip-border font-outfit tracking-tighter mt-2 leading-none uppercase">
+                                                    {appData.application.status === 'ACCEPTED' ? 'Dossier Finalized' : 'Your Campus Selection'}
+                                                </h3>
                                                 <p className="text-xs sm:text-sm font-bold text-slate-500 dark:text-slate-400 mt-3 max-w-xl leading-relaxed">
-                                                    You have been allotted to <span className="text-tharqiya-deep dark:text-white font-black decoration-edu-teal underline decoration-2 underline-offset-4">{appData.application.allotment.campus}</span> campus.
+                                                    {appData.application.allotment ? (
+                                                        <>You have been allotted to <span className="text-tharqiya-deep dark:text-white font-black decoration-edu-teal underline decoration-2 underline-offset-4">{appData.application.allotment.campus}</span> campus.</>
+                                                    ) : (
+                                                        <>Please complete your enrollment process to view final allotment details.</>
+                                                    )}
                                                 </p>
                                             </div>
                                         </div>
@@ -426,7 +434,7 @@ const StudentPortal: React.FC = () => {
                                                 whileTap={{ scale: 0.95 }}
                                                 className="w-full sm:w-auto px-8 h-14 bg-tharqiya-deep dark:bg-edu-teal text-white rounded-xl font-black text-xs uppercase tracking-[0.2em] shadow-xl transition-all font-outfit flex items-center justify-center gap-3"
                                             >
-                                                Manage Allotment <ArrowRight size={18} />
+                                                View Allotment <ArrowRight size={18} />
                                             </motion.button>
                                         </Link>
                                     </div>
