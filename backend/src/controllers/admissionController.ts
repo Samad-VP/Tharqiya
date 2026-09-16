@@ -1,4 +1,6 @@
 import { Response, NextFunction } from 'express';
+import pkg from '@prisma/client';
+const { ApplicationStatus } = pkg;
 import prisma from '../config/db.js';
 import { AuthRequest } from '../middleware/auth.js';
 import { generateApplicationPDF, generateResultPDF, generateAllotmentPDF, generateApplicantsListPDF } from '../services/pdfService.js';
@@ -7,6 +9,8 @@ import { AppError } from '../utils/AppError.js';
 import { triggerNotification } from '../services/notificationService.js';
 import { promoteToStudentAccount } from '../services/studentService.js';
 import { executeWithRetry, generateNextApplicationNo } from '../utils/applicationUtils.js';
+import bcrypt from 'bcryptjs';
+import { logAction } from '../services/audit.service.js';
 
 // @desc    Submit a new application
 // @route   POST /api/admissions/apply
@@ -99,7 +103,7 @@ export const getMyStatus = asyncHandler(async (req: AuthRequest, res: Response, 
                         }
                     },
                     allotment: true
-                } 
+                }
             },
             user: {
                 select: {
@@ -287,30 +291,40 @@ export const downloadApplicantsListPDF = asyncHandler(async (req: AuthRequest, r
         where.student = studentWhere;
     }
 
-    const applications = await prisma.application.findMany({
-        where,
-        include: {
-            student: {
-                include: {
-                    user: { select: { name: true, email: true } }
+    try {
+        const applications = await prisma.application.findMany({
+            where,
+            include: {
+                student: {
+                    include: {
+                        user: { select: { name: true, email: true } }
+                    }
+                },
+                interview: {
+                    include: { evaluations: true }
                 }
             },
-            interview: {
-                include: { evaluations: true }
-            }
-        },
-        orderBy: { appliedAt: 'desc' }
-    });
+            orderBy: { appliedAt: 'desc' },
+            take: 1000 // Limit to prevent memory issues
+        });
 
-    let filterTitle = 'All Applicants';
-    if (status) filterTitle = `Status: ${status}`;
-    if (search) filterTitle += ` | Search: ${search}`;
+        if (!applications || applications.length === 0) {
+            return next(new AppError('No applications found for the given criteria', 404));
+        }
 
-    const pdfBytes = await generateApplicantsListPDF(applications, filterTitle);
+        let filterTitle = 'All Applicants';
+        if (status) filterTitle = `Status: ${status}`;
+        if (search) filterTitle += ` | Search: ${search}`;
 
-    res.contentType('application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename=Applicants-Roster-${new Date().getTime()}.pdf`);
-    res.send(Buffer.from(pdfBytes));
+        const pdfBytes = await generateApplicantsListPDF(applications, filterTitle);
+
+        res.contentType('application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename=Applicants-Roster-${new Date().getTime()}.pdf`);
+        res.send(Buffer.from(pdfBytes));
+    } catch (error: any) {
+        console.error('PDF Generation Error:', error);
+        return next(new AppError(`Failed to generate PDF: ${error.message}`, 500));
+    }
 });
 
 // @desc    Download student's own application as PDF
@@ -662,4 +676,117 @@ export const deleteApplication = asyncHandler(async (req: AuthRequest, res: Resp
         status: 'success',
         message: 'Rejected application and associated data deleted successfully'
     });
+});
+
+// @desc    Verify student documents
+// @route   PATCH /api/admissions/:applicationId/verify-docs
+// @access  Private (Admin)
+export const verifyDocuments = asyncHandler(async (req: AuthRequest, res: Response, next: NextFunction) => {
+    const { applicationId } = req.params as { applicationId: string };
+    const { isVerified, rejectionReason } = req.body;
+    const adminId = req.user.id;
+
+    if (!isVerified) {
+        // Reject
+        await prisma.application.update({
+            where: { id: applicationId },
+            data: { 
+                status: 'REJECTED',
+                student: {
+                    update: { status: 'REJECTED' }
+                }
+            }
+        });
+
+        // Send Email Notification about Rejection
+        const rejectedApplication = await prisma.application.findUnique({
+            where: { id: applicationId },
+            include: { student: { include: { user: true } } }
+        });
+
+        if (rejectedApplication?.student?.userId) {
+            await triggerNotification(rejectedApplication.student.userId, 'APPLICATION_REJECTED', {
+                StudentName: rejectedApplication.student.name
+            }, true);
+        }
+
+        await logAction(adminId, 'VERIFY_DOCS_REJECTED', applicationId, { reason: rejectionReason });
+        return res.json({ message: 'Application rejected due to document issues' });
+    }
+
+    const application = await prisma.application.update({
+      where: { id: applicationId },
+      data: { 
+        status: 'DOCS_VERIFIED',
+        student: {
+            update: {
+                status: 'DOCS_VERIFIED'
+            }
+        }
+      },
+    });
+
+    await logAction(adminId, 'VERIFY_DOCS_APPROVED', applicationId);
+    res.json({ message: 'Documents verified successfully', application });
+});
+
+// @desc    Process Final Admission (Send Credentials)
+// @route   POST /api/admissions/:applicationId/process-admission
+// @access  Private (Admin)
+export const processAdmission = asyncHandler(async (req: AuthRequest, res: Response, next: NextFunction) => {
+    const { applicationId } = req.params as { applicationId: string };
+    const adminId = req.user.id;
+    
+    const application = await prisma.application.findUnique({
+        where: { id: applicationId },
+        include: { student: { include: { user: true } } }
+    });
+
+    if (!application || !['ADMISSION_AUTHORIZED', 'ALLOTTED', 'ALLOTMENT_READY'].includes(application.status)) {
+        return next(new AppError('Admission not authorized by Principal or allotment not ready yet', 400));
+    }
+    
+    // Generate Credentials
+    const username = `ADM${new Date().getFullYear()}${Math.floor(1000 + Math.random() * 9000)}`;
+    const tempPassword = Math.random().toString(36).slice(-8);
+    const hashedPassword = await bcrypt.hash(tempPassword, 10);
+    
+    // Update User
+    if (application.student.userId) {
+        await prisma.user.update({
+            where: { id: application.student.userId },
+            data: { 
+                username: username,
+                password: hashedPassword,
+                role: 'STUDENT',
+                isFirstLogin: true // Force password change
+            }
+        });
+    }
+    
+    // Update Application Status
+    await prisma.application.update({
+        where: { id: applicationId },
+        data: { 
+            status: 'ACCEPTED',
+            student: {
+                update: {
+                    status: 'ACCEPTED'
+                }
+            }
+        }
+    });
+    
+    // Send Email with Username/Password
+    if (application.student.userId) {
+        await triggerNotification(application.student.userId, 'APPLICATION_CREDENTIALS_CREATED', {
+            StudentName: application.student.name,
+            Username: username,
+            TempPassword: tempPassword,
+            LoginUrl: process.env.FRONTEND_URL || 'https://darussalameduvillage.com/login'
+        }, true);
+    }
+    
+    await logAction(adminId, 'PROCESS_ADMISSION', applicationId, { username });
+    res.json({ message: 'Admission processed. Credentials sent to student.' });
 });

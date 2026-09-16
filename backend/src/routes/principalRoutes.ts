@@ -1,5 +1,5 @@
 import express from 'express';
-import { getPendingApprovals, approveAllotment, overrideAllotment, getPrincipalStats, getPrincipalInsights } from '../controllers/principal.controller.js';
+import { getPendingApprovals, approveAllotment, overrideAllotment, getPrincipalStats, getPrincipalInsights, revokeAllotment } from '../controllers/principal.controller.js';
 import { protect, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -14,5 +14,6 @@ router.get('/insights', getPrincipalInsights);
 
 router.post('/approve-allotment', approveAllotment);
 router.post('/override-allotment', overrideAllotment);
+router.post('/revoke-allotment', revokeAllotment);
 
 export default router;

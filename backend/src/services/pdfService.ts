@@ -341,7 +341,7 @@ export const generateApplicationPDF = async (studentData: any) => {
             color: COLORS.TEAL,
             opacity: 0.1,
         });
-        page.drawText(`APP ID: ${studentData.applicationNo}`, {
+        page.drawText(`APP ID: ${studentData.applicationNo || 'N/A'}`, {
             x: 60,
             y: yPos + 3,
             size: 10,
@@ -400,7 +400,7 @@ export const generateApplicationPDF = async (studentData: any) => {
         yPos -= 5;
         drawSectionHeader('III. Academic & Hifz Background');
         drawRow('Hifz Institution', studentData.hifzCenter);
-        drawRow('Dawras Completed', String(studentData.dawrasCount), 'General Educ.', studentData.schoolEducation);
+        drawRow('Dawras Completed', String(studentData.dawrasCount || '0'), 'General Educ.', studentData.schoolEducation);
         drawRow('Madrasa Educ.', studentData.madrasaEducation || 'N/A', 'Prime Hifz Mentor', studentData.primeHifzMentor || 'N/A');
 
         yPos -= 5;
@@ -1006,18 +1006,17 @@ const truncateText = (text: string, maxWidth: number, font: any, size: number) =
 const calculateColumnWidths = (applications: any[], font: any, boldFont: any, fontSize: number, totalTableWidth: number) => {
     // Guard: empty list → return default proportional widths
     if (!applications || applications.length === 0) {
-        return [30, 70, 165, 90, 125, 45];
+        return [25, 70, 220, 85, 30, 30, 30, 35];
     }
 
-    // Fixed columns: # (30), Score (45)
-    const fixedWidths = { index: 30, score: 45 };
-    let availableWidth = totalTableWidth - fixedWidths.index - fixedWidths.score;
+    // Fixed columns: # (25), Sub1/Sub2/Sub3 (30 each), Total (35)
+    const fixedWidths = { index: 25, sub1: 30, sub2: 30, sub3: 30, score: 35 };
+    let availableWidth = totalTableWidth - fixedWidths.index - fixedWidths.sub1 - fixedWidths.sub2 - fixedWidths.sub3 - fixedWidths.score;
 
-    // We need to measure max required width for: ID, Name, Status, Origin
+    // We need to measure max required width for: ID, Name, Status
     let maxIdWidth = 0;
     let maxStatusWidth = 0;
     let maxNameWidth = 0;
-    let maxOriginWidth = 0;
 
     applications.forEach(app => {
         const student = app?.student;
@@ -1025,26 +1024,22 @@ const calculateColumnWidths = (applications: any[], font: any, boldFont: any, fo
         maxIdWidth = Math.max(maxIdWidth, boldFont.widthOfTextAtSize(sanitizeForPDF(student?.applicationNo || 'N/A'), fontSize));
         maxStatusWidth = Math.max(maxStatusWidth, font.widthOfTextAtSize(sanitizeForPDF((app?.status || 'PENDING').replace(/_/g, ' ')), fontSize));
         maxNameWidth = Math.max(maxNameWidth, boldFont.widthOfTextAtSize(sanitizeForPDF(student?.name || 'N/A').toUpperCase(), fontSize));
-        maxOriginWidth = Math.max(maxOriginWidth, font.widthOfTextAtSize(sanitizeForPDF(student?.district || student?.state || 'N/A'), fontSize));
     });
 
-    // Add padding (10px per column)
-    maxIdWidth += 15;
-    maxStatusWidth += 20; // Status needs breathing room
-    maxNameWidth += 15;
-    maxOriginWidth += 15;
+    // Add padding
+    maxIdWidth += 10;
+    maxStatusWidth += 15;
+    maxNameWidth += 10;
 
-    // Constrain ID and Status (Status is priority for visibility)
-    const idWidth = Math.min(maxIdWidth, 80);
-    const statusWidth = Math.min(maxStatusWidth, 100);
+    // Constraints for high-visibility columns
+    const idWidth = Math.min(maxIdWidth, 75);
+    const statusWidth = Math.min(maxStatusWidth, 85);
     availableWidth -= (idWidth + statusWidth);
 
-    // Proportionally divide remaining width between Name and Origin
-    const nameOriginSum = maxNameWidth + maxOriginWidth;
-    const nameWidth = nameOriginSum > 0 ? (maxNameWidth / nameOriginSum) * availableWidth : availableWidth / 2;
-    const originWidth = nameOriginSum > 0 ? (maxOriginWidth / nameOriginSum) * availableWidth : availableWidth / 2;
+    // Remaining width goes to Name
+    const nameWidth = availableWidth;
 
-    return [fixedWidths.index, idWidth, nameWidth, statusWidth, originWidth, fixedWidths.score];
+    return [fixedWidths.index, idWidth, nameWidth, statusWidth, fixedWidths.sub1, fixedWidths.sub2, fixedWidths.sub3, fixedWidths.score];
 };
 
 export const generateApplicantsListPDF = async (applications: any[], filterTitle: string) => {
@@ -1127,7 +1122,7 @@ export const generateApplicantsListPDF = async (applications: any[], filterTitle
         // Pre-calculate dynamic column widths based on metadata
         const tableWidth = 525; // Standard usable width for A4 with margins
         const colWidths = calculateColumnWidths(applications, font, boldFont, 9, tableWidth);
-        const headers = ['#', 'APP ID', 'CANDIDATE NAME', 'STATUS', 'ORIGIN/PLACE', 'SCORE'];
+        const headers = ['#', 'APP ID', 'CANDIDATE NAME', 'STATUS', 'HIFZ', 'ENG', 'GEN', 'TOT'];
 
         for (let p = 0; p < totalPages; p++) {
             const page = pdfDoc.addPage(PageSizes.A4);
@@ -1141,7 +1136,7 @@ export const generateApplicantsListPDF = async (applications: any[], filterTitle
             
             let xPos = 45;
             headers.forEach((h, i) => {
-                page.drawText(h, { x: xPos, y: yPos + 3, size: 9, font: boldFont, color: COLORS.WHITE });
+                page.drawText(h, { x: xPos, y: yPos + 3, size: 8, font: boldFont, color: COLORS.WHITE });
                 xPos += colWidths[i];
             });
 
@@ -1158,21 +1153,36 @@ export const generateApplicantsListPDF = async (applications: any[], filterTitle
                 }
 
                 let rxPos = 45;
-                const student = app?.student;
-                
+                const student = app?.student || {};
+                const evaluations = app?.interview?.evaluations || [];
+
+                // Strict Subject Mapping
+                const getMark = (subjectName: string) => {
+                    const ev = evaluations.find((e: any) => (e.subject || '').toLowerCase() === subjectName.toLowerCase());
+                    return ev ? String(ev.marks ?? '—') : '—';
+                };
+
+                const hifzMark = getMark('Hifz');
+                const engMark = getMark('English');
+                const genMark = getMark('General');
+
+                const totalMarks = evaluations.length > 0 ? Math.round(evaluations.reduce((s: any, e: any) => s + (Number(e.marks) || 0), 0) / evaluations.length) : 0;
+
                 // Core Data with dynamic widths and proportional truncation
                 const data = [
                     { text: String(rowIdx + 1), font: font, width: colWidths[0] },
                     { text: student?.applicationNo || 'N/A', font: boldFont, width: colWidths[1] },
                     { text: sanitizeForPDF(student?.name || 'N/A').toUpperCase(), font: boldFont, width: colWidths[2] - 10 },
                     { text: (app.status || 'PENDING').replace(/_/g, ' '), font: font, width: colWidths[3] - 5 },
-                    { text: sanitizeForPDF(student?.district || student?.state || 'N/A'), font: font, width: colWidths[4] - 10 },
-                    { text: app.interview?.evaluations?.length > 0 ? String(Math.round(app.interview.evaluations.reduce((s: any, e: any) => s + e.marks, 0) / app.interview.evaluations.length)) : '—', font: boldFont, width: colWidths[5] }
+                    { text: hifzMark, font: font, width: colWidths[4] },
+                    { text: engMark, font: font, width: colWidths[5] },
+                    { text: genMark, font: font, width: colWidths[6] },
+                    { text: totalMarks > 0 ? String(totalMarks) : '—', font: boldFont, width: colWidths[7] }
                 ];
 
                 data.forEach((item, i) => {
                     const displayValue = truncateText(item.text, item.width, item.font, 9);
-                    
+
                     // Status Color Logic
                     let color = COLORS.TEXT;
                     if (i === 3) {
@@ -1181,26 +1191,26 @@ export const generateApplicantsListPDF = async (applications: any[], filterTitle
                         else if (app.status === 'PENDING') color = rgb(0.8, 0.5, 0); // Amber
                     }
 
-                    page.drawText(displayValue, { 
-                        x: rxPos, 
-                        y: yPos + 12, 
-                        size: 9, 
-                        font: item.font, 
+                    page.drawText(displayValue, {
+                        x: rxPos,
+                        y: yPos + 12,
+                        size: 8,
+                        font: item.font,
                         color
                     });
                     rxPos += colWidths[i];
                 });
 
-                // Minor Detail (Place) - correctly aligned under Origin
-                if (student?.place) {
-                    const originX = 45 + colWidths[0] + colWidths[1] + colWidths[2] + colWidths[3];
-                    const placeText = truncateText(sanitizeForPDF(student.place), colWidths[4] - 10, italicFont, 7);
-                    page.drawText(placeText, { 
-                        x: originX, 
-                        y: yPos + 2, 
-                        size: 7, 
-                        font: italicFont, 
-                        color: COLORS.SLATE 
+                // Minor Detail (Origin/Place) - correctly aligned under Name
+                if (student?.district || student?.state) {
+                    const originX = 45 + colWidths[0] + colWidths[1];
+                    const originText = truncateText(sanitizeForPDF(`${student.district || ''}${student.district && student.state ? ', ' : ''}${student.state || ''}`), colWidths[2] - 10, italicFont, 7);
+                    page.drawText(originText, {
+                        x: originX,
+                        y: yPos + 2,
+                        size: 7,
+                        font: italicFont,
+                        color: COLORS.SLATE
                     });
                 }
 

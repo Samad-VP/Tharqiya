@@ -9,61 +9,61 @@ datasource db {
 }
 
 model User {
-  id            String         @id @default(uuid())
-  email         String         @unique
-  password      String
-  role          Role           @default(STUDENT)
-  name          String
-  phone         String?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  isFirstLogin  Boolean        @default(true)
-  username               String?        @unique
-  profileImageUrl        String?
-  profileImagePublicId   String?
-  interviewer            Interviewer?
-  notifications        Notification[] @relation("UserNotifications")
-  adminRetries         Notification[] @relation("AdminRetries")
-  auditLogs     AuditLog[]
-  student       Student?
-  otp           String?
-  otpExpires    DateTime?
-  whatsapp               String?
-  emailNotificationsEnabled Boolean   @default(true)
-  whatsappNotificationsEnabled Boolean @default(true)
+  id                           String         @id @default(uuid())
+  email                        String         @unique
+  password                     String
+  role                         Role           @default(STUDENT)
+  name                         String
+  phone                        String?
+  createdAt                    DateTime       @default(now())
+  updatedAt                    DateTime       @updatedAt
+  isFirstLogin                 Boolean        @default(true)
+  username                     String?        @unique
+  otp                          String?
+  otpExpires                   DateTime?
+  profileImageUrl              String?
+  profileImagePublicId         String?
+  whatsapp                     String?
+  emailNotificationsEnabled    Boolean        @default(true)
+  whatsappNotificationsEnabled Boolean        @default(true)
+  auditLogs                    AuditLog[]
+  interviewer                  Interviewer?
+  adminRetries                 Notification[] @relation("AdminRetries")
+  notifications                Notification[] @relation("UserNotifications")
+  student                      Student?
 }
 
 model Student {
-  id              String            @id @default(uuid())
-  userId          String?           @unique
-  applicationNo   String            @unique
-  name            String
-  dob             DateTime
-  address         String?
-  hifzCenter      String
-  fatherName      String
-  motherName      String
+  id               String            @id @default(uuid())
+  userId           String?           @unique
+  applicationNo    String            @unique
+  dob              DateTime
+  address          String?
+  hifzCenter       String
+  fatherName       String
+  motherName       String
   status           ApplicationStatus @default(PENDING)
   documents        Json?
+  dawrasCount      String?
+  district         String?
+  firstOption      String?
+  kitabsStudied    String?
+  place            String?
+  resources        Json?
+  schoolEducation  String?
+  secondOption     String?
+  thirdOption      String?
+  whatsapp         String?
+  name             String
   documentUrl      String?
   documentPublicId String?
-  dawrasCount      String?
-  district        String?
-  firstOption     String?
-  kitabsStudied   String?
-  place           String?
-  resources       Json?
-  schoolEducation String?
-  secondOption    String?
-  thirdOption     String?
-  whatsapp        String?
-  primeHifzMentor String?
+  primeHifzMentor  String?
   madrasaEducation String?
-  pincode         String?
-  state           String?
-  country         String? @default("India")
-  application     Application?
-  user            User?             @relation(fields: [userId], references: [id])
+  country          String?           @default("India")
+  pincode          String?
+  state            String?
+  application      Application?
+  user             User?             @relation(fields: [userId], references: [id])
 }
 
 model Application {
@@ -71,9 +71,9 @@ model Application {
   studentId String            @unique
   appliedAt DateTime          @default(now())
   status    ApplicationStatus @default(PENDING)
+  allotment Allotment?
   student   Student           @relation(fields: [studentId], references: [id])
   interview Interview?
-  allotment Allotment?
 }
 
 model Allotment {
@@ -141,17 +141,16 @@ model Notification {
   type        String
   event       String
   message     String
-  data        Json?
-  senderEmail String?
-  triggeredBy String   @default("SYSTEM") // SYSTEM or ADMIN
-  adminId     String?
   sentAt      DateTime @default(now())
   status      String   @default("SENT")
-  isRead      Boolean  @default(false)
   error       String?
-  
-  user        User?    @relation("UserNotifications", fields: [userId], references: [id])
+  data        Json?
+  adminId     String?
+  senderEmail String?
+  triggeredBy String   @default("SYSTEM")
+  isRead      Boolean  @default(false)
   admin       User?    @relation("AdminRetries", fields: [adminId], references: [id])
+  user        User?    @relation("UserNotifications", fields: [userId], references: [id])
 }
 
 model Setting {
@@ -160,55 +159,35 @@ model Setting {
   value     String
   updatedAt DateTime @updatedAt
 }
-
-enum Role {
-  SUPER_ADMIN
-  ADMIN
-  PRINCIPAL
-  INTERVIEWER
-  STUDENT
-}
-
-enum ApplicationStatus {
-  PENDING
-  DOCS_VERIFIED
-  REVIEWED
-  INTERVIEW_SCHEDULED
-  EVALUATED
-  ALLOTMENT_READY
-  ALLOTTED
-  ADMISSION_AUTHORIZED
-  ACCEPTED
-  REJECTED
 }
 
 model Faculty {
-  id              String   @id @default(uuid())
-  name            String
-  photoUrl        String?
-  photoPublicId   String?
-  position        String
-  category        String   // ISLAMIC or GENERAL
-  department      String
-  order           Int      @default(0)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id            String   @id @default(uuid())
+  name          String
+  photoUrl      String?
+  photoPublicId String?
+  position      String
+  category      String
+  department    String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  order         Int      @default(0)
 }
 
 model Alumni {
-  id              String   @id @default(uuid())
-  name            String
-  photoUrl        String?
-  photoPublicId   String?
-  place           String
-  status          String   // STUDYING or WORKING
-  institution     String?
-  university      String?
-  position        String?
-  organization    String?  // madrasa, masjid, institutions
-  order           Int      @default(0)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id            String   @id @default(uuid())
+  name          String
+  photoUrl      String?
+  photoPublicId String?
+  place         String
+  status        String
+  institution   String?
+  university    String?
+  position      String?
+  organization  String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  order         Int      @default(0)
 }
 
 model Campus {
@@ -217,4 +196,25 @@ model Campus {
   maxSeats  Int      @default(50)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  INTERVIEWER
+  STUDENT
+  PRINCIPAL
+}
+
+enum ApplicationStatus {
+  PENDING
+  REVIEWED
+  INTERVIEW_SCHEDULED
+  EVALUATED
+  ACCEPTED
+  REJECTED
+  DOCS_VERIFIED
+  ALLOTMENT_READY
+  ALLOTTED
+  ADMISSION_AUTHORIZED
 }

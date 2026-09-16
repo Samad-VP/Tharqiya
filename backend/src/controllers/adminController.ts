@@ -57,33 +57,59 @@ export const getDashboardStats = asyncHandler(async (req: AuthRequest, res: Resp
         timestamp: app.appliedAt
     }));
 
-    // 6. Application Trends (Last 30 days, grouped by day)
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-    const rawTrends: any[] = await prisma.$queryRaw`
-        SELECT DATE_TRUNC('day', "appliedAt") AS day, COUNT(*)::int AS count
-        FROM "Application"
-        WHERE "appliedAt" >= ${thirtyDaysAgo}
-        GROUP BY day
-        ORDER BY day ASC
-    `;
-
-    // Fill in missing days with zero counts for a smooth chart
-    const trendMap = new Map<string, number>();
-    rawTrends.forEach(r => {
-        const key = new Date(r.day).toISOString().split('T')[0];
-        trendMap.set(key, r.count);
+    // 6. Allotted Students (ADMISSION_AUTHORIZED or ACCEPTED)
+    const allottedStudents = await prisma.application.findMany({
+        where: {
+            status: { in: ['ALLOTTED', 'ADMISSION_AUTHORIZED', 'ACCEPTED'] }
+        },
+        take: 10,
+        orderBy: {
+            appliedAt: 'desc'
+        },
+        include: {
+            student: {
+                include: {
+                    user: {
+                        select: { name: true, profileImageUrl: true }
+                    }
+                }
+            },
+            allotment: true
+        }
     });
 
-    const trendData: { date: string; count: number }[] = [];
-    for (let i = 29; i >= 0; i--) {
+    // 7. Application Trends (Groups by day for last 7 days)
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    const applicationsLastSevenDays = await prisma.application.findMany({
+        where: {
+            appliedAt: {
+                gte: sevenDaysAgo
+            }
+        },
+        select: {
+            appliedAt: true
+        }
+    });
+
+    const trendsMap: { [key: string]: number } = {};
+    for (let i = 0; i < 7; i++) {
         const d = new Date();
         d.setDate(d.getDate() - i);
-        const key = d.toISOString().split('T')[0];
-        const label = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
-        trendData.push({ date: label, count: trendMap.get(key) || 0 });
+        trendsMap[d.toISOString().split('T')[0]] = 0;
     }
+
+    applicationsLastSevenDays.forEach(app => {
+        const dateKey = app.appliedAt.toISOString().split('T')[0];
+        if (trendsMap[dateKey] !== undefined) {
+            trendsMap[dateKey]++;
+        }
+    });
+
+    const applicationTrends = Object.entries(trendsMap)
+        .map(([date, count]) => ({ date, count }))
+        .sort((a, b) => a.date.localeCompare(b.date));
 
     const stats = {
         totalApplications,
@@ -92,7 +118,8 @@ export const getDashboardStats = asyncHandler(async (req: AuthRequest, res: Resp
         averageScore,
         finalizedSeats,
         recentActivities,
-        trendData
+        allottedStudents,
+        applicationTrends
     };
 
     res.status(200).json({
@@ -353,5 +380,56 @@ export const triggerPendingCredentials = asyncHandler(async (req: AuthRequest, r
     res.status(200).json({
         status: 'success',
         data: results
+    });
+});
+
+// @desc    Officially accept/enroll a student after principal authorization
+// @route   POST /api/admin/applications/:id/accept
+// @access  Private (Admin/Super Admin only)
+export const acceptAdmission = asyncHandler(async (req: AuthRequest, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+
+    const application = await (prisma.application.findUnique({
+        where: { id: id as string },
+        include: { 
+            student: { include: { user: true } },
+            allotment: true
+        }
+    }) as any);
+
+    if (!application) {
+        return next(new AppError('Application not found', 404));
+    }
+
+    if (application.status !== 'ADMISSION_AUTHORIZED') {
+        return next(new AppError('Admission must be authorized by Principal before final acceptance', 400));
+    }
+
+    // 1. Update Application and Student status to ACCEPTED
+    await prisma.application.update({
+        where: { id: id as string },
+        data: { 
+            status: 'ACCEPTED',
+            student: {
+                update: { status: 'ACCEPTED' }
+            }
+        }
+    });
+
+    // 2. Trigger Final Notification
+    const student = application.student;
+    if (student?.userId && student?.user) {
+        const { triggerNotification } = await import('../services/notificationService.js');
+        await triggerNotification(student.userId, 'ADMISSION_CONFIRMED', {
+            StudentName: student.user.name,
+            CampusName: application.allotment?.campus || 'College Campus',
+            Username: student.user.email,
+            TempPassword: 'Use your existing password'
+        });
+    }
+
+    res.status(200).json({
+        status: 'success',
+        message: 'Student officially enrolled'
     });
 });

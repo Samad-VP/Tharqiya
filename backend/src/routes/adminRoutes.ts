@@ -1,5 +1,5 @@
 import express from 'express';
-import { getDashboardStats, getNotificationLogs, retryNotification, clearNotificationLogs, triggerPendingCredentials } from '../controllers/adminController.js';
+import { getDashboardStats, getNotificationLogs, retryNotification, clearNotificationLogs, triggerPendingCredentials, acceptAdmission } from '../controllers/adminController.js';
 import { protect, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -9,5 +9,6 @@ router.get('/notifications', protect, authorize('ADMIN', 'SUPER_ADMIN', 'PRINCIP
 router.delete('/notifications/clear', protect, authorize('ADMIN', 'SUPER_ADMIN'), clearNotificationLogs);
 router.post('/notifications/:id/retry', protect, authorize('ADMIN', 'SUPER_ADMIN'), retryNotification);
 router.post('/notifications/trigger-pending-credentials', protect, authorize('ADMIN', 'SUPER_ADMIN'), triggerPendingCredentials);
+router.post('/applications/:id/accept', protect, authorize('ADMIN', 'SUPER_ADMIN'), acceptAdmission);
 
 export default router;
